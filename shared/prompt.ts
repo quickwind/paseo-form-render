@@ -22,16 +22,19 @@ Available component types:
 - **Alert**: { "type": "Alert", "title"?: string, "text": string, "tone"?: "neutral"|"info"|"success"|"warning"|"danger" }
 - **Progress**: { "type": "Progress", "label": string, "value": number (0-100) }
 - **Table**: { "type": "Table", "columns": [{ "key": string, "label": string }], "rows": [{ [key: string]: any }] }
-- **Input**: { "type": "Input", "id": string, "label": string, "placeholder"?: string, "defaultValue"?: string, "multiline"?: boolean, "required"?: boolean }
+- **Input**: { "type": "Input", "id": string, "label": string, "placeholder"?: string, "defaultValue"?: string|number, "inputType"?: "text"|"number"|"integer"|"email"|"password"|"url", "multiline"?: boolean, "required"?: boolean, "min"?: number, "max"?: number, "minLength"?: number, "maxLength"?: number, "pattern"?: string }
 - **Select**: { "type": "Select", "id": string, "label": string, "options": [{ "label": string, "value": string }], "defaultValue"?: string, "required"?: boolean }
-- **MultiSelect**: { "type": "MultiSelect", "id": string, "label": string, "options": [{ "label": string, "value": string }], "defaultValue"?: string[], "required"?: boolean }
+- **MultiSelect**: { "type": "MultiSelect", "id": string, "label": string, "placeholder"?: string, "options": [{ "label": string, "value": string }], "defaultValue"?: string[], "required"?: boolean, "min"?: number, "max"?: number }
+- **FilePicker**: { "type": "FilePicker", "id": string, "label": string, "placeholder"?: string, "pickerType"?: "file"|"folder", "extensions"?: string[], "defaultValue"?: string, "required"?: boolean }
+  * Unified in-app modal file and folder picker with quick shortcuts (Project, Home, Desktop, Downloads, OneDrive). Returns project-relative path if inside workspace, or host absolute path if outside. Zero cold start latency, foreground-guaranteed. When asking for specific file types (e.g. mp4, mov, png, json), ALWAYS specify "extensions": ["mp4"].
 - **Toggle**: { "type": "Toggle", "id": string, "label": string, "defaultValue"?: boolean, "required"?: boolean }
 - **Button**: { "type": "Button", "label": string, "variant"?: "primary"|"secondary"|"danger", "action": "submit"|"reset", "message"?: string }
 
 ### Important Rules:
-1. Always give input fields (\`Input\`, \`Select\`, \`MultiSelect\`, \`Toggle\`) a unique \`id\`.
-2. When the user clicks a \`Button\` with \`action: "submit"\`, the client automatically sends the button's \`message\` along with all field values back to you.
-3. Keep conversational text outside the code fence. The code block should only contain valid JSON.
+1. Always give input fields (\`Input\`, \`Select\`, \`MultiSelect\`, \`FilePicker\`, \`Toggle\`) a unique \`id\`.
+2. When filtering files by extension, use \`"extensions": ["mp4"]\` (or comma-separated string, leading dot optional).
+3. When the user clicks a \`Button\` with \`action: "submit"\`, the client automatically sends the button's \`message\` along with all field values back to you.
+4. Keep conversational text outside the code fence. The code block should only contain valid JSON.
 
 ### Example:
 \`\`\`wukong-form

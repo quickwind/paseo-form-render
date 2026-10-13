@@ -8,10 +8,11 @@ import { MarkdownText } from "./markdown";
 export interface MessageContainerProps {
   text: string;
   theme: PluginHostProps["theme"];
+  agentId?: string;
   onSubmit: (formattedMessage: string) => Promise<void> | void;
 }
 
-export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme, onSubmit }) => {
+export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme, agentId, onSubmit }) => {
   const blocks = parseMessageContent(text);
 
   return (
@@ -68,6 +69,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
                 key={idx}
                 form={block.form}
                 theme={theme}
+                agentId={agentId}
                 onSubmit={onSubmit}
               />
             );

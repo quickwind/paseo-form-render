@@ -1,6 +1,8 @@
 import type { PluginServerContext } from "@getpaseo/plugin/server";
 import { appendDemoForm } from "./server/demo";
+import { handleListProjectFiles, handleCreateDirectory } from "./server/file-picker";
 import { showDemoForm } from "./shared/demo";
+import { listProjectFilesRpc, createDirectoryRpc } from "./shared/pickers";
 import { WUKONG_PROMPT_INSTRUCTION } from "./shared/prompt";
 
 export default function contribute(server: PluginServerContext) {
@@ -20,6 +22,8 @@ export default function contribute(server: PluginServerContext) {
   });
 
   server.handle(showDemoForm, appendDemoForm);
+  server.handle(listProjectFilesRpc, handleListProjectFiles);
+  server.handle(createDirectoryRpc, handleCreateDirectory);
 
   return () => {};
 }

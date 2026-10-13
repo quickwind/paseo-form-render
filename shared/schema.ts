@@ -34,6 +34,7 @@ export type WukongNode =
   | SelectNode
   | MultiSelectNode
   | ToggleNode
+  | FilePickerNode
   | ButtonNode;
 
 export interface CardNode {
@@ -95,14 +96,22 @@ export interface TableNode {
   rows: Record<string, string | number | boolean | null>[];
 }
 
+export type InputType = "text" | "number" | "integer" | "email" | "password" | "url";
+
 export interface InputNode {
   type: "Input";
   id: string;
   label: string;
   placeholder?: string;
-  defaultValue?: string;
+  defaultValue?: string | number;
+  inputType?: InputType;
   multiline?: boolean;
   required?: boolean;
+  min?: number;
+  max?: number;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
 }
 
 export interface SelectNode {
@@ -118,9 +127,12 @@ export interface MultiSelectNode {
   type: "MultiSelect";
   id: string;
   label: string;
+  placeholder?: string;
   options: Option[];
   defaultValue?: string[];
   required?: boolean;
+  min?: number;
+  max?: number;
 }
 
 export interface ToggleNode {
@@ -129,6 +141,40 @@ export interface ToggleNode {
   label: string;
   defaultValue?: boolean;
   required?: boolean;
+}
+
+export function normalizeExtensions(
+  extensions?: string[] | string,
+  extension?: string,
+): string[] | undefined {
+  const rawList: string[] = [];
+  if (Array.isArray(extensions)) {
+    rawList.push(...extensions);
+  } else if (typeof extensions === "string") {
+    rawList.push(...extensions.split(","));
+  }
+  if (typeof extension === "string") {
+    rawList.push(...extension.split(","));
+  }
+
+  const cleaned = rawList
+    .map((e) => e.trim().toLowerCase().replace(/^\./, ""))
+    .filter(Boolean);
+
+  return cleaned.length > 0 ? Array.from(new Set(cleaned)) : undefined;
+}
+
+export interface FilePickerNode {
+  type: "FilePicker";
+  id: string;
+  label: string;
+  pickerType?: "file" | "folder";
+  scope?: "workspace" | "global";
+  placeholder?: string;
+  defaultValue?: string;
+  required?: boolean;
+  extensions?: string[] | string;
+  extension?: string;
 }
 
 export interface ButtonNode {
@@ -196,9 +242,15 @@ export const WukongNodeSchema: z.ZodType<WukongNode> = z.lazy(() =>
       id: z.string().min(1),
       label: z.string(),
       placeholder: z.string().optional(),
-      defaultValue: z.string().optional(),
+      defaultValue: z.union([z.string(), z.number()]).optional(),
+      inputType: z.enum(["text", "number", "integer", "email", "password", "url"]).optional(),
       multiline: z.boolean().optional(),
       required: z.boolean().optional(),
+      min: z.number().optional(),
+      max: z.number().optional(),
+      minLength: z.number().int().nonnegative().optional(),
+      maxLength: z.number().int().nonnegative().optional(),
+      pattern: z.string().optional(),
     }),
     z.object({
       type: z.literal("Select"),
@@ -212,9 +264,12 @@ export const WukongNodeSchema: z.ZodType<WukongNode> = z.lazy(() =>
       type: z.literal("MultiSelect"),
       id: z.string().min(1),
       label: z.string(),
+      placeholder: z.string().optional(),
       options: z.array(OptionSchema).min(1),
       defaultValue: z.array(z.string()).optional(),
       required: z.boolean().optional(),
+      min: z.number().int().nonnegative().optional(),
+      max: z.number().int().nonnegative().optional(),
     }),
     z.object({
       type: z.literal("Toggle"),
@@ -222,6 +277,18 @@ export const WukongNodeSchema: z.ZodType<WukongNode> = z.lazy(() =>
       label: z.string(),
       defaultValue: z.boolean().optional(),
       required: z.boolean().optional(),
+    }),
+    z.object({
+      type: z.literal("FilePicker"),
+      id: z.string().min(1),
+      label: z.string(),
+      pickerType: z.enum(["file", "folder"]).optional(),
+      scope: z.enum(["workspace", "global"]).optional(),
+      placeholder: z.string().optional(),
+      defaultValue: z.string().optional(),
+      required: z.boolean().optional(),
+      extensions: z.union([z.string(), z.array(z.string())]).optional(),
+      extension: z.string().optional(),
     }),
     z.object({
       type: z.literal("Button"),

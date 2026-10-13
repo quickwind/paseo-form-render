@@ -1,13 +1,17 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
+import { useRpc } from "@getpaseo/plugin/client";
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Switch } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform } from "react-native";
 import {
   WukongNode,
   SelectNode,
   MultiSelectNode,
+  FilePickerNode,
   Tone,
+  normalizeExtensions,
 } from "../shared/schema";
 import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { ProjectFileModal } from "./project-file-modal";
 
 interface NodeRendererProps {
   node: WukongNode;
@@ -15,6 +19,7 @@ interface NodeRendererProps {
   errors: Record<string, string>;
   disabled: boolean;
   theme: PluginHostProps["theme"];
+  agentId?: string;
   onValueChange: (id: string, value: any) => void;
   onSubmit: (message?: string) => void;
   onReset: () => void;
@@ -185,7 +190,7 @@ function DropdownMultiSelect({
         >
           {selectedOptions.length > 0
             ? selectedOptions.map((o) => o.label).join(", ")
-            : "Select options..."}
+            : (node.placeholder ?? "Select options...")}
         </Text>
         <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
           {isOpen ? "▲" : "▼"}
@@ -243,12 +248,129 @@ function DropdownMultiSelect({
   );
 }
 
+function FilePickerField({
+  node,
+  value,
+  error,
+  disabled,
+  theme,
+  agentId,
+  onChange,
+}: {
+  node: FilePickerNode;
+  value: string;
+  error?: string;
+  disabled: boolean;
+  theme: PluginHostProps["theme"];
+  agentId?: string;
+  onChange: (val: string) => void;
+}) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const colors = theme.colors;
+  const cleanExts = normalizeExtensions(node.extensions, node.extension);
+
+  return (
+    <View style={styles.fieldContainer}>
+      <View style={styles.fieldLabelRow}>
+        <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
+          {node.label}
+          {node.required && <Text style={{ color: colors.statusDanger }}> *</Text>}
+        </Text>
+        {cleanExts && cleanExts.length > 0 && (
+          <View style={[styles.extBadge, { backgroundColor: colors.surface2, borderColor: colors.border }]}>
+            <Text style={[styles.extBadgeText, { color: colors.accent }]}>
+              {cleanExts.map((e) => `.${e}`).join(", ")}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      <View
+        style={[
+          styles.pickerRow,
+          {
+            backgroundColor: colors.surface2,
+            borderColor: error ? colors.statusDanger : colors.border,
+          },
+          disabled && { opacity: 0.6 },
+        ]}
+      >
+        <TextInput
+          value={value}
+          onChangeText={onChange}
+          placeholder={
+            node.placeholder ||
+            (node.pickerType === "folder"
+              ? "Enter or select folder..."
+              : "Enter or select file...")
+          }
+          placeholderTextColor={colors.foregroundMuted}
+          editable={!disabled}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[styles.pickerTextInput, { color: colors.foreground }]}
+        />
+
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          {value && !disabled ? (
+            <Pressable onPress={() => onChange("")} style={styles.pickerClearBtn}>
+              <Text style={{ color: colors.foregroundMuted, fontSize: 13 }}>✕</Text>
+            </Pressable>
+          ) : null}
+
+          <Pressable
+            disabled={disabled}
+            onPress={() => setModalVisible(true)}
+            style={[styles.pickerBrowseBtn, { backgroundColor: colors.surface1, borderColor: colors.border }]}
+          >
+            <Text style={{ color: colors.foreground, fontSize: 12, fontWeight: "500" }}>Browse...</Text>
+          </Pressable>
+        </View>
+      </View>
+
+      {value ? (
+        <View style={[styles.pathInspector, { backgroundColor: colors.surface1, borderColor: colors.border }]}>
+          <Text style={[styles.pathInspectorLabel, { color: colors.foregroundMuted }]}>Full path:</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            contentContainerStyle={styles.pathInspectorScrollContent}
+            style={styles.pathInspectorScroll}
+          >
+            <Text selectable style={[styles.pathInspectorText, { color: colors.foreground }]}>
+              {value}
+            </Text>
+          </ScrollView>
+        </View>
+      ) : null}
+
+      {error && <Text style={[styles.errorMessage, { color: colors.statusDanger }]}>{error}</Text>}
+
+      <ProjectFileModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(path) => {
+          onChange(path);
+          setModalVisible(false);
+        }}
+        initialPath={value}
+        agentId={agentId}
+        pickerType={node.pickerType}
+        extensions={node.extensions}
+        extension={node.extension}
+        theme={theme}
+      />
+    </View>
+  );
+}
+
 export const NodeRenderer: React.FC<NodeRendererProps> = ({
   node,
   values,
   errors,
   disabled,
   theme,
+  agentId,
   onValueChange,
   onSubmit,
   onReset,
@@ -268,6 +390,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
                 errors={errors}
                 disabled={disabled}
                 theme={theme}
+                agentId={agentId}
                 onValueChange={onValueChange}
                 onSubmit={onSubmit}
                 onReset={onReset}
@@ -288,6 +411,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
               errors={errors}
               disabled={disabled}
               theme={theme}
+              agentId={agentId}
               onValueChange={onValueChange}
               onSubmit={onSubmit}
               onReset={onReset}
@@ -378,6 +502,12 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
 
     case "Input": {
       const error = errors[node.id];
+      const inputType = node.inputType ?? "text";
+      const isNumeric = inputType === "number" || inputType === "integer";
+      const isEmail = inputType === "email";
+      const isPassword = inputType === "password";
+      const maxLen = node.maxLength ?? (!isNumeric ? node.max : undefined);
+
       return (
         <View style={styles.fieldContainer}>
           <Text style={[styles.fieldLabel, { color: theme.colors.foreground }]}>
@@ -397,10 +527,16 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
             ]}
             placeholder={node.placeholder}
             placeholderTextColor={theme.colors.foregroundMuted}
-            value={values[node.id] ?? ""}
+            value={values[node.id] !== undefined ? String(values[node.id]) : ""}
             onChangeText={(txt) => onValueChange(node.id, txt)}
             editable={!disabled}
             multiline={node.multiline}
+            numberOfLines={node.multiline ? 3 : 1}
+            keyboardType={isNumeric ? "numeric" : isEmail ? "email-address" : "default"}
+            autoCapitalize={isEmail || isPassword ? "none" : undefined}
+            autoCorrect={!isEmail && !isPassword}
+            secureTextEntry={isPassword}
+            maxLength={maxLen}
           />
           {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
         </View>
@@ -493,6 +629,20 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
       );
     }
 
+    case "FilePicker": {
+      return (
+        <FilePickerField
+          node={node}
+          value={values[node.id] ?? ""}
+          error={errors[node.id]}
+          disabled={disabled}
+          theme={theme}
+          agentId={agentId}
+          onChange={(val) => onValueChange(node.id, val)}
+        />
+      );
+    }
+
     default:
       return null;
   }
@@ -501,10 +651,11 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
 export interface WukongFormViewProps {
   form: WukongNode;
   theme: PluginHostProps["theme"];
+  agentId?: string;
   onSubmit: (submissionFormattedText: string) => Promise<void> | void;
 }
 
-export const WukongFormView: React.FC<WukongFormViewProps> = ({ form, theme, onSubmit }) => {
+export const WukongFormView: React.FC<WukongFormViewProps> = ({ form, theme, agentId, onSubmit }) => {
   const [values, setValues] = useState<Record<string, any>>(() => extractInitialValues(form));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
@@ -549,6 +700,7 @@ export const WukongFormView: React.FC<WukongFormViewProps> = ({ form, theme, onS
         errors={errors}
         disabled={status !== "idle"}
         theme={theme}
+        agentId={agentId}
         onValueChange={handleValueChange}
         onSubmit={handleSubmit}
         onReset={handleReset}
@@ -709,6 +861,12 @@ const styles = StyleSheet.create({
   inputMultiline: {
     minHeight: 64,
     textAlignVertical: "top",
+    ...Platform.select({
+      web: {
+        resize: "vertical",
+      } as any,
+      default: {},
+    }),
   },
   dropdownTrigger: {
     borderWidth: 1,
@@ -777,5 +935,70 @@ const styles = StyleSheet.create({
   submittedText: {
     fontSize: 13,
     fontWeight: "600",
+  },
+  fieldLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  extBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  extBadgeText: {
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  pickerRow: {
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingLeft: 10,
+    paddingRight: 6,
+    paddingVertical: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 38,
+  },
+  pickerTextInput: {
+    flex: 1,
+    fontSize: 13,
+    paddingVertical: 4,
+    paddingRight: 8,
+  },
+  pickerClearBtn: {
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
+  pickerBrowseBtn: {
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  pathInspector: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    marginTop: 3,
+  },
+  pathInspectorLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    marginRight: 6,
+  },
+  pathInspectorScroll: {
+    flex: 1,
+  },
+  pathInspectorScrollContent: {
+    alignItems: "center",
+  },
+  pathInspectorText: {
+    fontSize: 12,
   },
 });

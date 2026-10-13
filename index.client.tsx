@@ -23,7 +23,7 @@ function TimelineMessageView({
     await paseo.agents.ref(agentId).send(formattedMessage);
   };
 
-  return <MessageContainer text={item.data.text} theme={theme} onSubmit={handleSubmit} />;
+  return <MessageContainer text={item.data.text} theme={theme} agentId={agentId} onSubmit={handleSubmit} />;
 }
 
 export default function contribute(client: PluginClientContext) {
