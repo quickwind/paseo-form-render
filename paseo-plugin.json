@@ -1,0 +1,8 @@
+{
+  "id": "wukong-ui-render",
+  "name": "Wukong UI Render",
+  "description": "Render interactive forms, metrics, and dashboards in conversations using wukong-form code blocks",
+  "requirements": {
+    "paseo": ">=0.9.0"
+  }
+}
