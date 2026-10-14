@@ -6,7 +6,7 @@ Paseo plugin that renders interactive forms/dashboards in conversations from ```
 
 - `npm run typecheck` — `tsc --noEmit`
 - `npm test` — `vitest run` (tests: `client/parser.test.ts`, `server/file-picker.test.ts`)
-- `npm run pack:offline` — runs typecheck + tests, then builds zip/tgz + sha256 into `~/irix-dist`
+- `npm run pack:offline` — runs typecheck + tests, then builds zip/tgz + sha256 into `./dist` (or specify via `--out <dir>` / `DIST_DIR`)
 
 Run typecheck and tests before committing.
 

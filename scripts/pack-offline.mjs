@@ -5,7 +5,35 @@ import { execSync } from "node:child_process";
 import crypto from "node:crypto";
 
 const rootDir = path.resolve(import.meta.dirname, "..");
-const distDir = path.resolve(os.homedir(), "irix-dist");
+
+function resolveDistDir() {
+  const args = process.argv.slice(2);
+  let target = "";
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === "--out" || arg === "--dist" || arg === "-o") {
+      target = args[i + 1] || "";
+      i++;
+    } else if (arg.startsWith("--out=") || arg.startsWith("--dist=")) {
+      target = arg.split("=")[1];
+    } else if (!arg.startsWith("-") && !target) {
+      target = arg;
+    }
+  }
+
+  if (!target) {
+    target = process.env.DIST_DIR || process.env.IRIX_DIST_DIR || path.join(rootDir, "dist");
+  }
+
+  if (target === "~" || target.startsWith("~/") || target.startsWith("~\\")) {
+    target = path.join(os.homedir(), target.slice(1));
+  }
+
+  return path.resolve(process.cwd(), target);
+}
+
+const distDir = resolveDistDir();
 
 fs.mkdirSync(distDir, { recursive: true });
 
