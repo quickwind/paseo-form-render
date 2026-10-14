@@ -4,7 +4,7 @@ Interactive forms, dashboards, and metrics rendering plugin for Irix and Paseo c
 
 ## Features
 
-- **Interactive Forms in Chat**: Renders structured forms directly in the timeline from ````irix-form```` code fences (backward compatible with `wukong-form`).
+- **Interactive Forms in Chat**: Renders structured forms directly in the timeline from ````irix-form```` code fences.
 - **Rich Component Catalog**:
   - `Card`: Container with title, description, and child items
   - `Metric`: Key-value statistics display

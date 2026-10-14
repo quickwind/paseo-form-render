@@ -9,7 +9,7 @@ export default function contribute(server: PluginServerContext) {
   // Inject instructions when a new agent is created
   server.before("agent.create", async ({ request }) => {
     const previous = request.config.systemPrompt ?? "";
-    if (previous.includes("[irix-ui-render]") || previous.includes("[wukong-ui-render]")) {
+    if (previous.includes("[irix-ui-render]")) {
       return;
     }
     return {

@@ -1,5 +1,4 @@
 export const IRIX_FORM_TAG = "irix-form";
-export const WUKONG_FORM_TAG = IRIX_FORM_TAG; // Backward-compatibility alias
 
 export const IRIX_PROMPT_INSTRUCTION = `
 [irix-ui-render]
@@ -78,5 +77,3 @@ Available component types:
 \`\`\`
 [/irix-ui-render]
 `.trim();
-
-export const WUKONG_PROMPT_INSTRUCTION = IRIX_PROMPT_INSTRUCTION;

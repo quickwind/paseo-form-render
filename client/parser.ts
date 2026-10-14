@@ -31,13 +31,7 @@ function findBlocks(text: string): FenceBlock[] {
     closing.lastIndex = contentStart;
     const end = closing.exec(text);
 
-    if (
-      label === "irix-form" ||
-      label === "irix-ui" ||
-      label === "wukong-form" ||
-      label === "wukong-ui" ||
-      label === "paseo-ui"
-    ) {
+    if (label === "irix-form" || label === "irix-ui") {
       blocks.push({
         start: opening.index,
         contentStart,

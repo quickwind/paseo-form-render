@@ -714,10 +714,6 @@ export const IrixFormView: React.FC<IrixFormViewProps> = ({ form, theme, agentId
   );
 };
 
-// Backward-compatibility alias
-export const WukongFormView = IrixFormView;
-export type WukongFormViewProps = IrixFormViewProps;
-
 const styles = StyleSheet.create({
   formContainer: {
     marginVertical: 8,

@@ -302,9 +302,3 @@ export const IrixNodeSchema: z.ZodType<IrixNode> = z.lazy(() =>
 
 export const IrixFormSchema = IrixNodeSchema;
 export type IrixForm = IrixNode;
-
-// Backward-compatibility aliases
-export const WukongNodeSchema = IrixNodeSchema;
-export const WukongFormSchema = IrixFormSchema;
-export type WukongNode = IrixNode;
-export type WukongForm = IrixForm;

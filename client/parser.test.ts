@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { parseMessageContent, hasFormBlock } from "./parser";
-import { IrixFormSchema, WukongFormSchema } from "../shared/schema";
+import { IrixFormSchema } from "../shared/schema";
 import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
 
 describe("irix-form Parser & Validation", () => {
-  it("detects irix-form fence block and preserves wukong-form compatibility", () => {
+  it("detects irix-form and irix-ui fence blocks", () => {
     expect(hasFormBlock("Hello\n```irix-form\n{}\n```\nWorld")).toBe(true);
-    expect(hasFormBlock("Hello\n```wukong-form\n{}\n```\nWorld")).toBe(true);
     expect(hasFormBlock("Hello\n```irix-ui\n{}\n```\nWorld")).toBe(true);
+    expect(hasFormBlock("Hello\n```unknown-form\n{}\n```\nWorld")).toBe(false);
     expect(hasFormBlock("Just regular text")).toBe(false);
   });
 
@@ -316,10 +316,6 @@ describe("irix-form Parser & Validation", () => {
     // Submission format
     const submission = formatSubmissionMessage("Grant roles", form, { roles: ["admin", "dev"] });
     expect(submission).toContain("- User Roles: admin, dev");
-  });
-
-  it("maintains WukongFormSchema compatibility alias", () => {
-    expect(WukongFormSchema).toBe(IrixFormSchema);
   });
 });
 
