@@ -52,6 +52,21 @@ Or register in `~/.paseo/config.json`:
 }
 ```
 
+## Development & Offline Packaging
+
+```bash
+# Typecheck and run test suites
+npm run typecheck
+npm test
+
+# Build offline archive (outputs to ./dist by default)
+npm run pack:offline
+
+# Or specify a custom output directory
+npm run pack:offline -- /path/to/dist
+# or: DIST_DIR=/path/to/dist npm run pack:offline
+```
+
 ## License
 
 MIT
