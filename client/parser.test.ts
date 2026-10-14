@@ -1,19 +1,20 @@
 import { describe, it, expect } from "vitest";
 import { parseMessageContent, hasFormBlock } from "./parser";
-import { WukongFormSchema } from "../shared/schema";
+import { IrixFormSchema, WukongFormSchema } from "../shared/schema";
 import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
 
-describe("wukong-form Parser & Validation", () => {
-  it("detects wukong-form fence block", () => {
-    const text = "Hello\n```wukong-form\n{}\n```\nWorld";
-    expect(hasFormBlock(text)).toBe(true);
+describe("irix-form Parser & Validation", () => {
+  it("detects irix-form fence block and preserves wukong-form compatibility", () => {
+    expect(hasFormBlock("Hello\n```irix-form\n{}\n```\nWorld")).toBe(true);
+    expect(hasFormBlock("Hello\n```wukong-form\n{}\n```\nWorld")).toBe(true);
+    expect(hasFormBlock("Hello\n```irix-ui\n{}\n```\nWorld")).toBe(true);
     expect(hasFormBlock("Just regular text")).toBe(false);
   });
 
   it("parses valid form JSON and splits surrounding text", () => {
     const text = [
       "Here is the plan:",
-      "```wukong-form",
+      "```irix-form",
       JSON.stringify({
         type: "Card",
         title: "Test Form",
@@ -48,7 +49,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("extracts initial values correctly", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         { type: "Input", id: "name", label: "Name", defaultValue: "Alice" },
@@ -66,7 +67,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("validates required fields", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         { type: "Input", id: "name", label: "Name", required: true },
@@ -83,7 +84,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("formats submission message properly", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         { type: "Input", id: "cluster", label: "Cluster Name" },
@@ -103,7 +104,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("handles unified FilePicker in schema, validation, extension filtering and submission", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -153,7 +154,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("supports multiline Input configuration and initial values", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -174,7 +175,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("validates string length constraints (minLength, maxLength, and aliases)", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -199,7 +200,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("validates email format", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -220,7 +221,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("validates integer constraints with min and max", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -249,7 +250,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("validates float / numeric constraints with min and max", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -277,7 +278,7 @@ describe("wukong-form Parser & Validation", () => {
   });
 
   it("handles MultiSelect schema, defaults, min/max selection validation and formatting", () => {
-    const form = WukongFormSchema.parse({
+    const form = IrixFormSchema.parse({
       type: "Card",
       children: [
         {
@@ -315,6 +316,10 @@ describe("wukong-form Parser & Validation", () => {
     // Submission format
     const submission = formatSubmissionMessage("Grant roles", form, { roles: ["admin", "dev"] });
     expect(submission).toContain("- User Roles: admin, dev");
+  });
+
+  it("maintains WukongFormSchema compatibility alias", () => {
+    expect(WukongFormSchema).toBe(IrixFormSchema);
   });
 });
 

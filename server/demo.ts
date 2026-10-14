@@ -11,7 +11,7 @@ export async function appendDemoForm(
 ) {
   await paseo.agents.ref(agentId).timeline.append({
     type: "plugin",
-    id: `wukong-form-demo-${Date.now()}`,
+    id: `irix-form-demo-${Date.now()}`,
     kind: TIMELINE_KIND,
     version: 1,
     data: { text: DEMO_FORM_TEXT },

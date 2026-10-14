@@ -2,7 +2,7 @@ import type { PluginHostProps } from "@getpaseo/plugin/client";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { parseMessageContent } from "./parser";
-import { WukongFormView } from "./renderer";
+import { IrixFormView } from "./renderer";
 import { MarkdownText } from "./markdown";
 
 export interface MessageContainerProps {
@@ -42,7 +42,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
                 ]}
               >
                 <Text style={[styles.errorTitle, { color: theme.colors.statusDanger }]}>
-                  [wukong-form Syntax Error]
+                  [irix-form Syntax Error]
                 </Text>
                 <Text style={[styles.errorDetail, { color: theme.colors.statusDanger }]}>
                   {block.error}
@@ -65,7 +65,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
 
           if (block.form) {
             return (
-              <WukongFormView
+              <IrixFormView
                 key={idx}
                 form={block.form}
                 theme={theme}

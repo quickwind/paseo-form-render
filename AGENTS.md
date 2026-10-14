@@ -1,19 +1,19 @@
 # AGENTS.md
 
-Paseo plugin that renders interactive forms/dashboards in conversations from ```` ```wukong-form ```` JSON code fences. See `README.md` for user-facing features and installation.
+Paseo plugin that renders interactive forms/dashboards in conversations from ```` ```irix-form ```` JSON code fences. See `README.md` for user-facing features and installation.
 
 ## Commands
 
 - `npm run typecheck` — `tsc --noEmit`
 - `npm test` — `vitest run` (tests: `client/parser.test.ts`, `server/file-picker.test.ts`)
-- `npm run pack:offline` — runs typecheck + tests, then builds zip/tgz + sha256 into `~/wukong-dist`
+- `npm run pack:offline` — runs typecheck + tests, then builds zip/tgz + sha256 into `~/irix-dist`
 
 Run typecheck and tests before committing.
 
 ## Layout
 
 - `paseo-plugin.json` — plugin manifest
-- `index.server.ts` — server entry: injects `WUKONG_PROMPT_INSTRUCTION` into the system prompt on `agent.create` (idempotent via the `[wukong-ui-render]` marker) and registers RPC handlers
+- `index.server.ts` — server entry: injects `IRIX_PROMPT_INSTRUCTION` into the system prompt on `agent.create` (idempotent via the `[irix-ui-render]` marker) and registers RPC handlers
 - `index.client.tsx` — client entry (registers the renderer and the `/form` and `/form-demo` slash commands)
 - `client/` — React Native UI: `parser.ts` (extract/validate fences), `renderer.tsx` (component tree), `container.tsx`, `markdown.tsx`, `project-file-modal.tsx` (in-app file/folder picker)
 - `server/` — daemon-side handlers: `file-picker.ts` (list files, create directory), `demo.ts` (`/form-demo`)

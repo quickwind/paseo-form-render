@@ -3,7 +3,7 @@ import { useRpc } from "@getpaseo/plugin/client";
 import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform } from "react-native";
 import {
-  WukongNode,
+  IrixNode,
   SelectNode,
   MultiSelectNode,
   FilePickerNode,
@@ -14,7 +14,7 @@ import { extractInitialValues, validateForm, formatSubmissionMessage } from "../
 import { ProjectFileModal } from "./project-file-modal";
 
 interface NodeRendererProps {
-  node: WukongNode;
+  node: IrixNode;
   values: Record<string, any>;
   errors: Record<string, string>;
   disabled: boolean;
@@ -648,14 +648,14 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
   }
 };
 
-export interface WukongFormViewProps {
-  form: WukongNode;
+export interface IrixFormViewProps {
+  form: IrixNode;
   theme: PluginHostProps["theme"];
   agentId?: string;
   onSubmit: (submissionFormattedText: string) => Promise<void> | void;
 }
 
-export const WukongFormView: React.FC<WukongFormViewProps> = ({ form, theme, agentId, onSubmit }) => {
+export const IrixFormView: React.FC<IrixFormViewProps> = ({ form, theme, agentId, onSubmit }) => {
   const [values, setValues] = useState<Record<string, any>>(() => extractInitialValues(form));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
@@ -713,6 +713,10 @@ export const WukongFormView: React.FC<WukongFormViewProps> = ({ form, theme, age
     </View>
   );
 };
+
+// Backward-compatibility alias
+export const WukongFormView = IrixFormView;
+export type WukongFormViewProps = IrixFormViewProps;
 
 const styles = StyleSheet.create({
   formContainer: {

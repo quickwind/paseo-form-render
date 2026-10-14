@@ -19,7 +19,7 @@ export const ToneSchema = z.enum(["neutral", "info", "success", "warning", "dang
 export type Tone = z.infer<typeof ToneSchema>;
 
 // Node base definition
-export type WukongNode =
+export type IrixNode =
   | CardNode
   | StackNode
   | HeadingNode
@@ -41,13 +41,13 @@ export interface CardNode {
   type: "Card";
   title?: string;
   description?: string;
-  children: WukongNode[];
+  children: IrixNode[];
 }
 
 export interface StackNode {
   type: "Stack";
   direction?: "vertical" | "horizontal";
-  children: WukongNode[];
+  children: IrixNode[];
 }
 
 export interface HeadingNode {
@@ -186,18 +186,18 @@ export interface ButtonNode {
 }
 
 // Recursive Zod Schema for validation
-export const WukongNodeSchema: z.ZodType<WukongNode> = z.lazy(() =>
+export const IrixNodeSchema: z.ZodType<IrixNode> = z.lazy(() =>
   z.discriminatedUnion("type", [
     z.object({
       type: z.literal("Card"),
       title: z.string().optional(),
       description: z.string().optional(),
-      children: z.array(WukongNodeSchema),
+      children: z.array(IrixNodeSchema),
     }),
     z.object({
       type: z.literal("Stack"),
       direction: z.enum(["vertical", "horizontal"]).optional(),
-      children: z.array(WukongNodeSchema),
+      children: z.array(IrixNodeSchema),
     }),
     z.object({
       type: z.literal("Heading"),
@@ -300,5 +300,11 @@ export const WukongNodeSchema: z.ZodType<WukongNode> = z.lazy(() =>
   ]),
 );
 
-export const WukongFormSchema = WukongNodeSchema;
-export type WukongForm = WukongNode;
+export const IrixFormSchema = IrixNodeSchema;
+export type IrixForm = IrixNode;
+
+// Backward-compatibility aliases
+export const WukongNodeSchema = IrixNodeSchema;
+export const WukongFormSchema = IrixFormSchema;
+export type WukongNode = IrixNode;
+export type WukongForm = IrixForm;

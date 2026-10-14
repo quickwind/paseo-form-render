@@ -8,7 +8,7 @@ describe("handleListProjectFiles", () => {
   let tmpDir: string;
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "wukong-picker-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "irix-picker-test-"));
     fs.mkdirSync(path.join(tmpDir, "src", "nested"), { recursive: true });
     fs.writeFileSync(path.join(tmpDir, "package.json"), "{}");
     fs.writeFileSync(path.join(tmpDir, "src", "index.ts"), "console.log('hi');");
@@ -70,7 +70,7 @@ describe("handleListProjectFiles", () => {
   });
 
   it("supports targetPath outside workspace with full absolute paths and isWorkspaceRelative=false", async () => {
-    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), "wukong-outside-test-"));
+    const outsideDir = fs.mkdtempSync(path.join(os.tmpdir(), "irix-outside-test-"));
     fs.writeFileSync(path.join(outsideDir, "test.mp4"), "content");
     try {
       const res = await handleListProjectFiles(

@@ -1,10 +1,10 @@
-# Wukong UI Render
+# Irix UI Render
 
-Interactive forms, dashboards, and metrics rendering plugin for Wukong and Paseo conversations.
+Interactive forms, dashboards, and metrics rendering plugin for Irix and Paseo conversations.
 
 ## Features
 
-- **Interactive Forms in Chat**: Renders structured forms directly in the timeline from ````wukong-form```` code fences.
+- **Interactive Forms in Chat**: Renders structured forms directly in the timeline from ````irix-form```` code fences (backward compatible with `wukong-form`).
 - **Rich Component Catalog**:
   - `Card`: Container with title, description, and child items
   - `Metric`: Key-value statistics display
@@ -24,18 +24,18 @@ Interactive forms, dashboards, and metrics rendering plugin for Wukong and Paseo
 
 ## Slash Commands
 
-- `/form [task]`: Instruct the active agent to adopt the `wukong-form` protocol for interactive questionnaires or parameter collection.
+- `/form [task]`: Instruct the active agent to adopt the `irix-form` protocol for interactive questionnaires or parameter collection.
 - `/form-demo`: Display a demonstration interactive configuration form in the conversation timeline without calling the model.
 
 ## Installation
 
 ### From Local Directory
 ```bash
-paseo plugin add /path/to/wukong-ui-render
+paseo plugin add /path/to/irix-ui-render
 ```
 
 ### From Offline Package
-Unpack `wukong-ui-render-<version>-offline.zip` and run:
+Unpack `irix-ui-render-<version>-offline.zip` and run:
 ```bash
 paseo plugin add /path/to/extracted-folder
 ```
@@ -43,9 +43,9 @@ Or register in `~/.paseo/config.json`:
 ```json
 {
   "plugins": {
-    "wukong-ui-render": {
+    "irix-ui-render": {
       "source": "directory",
-      "path": "/path/to/wukong-ui-render",
+      "path": "/path/to/irix-ui-render",
       "enabled": true
     }
   }

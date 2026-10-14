@@ -5,7 +5,7 @@ import { execSync } from "node:child_process";
 import crypto from "node:crypto";
 
 const rootDir = path.resolve(import.meta.dirname, "..");
-const distDir = path.resolve(os.homedir(), "wukong-dist");
+const distDir = path.resolve(os.homedir(), "irix-dist");
 
 fs.mkdirSync(distDir, { recursive: true });
 
@@ -24,7 +24,7 @@ console.log("Running tests...");
 execSync("npm test", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Prepare staging directory
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pack-wukong-ui-"));
+const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pack-irix-ui-"));
 const stageDir = path.join(tempDir, baseName);
 fs.mkdirSync(stageDir, { recursive: true });
 

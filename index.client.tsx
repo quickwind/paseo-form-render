@@ -5,9 +5,9 @@ import { z } from "zod";
 import { hasFormBlock } from "./client/parser";
 import { MessageContainer } from "./client/container";
 import { showDemoForm } from "./shared/demo";
-import { WUKONG_PROMPT_INSTRUCTION } from "./shared/prompt";
+import { IRIX_PROMPT_INSTRUCTION } from "./shared/prompt";
 
-const timelineKind = "wukong-ui-render";
+const timelineKind = "irix-ui-render";
 const timelineDataSchema = z.object({
   text: z.string(),
 });
@@ -27,9 +27,9 @@ function TimelineMessageView({
 }
 
 export default function contribute(client: PluginClientContext) {
-  // Transform assistant messages that include wukong-form fences
+  // Transform assistant messages that include irix-form fences
   client.addTimelineTransformer({
-    id: "wukong-ui-transformer",
+    id: "irix-ui-transformer",
     query: { itemType: "assistant_message" },
     transform({ item }) {
       if (!hasFormBlock(item.text)) {
@@ -58,15 +58,15 @@ export default function contribute(client: PluginClientContext) {
     Component: TimelineMessageView,
   });
 
-  // Slash command to enable wukong-form in an existing agent session
+  // Slash command to enable irix-form in an existing agent session
   client.addSlashCommand({
     name: "form",
-    description: "Instruct the agent to use wukong-form protocol",
+    description: "Instruct the agent to use irix-form protocol",
     argumentHint: "[task]",
     context: "agent",
     async onSubmit({ args, paseo, agent }) {
-      const task = args || "Please enable the wukong-form protocol and present interactive forms when applicable.";
-      await paseo.agents.ref(agent.id).send(`${WUKONG_PROMPT_INSTRUCTION}\n\n${task}`);
+      const task = args || "Please enable the irix-form protocol and present interactive forms when applicable.";
+      await paseo.agents.ref(agent.id).send(`${IRIX_PROMPT_INSTRUCTION}\n\n${task}`);
     },
   });
 

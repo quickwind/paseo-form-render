@@ -1,6 +1,6 @@
-import { WukongForm, WukongNode, normalizeExtensions } from "./schema";
+import { IrixForm, IrixNode, normalizeExtensions } from "./schema";
 
-export function extractInitialValues(node: WukongNode, result: Record<string, any> = {}): Record<string, any> {
+export function extractInitialValues(node: IrixNode, result: Record<string, any> = {}): Record<string, any> {
   switch (node.type) {
     case "Input":
       result[node.id] = node.defaultValue !== undefined ? String(node.defaultValue) : "";
@@ -28,7 +28,7 @@ export function extractInitialValues(node: WukongNode, result: Record<string, an
 }
 
 export function validateForm(
-  node: WukongNode,
+  node: IrixNode,
   values: Record<string, any>,
   errors: Record<string, string> = {}
 ): Record<string, string> {
@@ -177,7 +177,7 @@ export function validateForm(
 
 export function formatSubmissionMessage(
   actionMessage: string | undefined,
-  node: WukongNode,
+  node: IrixNode,
   values: Record<string, any>
 ): string {
   const lines: string[] = ["[User Form Submission]"];
@@ -187,7 +187,7 @@ export function formatSubmissionMessage(
   lines.push("Values:");
 
   const fieldLabels: Record<string, string> = {};
-  function collectLabels(n: WukongNode) {
+  function collectLabels(n: IrixNode) {
     if ("id" in n && "label" in n) {
       fieldLabels[n.id] = n.label;
     }

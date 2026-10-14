@@ -1,7 +1,7 @@
 {
-  "name": "wukong-ui-render",
+  "name": "irix-ui-render",
   "version": "0.1.0",
-  "description": "Interactive forms, dashboards, and metric displays in Wukong/Paseo conversations using wukong-form code fences.",
+  "description": "Interactive forms, dashboards, and metric displays in Irix/Paseo conversations using irix-form code fences.",
   "license": "MIT",
   "files": [
     "README.md",
@@ -31,7 +31,7 @@
     "zod": "^4.4.3"
   },
   "keywords": [
-    "wukong",
+    "irix",
     "paseo",
     "paseo-plugin",
     "ui-render",

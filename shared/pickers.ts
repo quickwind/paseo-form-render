@@ -18,7 +18,7 @@ export const FilePickerShortcutSchema = z.object({
 export type FilePickerShortcut = z.infer<typeof FilePickerShortcutSchema>;
 
 export const listProjectFilesRpc = defineRpc({
-  name: "wukong-ui.list-project-files",
+  name: "irix-ui.list-project-files",
   input: z.object({
     agentId: z.string(),
     subPath: z.string().optional(),
@@ -35,7 +35,7 @@ export const listProjectFilesRpc = defineRpc({
 });
 
 export const createDirectoryRpc = defineRpc({
-  name: "wukong-ui.create-directory",
+  name: "irix-ui.create-directory",
   input: z.object({
     agentId: z.string(),
     parentPath: z.string().min(1),

@@ -1,9 +1,9 @@
-import { WukongForm, WukongFormSchema } from "../shared/schema";
+import { IrixForm, IrixFormSchema } from "../shared/schema";
 
 export interface ParsedBlock {
   type: "text" | "form";
   content?: string;
-  form?: WukongForm;
+  form?: IrixForm;
   rawJson?: string;
   error?: string;
 }
@@ -31,7 +31,13 @@ function findBlocks(text: string): FenceBlock[] {
     closing.lastIndex = contentStart;
     const end = closing.exec(text);
 
-    if (label === "wukong-form" || label === "wukong-ui" || label === "paseo-ui") {
+    if (
+      label === "irix-form" ||
+      label === "irix-ui" ||
+      label === "wukong-form" ||
+      label === "wukong-ui" ||
+      label === "paseo-ui"
+    ) {
       blocks.push({
         start: opening.index,
         contentStart,
@@ -68,7 +74,7 @@ export function parseMessageContent(text: string): ParsedBlock[] {
     const jsonStr = text.slice(block.contentStart, block.contentEnd).trim();
     try {
       const parsedJson = JSON.parse(jsonStr);
-      const validation = WukongFormSchema.safeParse(parsedJson);
+      const validation = IrixFormSchema.safeParse(parsedJson);
       if (validation.success) {
         blocks.push({
           type: "form",

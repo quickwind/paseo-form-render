@@ -1,8 +1,9 @@
-export const WUKONG_FORM_TAG = "wukong-form";
+export const IRIX_FORM_TAG = "irix-form";
+export const WUKONG_FORM_TAG = IRIX_FORM_TAG; // Backward-compatibility alias
 
-export const WUKONG_PROMPT_INSTRUCTION = `
-[wukong-ui-render]
-You can render interactive forms, dashboards, parameter inputs, and approval cards by outputting a JSON specification inside a fenced code block with the tag \`\`\`wukong-form.
+export const IRIX_PROMPT_INSTRUCTION = `
+[irix-ui-render]
+You can render interactive forms, dashboards, parameter inputs, and approval cards by outputting a JSON specification inside a fenced code block with the tag \`\`\`irix-form.
 
 Use this format whenever you need to:
 1. Collect input or configuration from the user (text, choices, toggles).
@@ -37,7 +38,7 @@ Available component types:
 4. Keep conversational text outside the code fence. The code block should only contain valid JSON.
 
 ### Example:
-\`\`\`wukong-form
+\`\`\`irix-form
 {
   "type": "Card",
   "title": "Deployment Confirmation",
@@ -75,5 +76,7 @@ Available component types:
   ]
 }
 \`\`\`
-[/wukong-ui-render]
+[/irix-ui-render]
 `.trim();
+
+export const WUKONG_PROMPT_INSTRUCTION = IRIX_PROMPT_INSTRUCTION;

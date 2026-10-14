@@ -1,18 +1,18 @@
 import { defineRpc } from "@getpaseo/plugin";
 import { z } from "zod";
 
-export const TIMELINE_KIND = "wukong-ui-render";
+export const TIMELINE_KIND = "irix-ui-render";
 
 /** Asks the daemon to put the demo form into an agent's timeline; nothing is sent to the agent. */
 export const showDemoForm = defineRpc({
-  name: "wukong-form.demo",
+  name: "irix-form.demo",
   input: z.object({ agentId: z.string() }),
   output: z.object({}),
 });
 
 export const DEMO_FORM_TEXT = [
   "Here is a demonstration of the interactive form:",
-  "```wukong-form",
+  "```irix-form",
   JSON.stringify(
     {
       type: "Card",

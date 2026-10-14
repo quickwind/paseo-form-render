@@ -3,20 +3,20 @@ import { appendDemoForm } from "./server/demo";
 import { handleListProjectFiles, handleCreateDirectory } from "./server/file-picker";
 import { showDemoForm } from "./shared/demo";
 import { listProjectFilesRpc, createDirectoryRpc } from "./shared/pickers";
-import { WUKONG_PROMPT_INSTRUCTION } from "./shared/prompt";
+import { IRIX_PROMPT_INSTRUCTION } from "./shared/prompt";
 
 export default function contribute(server: PluginServerContext) {
   // Inject instructions when a new agent is created
   server.before("agent.create", async ({ request }) => {
     const previous = request.config.systemPrompt ?? "";
-    if (previous.includes("[wukong-ui-render]")) {
+    if (previous.includes("[irix-ui-render]") || previous.includes("[wukong-ui-render]")) {
       return;
     }
     return {
       ...request,
       config: {
         ...request.config,
-        systemPrompt: [previous, WUKONG_PROMPT_INSTRUCTION].filter(Boolean).join("\n\n"),
+        systemPrompt: [previous, IRIX_PROMPT_INSTRUCTION].filter(Boolean).join("\n\n"),
       },
     };
   });
