@@ -55,10 +55,26 @@ jobs:
       - name: Install e2e dependencies
         run: npm ci --prefix e2e
 
-      - name: Run e2e scenarios
+      # Browser UI checks: headless Chromium for the pinned Playwright (e2e/package.json), kept
+      # outside the checkout (the harness copies the repo as the plugin under test).
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw-browsers
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('e2e/package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
+        run: npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
+
+      - name: Run e2e scenarios (with browser UI checks)
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
         run: node e2e/run.mjs --all --time-scale 1.5 --out e2e/results
 
-      - name: Upload e2e results and daemon logs
+      - name: Upload e2e results, screenshots and daemon logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
