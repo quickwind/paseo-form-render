@@ -63,7 +63,9 @@ export default function contribute(client: PluginClientContext) {
   client.addSettingsScreen({
     id: "irix-ui-render-settings",
     title: "Irix UI Render",
-    icon: "settings",
+    // A Lucide export name (PascalCase): the host throws on unknown names such as "settings", and
+    // a throwing contribute() unloads the whole client plugin (no form rendering at all).
+    icon: "Settings",
     Component: IrixSettingsScreen,
   });
 
