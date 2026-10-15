@@ -72,12 +72,13 @@ export function decideAutoFix(input: AutoFixInput): AutoFixDecision {
   const lastUser = lastIndexOf(latest, (e) => e.type === "user_message");
   if (lastAssistant < 0 || lastUser > lastAssistant) return { send: false, reason: "superseded" };
 
-  // A real user message the finished turn did not see also means a newer request exists.
-  const turnUserTexts = new Set(input.turnTimeline.filter((e) => e.type === "user_message").map((e) => e.text));
-  const lastRealUser = lastIndexOf(latest, isRealUserMessage);
-  if (turnUserTexts.size > 0 && lastRealUser >= 0 && !turnUserTexts.has(latest[lastRealUser].text)) {
+  // If the finished turn shows the message that started it, the newest user message in the history
+  // must be that same message; anything else is a newer request that has already been answered.
+  const turnLastUser = lastIndexOf(input.turnTimeline, (e) => e.type === "user_message");
+  if (turnLastUser >= 0 && latest[lastUser]?.text !== input.turnTimeline[turnLastUser].text) {
     return { send: false, reason: "superseded" };
   }
+  const lastRealUser = lastIndexOf(latest, isRealUserMessage);
 
   // Without any real user message in view we cannot tell where the chain of fix requests began.
   if (input.latestTruncated && lastRealUser < 0) return { send: false, reason: "history-truncated" };

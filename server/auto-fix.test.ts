@@ -82,6 +82,15 @@ describe("decideAutoFix", () => {
     expect(decide({ turnTimeline, latestTimeline: latest })).toEqual({ send: false, reason: "superseded" });
   });
 
+  it("sends the second retry when the per-turn event timeline starts with a fix request", () => {
+    const turnTimeline = [fix, assistant(bad)];
+    const latest = [user("go"), assistant(bad), fix, assistant(bad)];
+    const decision = decide({ turnTimeline, latestTimeline: latest });
+    expect(decision.send && decision.attempt).toBe(2);
+    expect(decide({ turnTimeline, latestTimeline: [...latest.slice(0, 2), fix, assistant(bad), fix, assistant(bad)] }))
+      .toEqual({ send: false, reason: "limit-reached" });
+  });
+
   it("works when the event timeline includes the triggering user message", () => {
     const turnTimeline = [user("go"), assistant(bad)];
     expect(decide({ turnTimeline, latestTimeline: turnTimeline }).send).toBe(true);
