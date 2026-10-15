@@ -18,7 +18,9 @@ export type AutoFixSkipReason =
   | "history-unavailable"
   | "history-truncated"
   | "superseded"
-  | "limit-reached";
+  | "limit-reached"
+  | "busy"
+  | "status-unavailable";
 
 export type AutoFixPlan = { ok: false; reason: AutoFixSkipReason } | { ok: true; failures: FormFailure[] };
 
@@ -120,6 +122,25 @@ export function timelineFromPayload(payload: unknown): { items: TimelineEntry[];
   return { items, truncated: hasOlder === true };
 }
 
+/** Skip reason when the agent is already busy, or its status cannot be read; null when it is idle. */
+export function idleGate(status: string | null | undefined): "busy" | "status-unavailable" | null {
+  if (!status) return "status-unavailable";
+  return status === "idle" ? null : "busy";
+}
+
+async function checkAgentIdle(agent: {
+  refresh(): Promise<unknown>;
+  readonly status: string | null;
+}): Promise<"busy" | "status-unavailable" | null> {
+  try {
+    await agent.refresh();
+  } catch (error) {
+    console.warn("[irix-ui-render] could not refresh agent status", error);
+    return "status-unavailable";
+  }
+  return idleGate(agent.status);
+}
+
 /** Registers the settings and the turn-end hook that sends automatic fix requests. */
 export function registerAutoFix(server: PluginServerContext) {
   const settings = server.registerSettings(irixSettings);
@@ -168,6 +189,14 @@ export function registerAutoFix(server: PluginServerContext) {
         if (decision.reason === "history-unavailable" || decision.reason === "history-truncated") {
           console.warn(`[irix-ui-render] skipping auto-fix: ${decision.reason}`);
         }
+        return;
+      }
+      // `send` interrupts a running turn, so a message that arrived after the history fetch would be
+      // cancelled. Re-read the status right before sending and leave a running agent alone. A small
+      // window remains: Paseo has no "send only if idle" option (see README).
+      const gate = await checkAgentIdle(agent);
+      if (gate) {
+        if (gate === "status-unavailable") console.warn("[irix-ui-render] skipping auto-fix: status-unavailable");
         return;
       }
       await agent.send(decision.message);

@@ -24,6 +24,10 @@ Interactive forms, dashboards, and metrics rendering plugin for Irix and Paseo c
   - The agent is automatically asked to re-send a corrected block, up to a configurable number of times in a row.
   - An **Ask agent to fix** button on the error box requests a fix manually (ignores the retry limit).
   - Setting: **Irix UI Render > Maximum retries** in the plugin settings (0-5, default 2; 0 turns automatic fixes off).
+  - Known limitations:
+    - A message sent within a few milliseconds of the agent finishing (by a script, another plugin, or an orchestrating agent) can race the automatic fix request. Paseo's `send` interrupts a running turn and has no "send only if idle" option, so in that race the fix may cancel the other message's turn. The plugin re-checks that the agent is idle right before sending, which narrows the window; messages typed by a person are not affected in practice.
+    - Not used yet: sending the fix with `activeTurnBehavior: "steer"` would add it to a running turn instead of cancelling that turn, but the agent then handles an unrelated fix request in the middle of another reply, and providers without steering support (ACP-based ones such as Copilot, Cursor, Kimi) fall back to interrupting anyway.
+    - Each assistant message is checked on its own, as the client renders it. A provider that splits one `irix-form` fence across several messages gets a (misleading) JSON error and a fix request.
 - **Non-blocking `/form-demo`**:
   - Pushes sample forms directly via daemon RPC without triggering model thinking turns or consuming API quota.
 

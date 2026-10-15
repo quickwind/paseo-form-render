@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { IRIX_FIX_MARKER, type TimelineEntry } from "../shared/form-fix";
-import { decideAutoFix, planAutoFix, timelineFromPayload } from "./auto-fix";
+import { decideAutoFix, idleGate, planAutoFix, timelineFromPayload } from "./auto-fix";
 
 const user = (text: string): TimelineEntry => ({ type: "user_message", text });
 const assistant = (text: string): TimelineEntry => ({ type: "assistant_message", text });
@@ -162,5 +162,15 @@ describe("timelineFromPayload", () => {
     expect(timelineFromPayload({ entries: [{ nope: 1 }] })).toBeNull();
     expect(timelineFromPayload(null)).toBeNull();
     expect(timelineFromPayload(undefined)).toBeNull();
+  });
+});
+
+describe("idleGate", () => {
+  it("only lets an idle agent through", () => {
+    expect(idleGate("idle")).toBeNull();
+    expect(idleGate("running")).toBe("busy");
+    expect(idleGate("initializing")).toBe("busy");
+    expect(idleGate("error")).toBe("busy");
+    expect(idleGate(null)).toBe("status-unavailable");
   });
 });
