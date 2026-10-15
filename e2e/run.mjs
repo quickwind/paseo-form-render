@@ -2,12 +2,13 @@
 // irix-ui-render auto-fix end-to-end tests against a real Paseo daemon with a scripted fake provider.
 //
 // usage: node e2e/run.mjs [options] [scenario ...]
-//   scenarios        s1 s2 s3 s4 s5 s6 s7 s8 (default: all of them); optional: restart nocmid
+//   scenarios        s1 ... s8 uisettings uimanual (default: all of them); optional: restart nocmid
 //   --all            default scenarios plus the optional ones
 //   --repeat N       run each scenario N times (default 1)
 //   --time-scale X   multiply quiet periods and timeouts by X (default 1, env E2E_TIME_SCALE)
 //   --out DIR        results directory (default e2e/results; replaced on every run)
 //   --keep           keep the temp workspace (Paseo home, logs, plugin state) for debugging
+//   --no-ui          skip the browser UI checks (web UI + headless Chromium) and uisettings/uimanual
 //
 // Exit code: 0 when every non-informational check passed. S5 (a documented Paseo limitation) is
 // reported as "known limitation" and never fails the run.
@@ -15,7 +16,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { Daemon, E2E_DIR, Workspace, freePort } from "./lib/daemon.mjs";
 import { Harness, Results } from "./lib/client.mjs";
-import { DEFAULT_SCENARIOS, INFORMATIONAL_SCENARIOS, OPTIONAL_SCENARIOS, SCENARIOS } from "./scenarios/checks.mjs";
+import { Browser } from "./lib/browser.mjs";
+import { DEFAULT_SCENARIOS, INFORMATIONAL_SCENARIOS, OPTIONAL_SCENARIOS, SCENARIOS, UI_SCENARIOS } from "./scenarios/checks.mjs";
 import { SCRIPTS } from "./scenarios/scripts.mjs";
 
 function parseArgs(argv) {
@@ -24,6 +26,7 @@ function parseArgs(argv) {
     timeScale: Number(process.env.E2E_TIME_SCALE ?? 1),
     out: path.join(E2E_DIR, "results"),
     keep: false,
+    ui: true,
     scenarios: [],
   };
   for (let i = 0; i < argv.length; i++) {
@@ -37,14 +40,16 @@ function parseArgs(argv) {
     else if (arg === "--time-scale") opts.timeScale = Number(value());
     else if (arg === "--out") opts.out = path.resolve(value());
     else if (arg === "--keep") opts.keep = true;
+    else if (arg === "--no-ui") opts.ui = false;
     else if (arg === "--all") opts.scenarios.push(...DEFAULT_SCENARIOS, ...OPTIONAL_SCENARIOS);
     else if (arg === "--help" || arg === "-h") {
-      console.log(fs.readFileSync(new URL(import.meta.url), "utf8").split(/\r?\n/).slice(1, 13).join("\n"));
+      console.log(fs.readFileSync(new URL(import.meta.url), "utf8").split(/\r?\n/).slice(1, 14).join("\n"));
       process.exit(0);
     } else if (arg.startsWith("-")) throw new Error(`unknown option ${arg}`);
     else opts.scenarios.push(arg.toLowerCase());
   }
   if (!opts.scenarios.length) opts.scenarios = [...DEFAULT_SCENARIOS];
+  if (!opts.ui) opts.scenarios = opts.scenarios.filter((s) => !UI_SCENARIOS.has(s));
   for (const s of opts.scenarios) {
     if (!SCENARIOS[s]) throw new Error(`unknown scenario "${s}" (known: ${Object.keys(SCENARIOS).join(" ")})`);
   }
@@ -68,8 +73,9 @@ if (fs.existsSync(opts.out) && fs.readdirSync(opts.out).length) {
 fs.mkdirSync(opts.out, { recursive: true });
 
 const ws = new Workspace({ keep: opts.keep });
-const daemon = new Daemon(ws, { port: await freePort(), timeScale: opts.timeScale });
+const daemon = new Daemon(ws, { port: await freePort(), timeScale: opts.timeScale, webUi: opts.ui });
 const h = new Harness(ws, daemon, { timeScale: opts.timeScale });
+const ui = opts.ui ? new Browser({ daemon, h, outDir: path.join(opts.out, "screenshots") }) : null;
 const results = new Results();
 const evidence = {};
 const timings = {};
@@ -86,7 +92,7 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
 
 console.log(`[e2e] node ${process.version} on ${process.platform}/${process.arch}`);
 console.log(`[e2e] workspace ${ws.root}`);
-console.log(`[e2e] scenarios ${order.join(" ")} x${opts.repeat}, time scale ${opts.timeScale}`);
+console.log(`[e2e] scenarios ${order.join(" ")} x${opts.repeat}, time scale ${opts.timeScale}, UI checks ${opts.ui ? "on" : "off"}`);
 
 try {
   fs.writeFileSync(path.join(ws.state, "scenarios.json"), JSON.stringify(SCRIPTS, null, 2));
@@ -101,8 +107,12 @@ try {
     if (p?.status !== "running") throw new Error(`plugin ${id} is not running: ${JSON.stringify(p ?? listed)}`);
   }
   await h.waitPluginReady();
+  if (ui) {
+    await ui.start();
+    console.log(`[e2e] web UI open in headless Chromium (host ${ui.serverId}); screenshots in ${ui.dir}`);
+  }
 
-  const ctx = { h, results, evidence };
+  const ctx = { h, results, evidence, ui };
   for (const name of order) {
     const t0 = Date.now();
     for (let run = 1; run <= opts.repeat; run++) {
@@ -113,6 +123,7 @@ try {
         results.check(name.toUpperCase(), `run${run}: threw`, false, String(error?.stack ?? error), {
           known: INFORMATIONAL_SCENARIOS.has(name),
         });
+        await ui?.screenshot(`${name}-run${run}-threw`);
         // A broken connection or daemon should not take the remaining scenarios down with it.
         await h.disconnect();
         if (!daemon.child || daemon.child.exitInfo) await daemon.start("daemon-recovered").catch(() => undefined);
@@ -125,6 +136,10 @@ try {
   setupError = String(error?.stack ?? error);
   results.check("SETUP", "harness setup", false, setupError);
 } finally {
+  if (ui) {
+    evidence.ui = ui.evidence();
+    await ui.stop();
+  }
   await h.disconnect();
   await daemon.stop().catch((error) => console.warn(`[e2e] stop failed: ${error}`));
   ws.collect(path.join(opts.out, "logs"));
@@ -138,6 +153,7 @@ const report = {
   scenarios: order,
   repeat: opts.repeat,
   timeScale: opts.timeScale,
+  ui: opts.ui,
   durationSeconds: Math.round((Date.now() - started) / 1000),
   timings,
   setupError,

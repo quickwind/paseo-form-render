@@ -45,5 +45,7 @@ export const SCRIPTS = {
   s8multi: [{ messages: ["@BAD", "@GOOD"], toolBetween: true }, { text: "@GOOD" }],
   s8big: [{ messages: [...steps(140), "@BAD"], toolBetween: true, chunkDelayMs: 1 }, { text: "@GOOD" }],
   s8huge: [{ messages: [...steps(200), "@BAD"], toolBetween: true, chunkDelayMs: 1 }, { text: "@GOOD" }],
+  // UI manual fix: the reply to the fix request is delayed so the button's sent state can be seen.
+  uimanual: [{ text: "@BAD" }, { text: "@GOOD", startDelayMs: 4000 }],
   restart: [{ text: "@PLAIN" }, { text: "@PLAIN" }, { text: "@BAD" }, { text: "@GOOD" }],
 };

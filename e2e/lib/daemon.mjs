@@ -174,8 +174,9 @@ export class Workspace {
 }
 
 export class Daemon {
-  constructor(ws, { port, timeScale = 1 }) {
+  constructor(ws, { port, timeScale = 1, webUi = false }) {
     this.ws = ws;
+    this.webUi = webUi;
     this.port = port;
     this.host = `127.0.0.1:${port}`;
     this.timeScale = timeScale;
@@ -196,7 +197,13 @@ export class Daemon {
       relay: { enabled: false },
       enableTerminalAgentHooks: false,
     };
-    config.features = { ...config.features, dictation: { enabled: false }, voiceMode: { enabled: false } };
+    // The bundled web UI (served on the listen address) is only needed for the browser UI checks.
+    config.features = {
+      ...config.features,
+      dictation: { enabled: false },
+      voiceMode: { enabled: false },
+      webUi: { enabled: this.webUi },
+    };
     // Real providers are never used; disabling them keeps the daemon from probing CLIs on the host.
     config.agents = {
       ...config.agents,

@@ -2,6 +2,7 @@
 // `h` is the Harness (e2e/lib/client.mjs); scripts for the fake provider are in ./scripts.mjs.
 import { MARKER, fixTexts, readSettings, resetSettings, short, writeSettings } from "../lib/client.mjs";
 import { sleep } from "../lib/daemon.mjs";
+import { uiManualFix, uiPluginLoaded, uiS1, uiS2, uiS7, uiSettings } from "./ui-checks.mjs";
 
 function uniq(name) {
   return `SCENARIO:${name} run=${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -62,6 +63,10 @@ export const SCENARIOS = {
     results.check("S1", `run${run}: fix contains no raw JSON`, !rawJsonLeak(fix));
     results.check("S1", `run${run}: no further prompts after fix`, r.prompts.length === 2, `prompts=${r.prompts.length}`);
     results.check("S1", `run${run}: timeline ends with fixed form`, r.tl.at(-1)?.type === "assistant_message" && String(r.tl.at(-1)?.text).startsWith("Fixed:"), short(r.tl.at(-1)?.text));
+    if (ctx.ui) {
+      await uiPluginLoaded(ctx, "S1");
+      await uiS1(ctx, run, r);
+    }
     const b = await simple(ctx, "s1b", "S1b");
     results.check("S1", `run${run}: typo "Inpt" gets a suggestion`, b.fixes.length === 1 && /Did you mean Input\?/.test(b.fixes[0] ?? ""), short(b.fixes[0], 200));
   },
@@ -73,6 +78,7 @@ export const SCENARIOS = {
     results.check("S2", `run${run}: exactly 2 fix messages with default setting`, r.fixes.length === 2, `fixes=${r.fixes.length}`);
     results.check("S2", `run${run}: total prompts = 3 (no third fix after 8s quiet)`, r.prompts.length === 3, `prompts=${r.prompts.length}`);
     results.check("S2", `run${run}: second fix describes the second reply's issue (missing label)`, /label/i.test(r.fixes[1] ?? ""), short(r.fixes[1], 200));
+    if (ctx.ui) await uiS2(ctx, run, r);
   },
 
   /** Setting autoFixMaxRetries: 0 disables, 1 limits, out-of-range rejected, persists across a daemon restart, reset. */
@@ -204,6 +210,7 @@ export const SCENARIOS = {
     for (const name of ["s7good", "s7plain"]) {
       const r = await simple(ctx, name, `S7-${name}`, { quietMs: 4000 });
       ctx.results.check("S7", `run${run}: ${name}: no fix`, r.fixes.length === 0 && r.prompts.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
+      if (ctx.ui && name === "s7good") await uiS7(ctx, run, r);
     }
   },
 
@@ -237,6 +244,16 @@ export const SCENARIOS = {
     results.check("S8", `run${run}: long history: 2 fixes after the first prompt and after each user message`, order === "SCENARIO,FIX,FIX,USER,FIX,FIX,USER,FIX,FIX,USER,FIX,FIX", order);
   },
 
+  /** UI: the plugin settings screen shows and saves autoFixMaxRetries (browser only). */
+  async uisettings(ctx, run) {
+    await uiSettings(ctx, run);
+  },
+
+  /** UI: with automatic fixes off, "Ask agent to fix" sends exactly one fix request (browser only). */
+  async uimanual(ctx, run) {
+    await uiManualFix(ctx, run, uniq("uimanual"));
+  },
+
   /** Optional: an agent resumed after a daemon restart still gets fixes (fresh timeline from disk). */
   async restart(ctx, run) {
     const { h, results } = ctx;
@@ -263,7 +280,9 @@ export const SCENARIOS = {
   },
 };
 
-export const DEFAULT_SCENARIOS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"];
+export const DEFAULT_SCENARIOS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "uisettings", "uimanual"];
 export const OPTIONAL_SCENARIOS = ["restart", "nocmid"];
 /** Scenarios whose failures (including exceptions) are informational. */
 export const INFORMATIONAL_SCENARIOS = new Set(["s5"]);
+/** Scenarios that only exist as browser UI checks; `--no-ui` skips them. */
+export const UI_SCENARIOS = new Set(["uisettings", "uimanual"]);
