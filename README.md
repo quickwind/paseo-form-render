@@ -19,6 +19,11 @@ Interactive forms, dashboards, and metrics rendering plugin for Irix and Paseo c
   - 100% pure React Native UI primitives (`View`, `Text`, `TextInput`, `Pressable`, `Switch`).
   - Zero external runtime dependencies in the client bundle.
   - Rigorously tested against the React Native Hermes JavaScript engine on iOS and Android.
+- **Self-healing Forms**:
+  - Invalid `irix-form` blocks show a precise error list (offending node, missing fields, allowed values, "did you mean" hints, JSON line/column).
+  - The agent is automatically asked to re-send a corrected block, up to a configurable number of times in a row.
+  - An **Ask agent to fix** button on the error box requests a fix manually (ignores the retry limit).
+  - Setting: **Irix UI Render > Maximum retries** in the plugin settings (0-5, default 2; 0 turns automatic fixes off).
 - **Non-blocking `/form-demo`**:
   - Pushes sample forms directly via daemon RPC without triggering model thinking turns or consuming API quota.
 
