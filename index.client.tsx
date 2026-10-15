@@ -2,8 +2,9 @@ import type { PluginClientContext, PluginTimelineItemProps } from "@getpaseo/plu
 import { usePaseo } from "@getpaseo/plugin/client";
 import React from "react";
 import { z } from "zod";
-import { hasFormBlock } from "./client/parser";
+import { hasFormBlock } from "./shared/parser";
 import { MessageContainer } from "./client/container";
+import { IrixSettingsScreen } from "./client/settings-screen";
 import { showDemoForm } from "./shared/demo";
 import { IRIX_PROMPT_INSTRUCTION } from "./shared/prompt";
 
@@ -56,6 +57,14 @@ export default function contribute(client: PluginClientContext) {
     version: 1,
     schema: timelineDataSchema,
     Component: TimelineMessageView,
+  });
+
+  // Host-level settings, including the automatic fix retry limit
+  client.addSettingsScreen({
+    id: "irix-ui-render-settings",
+    title: "Irix UI Render",
+    icon: "settings",
+    Component: IrixSettingsScreen,
   });
 
   // Slash command to enable irix-form in an existing agent session

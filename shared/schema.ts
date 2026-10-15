@@ -37,6 +37,32 @@ export type IrixNode =
   | FilePickerNode
   | ButtonNode;
 
+/** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
+export const IRIX_NODE_TYPES = [
+  "Card",
+  "Stack",
+  "Heading",
+  "Text",
+  "Divider",
+  "Metric",
+  "Badge",
+  "Alert",
+  "Progress",
+  "Table",
+  "Input",
+  "Select",
+  "MultiSelect",
+  "Toggle",
+  "FilePicker",
+  "Button",
+] as const satisfies readonly IrixNode["type"][];
+type MissingNodeTypes = Exclude<IrixNode["type"], (typeof IRIX_NODE_TYPES)[number]>;
+const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = true;
+void _allNodeTypesListed;
+
+/** Node types that collect a value and therefore need a unique `id`. */
+export const IRIX_FIELD_TYPES = ["Input", "Select", "MultiSelect", "Toggle", "FilePicker"] as const;
+
 export interface CardNode {
   type: "Card";
   title?: string;

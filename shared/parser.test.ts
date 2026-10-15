@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseMessageContent, hasFormBlock } from "./parser";
-import { IrixFormSchema } from "../shared/schema";
-import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { IrixFormSchema } from "./schema";
+import { extractInitialValues, validateForm, formatSubmissionMessage } from "./form-helpers";
 
 describe("irix-form Parser & Validation", () => {
   it("detects irix-form and irix-ui fence blocks", () => {

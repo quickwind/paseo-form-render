@@ -1,10 +1,21 @@
-import { IrixForm, IrixFormSchema } from "../shared/schema";
+import {
+  capIssues,
+  findDuplicateIdIssues,
+  formatIssues,
+  formatJsonParseError,
+  formatZodIssues,
+  type FormIssue,
+} from "./form-errors";
+import { IrixForm, IrixFormSchema } from "./schema";
 
 export interface ParsedBlock {
   type: "text" | "form";
   content?: string;
   form?: IrixForm;
   rawJson?: string;
+  /** Structured problems (at most 10, plus an "...and N more" entry); set when the block failed. */
+  errors?: FormIssue[];
+  /** `errors` joined one per line, for display. */
   error?: string;
 }
 
@@ -51,6 +62,30 @@ export function hasFormBlock(text: string): boolean {
   return findBlocks(text).length > 0;
 }
 
+function failedBlock(rawJson: string, issues: FormIssue[]): ParsedBlock {
+  const errors = capIssues(issues);
+  return { type: "form", rawJson, errors, error: formatIssues(errors).join("\n") };
+}
+
+function parseFormBlock(jsonStr: string): ParsedBlock {
+  let parsedJson: unknown;
+  try {
+    parsedJson = JSON.parse(jsonStr);
+  } catch (e) {
+    return failedBlock(jsonStr, formatJsonParseError(jsonStr, e));
+  }
+
+  const validation = IrixFormSchema.safeParse(parsedJson);
+  const issues = [
+    ...(validation.success ? [] : formatZodIssues(validation.error.issues, parsedJson)),
+    ...findDuplicateIdIssues(parsedJson),
+  ];
+  if (issues.length > 0) {
+    return failedBlock(jsonStr, issues);
+  }
+  return { type: "form", form: validation.data as IrixForm, rawJson: jsonStr };
+}
+
 export function parseMessageContent(text: string): ParsedBlock[] {
   const blocks: ParsedBlock[] = [];
   const fenceBlocks = findBlocks(text);
@@ -66,31 +101,7 @@ export function parseMessageContent(text: string): ParsedBlock[] {
     }
 
     const jsonStr = text.slice(block.contentStart, block.contentEnd).trim();
-    try {
-      const parsedJson = JSON.parse(jsonStr);
-      const validation = IrixFormSchema.safeParse(parsedJson);
-      if (validation.success) {
-        blocks.push({
-          type: "form",
-          form: validation.data,
-          rawJson: jsonStr,
-        });
-      } else {
-        blocks.push({
-          type: "form",
-          rawJson: jsonStr,
-          error: `Schema Validation Error: ${validation.error.issues
-            .map((i) => `${i.path.join(".")}: ${i.message}`)
-            .join(", ")}`,
-        });
-      }
-    } catch (e: any) {
-      blocks.push({
-        type: "form",
-        rawJson: jsonStr,
-        error: `JSON Parse Error: ${e.message}`,
-      });
-    }
+    blocks.push(parseFormBlock(jsonStr));
 
     cursor = block.end;
   }
