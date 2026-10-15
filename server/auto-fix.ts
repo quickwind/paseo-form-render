@@ -74,16 +74,22 @@ export function decideAutoFix(input: AutoFixInput): AutoFixDecision {
 
   // If the finished turn shows the message that started it, the newest user message in the history
   // must be that same message; anything else is a newer request that has already been answered.
+  // A fetched window with no user message at all holds only this turn's tail, so nothing newer
+  // arrived (a newer message would sit at the end of the window).
   const turnLastUser = lastIndexOf(input.turnTimeline, (e) => e.type === "user_message");
-  if (turnLastUser >= 0 && latest[lastUser]?.text !== input.turnTimeline[turnLastUser].text) {
+  if (lastUser >= 0 && turnLastUser >= 0 && latest[lastUser].text !== input.turnTimeline[turnLastUser].text) {
     return { send: false, reason: "superseded" };
   }
-  const lastRealUser = lastIndexOf(latest, isRealUserMessage);
 
-  // Without any real user message in view we cannot tell where the chain of fix requests began.
-  if (input.latestTruncated && lastRealUser < 0) return { send: false, reason: "history-truncated" };
+  // Count from the fetched history; when a long turn pushed every real user message out of that
+  // window, fall back to the event timeline, which may hold the full history.
+  let countFrom: readonly TimelineEntry[] = latest;
+  if (input.latestTruncated && lastIndexOf(latest, isRealUserMessage) < 0) {
+    if (lastIndexOf(input.turnTimeline, isRealUserMessage) < 0) return { send: false, reason: "history-truncated" };
+    countFrom = input.turnTimeline;
+  }
 
-  const attempts = countTrailingFixAttempts(latest);
+  const attempts = countTrailingFixAttempts(countFrom);
   if (attempts >= input.maxRetries) return { send: false, reason: "limit-reached" };
 
   return { send: true, message: buildFixMessage(plan.failures), attempt: attempts + 1 };

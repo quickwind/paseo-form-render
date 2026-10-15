@@ -107,6 +107,28 @@ describe("decideAutoFix", () => {
     expect(decide({ latestTimeline: [user("go"), assistant(bad)], latestTruncated: true }).send).toBe(true);
   });
 
+  it("handles a long turn whose start fell out of the fetched window", () => {
+    const tools = Array.from({ length: 5 }, () => ({ type: "tool_call" }));
+    const turnTimeline = [user("go"), ...tools, assistant(bad)];
+    const decision = decideAutoFix({
+      turnTimeline,
+      latestTimeline: [...tools.slice(2), assistant(bad)],
+      latestTruncated: true,
+      outcome: completed,
+      maxRetries: 2,
+    });
+    expect(decision.send && decision.attempt).toBe(1);
+
+    const afterTwoFixes = [user("go"), assistant(bad), fix, assistant(bad), fix, ...tools, assistant(bad)];
+    expect(decideAutoFix({
+      turnTimeline: afterTwoFixes,
+      latestTimeline: [...tools, assistant(bad)],
+      latestTruncated: true,
+      outcome: completed,
+      maxRetries: 2,
+    })).toEqual({ send: false, reason: "limit-reached" });
+  });
+
   it("reports every bad block in one message", () => {
     const decision = decide({ turnTimeline: [assistant(`${bad}\n\n${bad2}`)], latestTimeline: [user("go"), assistant(`${bad}\n\n${bad2}`)] });
     expect(decision.send).toBe(true);
