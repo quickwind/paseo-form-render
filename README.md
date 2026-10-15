@@ -75,14 +75,17 @@ npm run pack:offline
 npm run pack:offline -- /path/to/dist
 # or: DIST_DIR=/path/to/dist npm run pack:offline
 
-# End-to-end auto-fix tests against a real Paseo daemon (Linux, macOS, Windows; Node 22+)
+# End-to-end tests against a real Paseo daemon (Linux, macOS, Windows; Node 22+)
 npm ci --prefix e2e
-npm run e2e            # or: node e2e/run.mjs --all --repeat 2
+npx --prefix e2e playwright install chromium   # once, for the browser UI checks
+npm run e2e            # or: node e2e/run.mjs --all --repeat 2   (--no-ui: skip the browser)
 ```
 
 The e2e harness lives in `e2e/` with its own dependencies and is not part of the plugin package; see
-[`e2e/README.md`](e2e/README.md). CI (`.github/workflows/ci.yml`) runs the unit tests and the e2e
-suite on Linux, macOS and Windows.
+[`e2e/README.md`](e2e/README.md). Besides the auto-fix protocol it checks the client UI (rendered
+forms, the error box and its "Ask agent to fix" button, the settings screen) in the daemon's web UI
+with headless Chromium and saves screenshots. CI (`.github/workflows/ci.yml`) runs the unit tests and
+the e2e suite on Linux, macOS and Windows.
 
 ## License
 

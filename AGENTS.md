@@ -7,7 +7,7 @@ Paseo plugin that renders interactive forms/dashboards in conversations from ```
 - `npm run typecheck` — `tsc --noEmit`
 - `npm test` — `vitest run` (tests: `shared/parser.test.ts`, `shared/form-errors.test.ts`, `shared/form-fix.test.ts`, `server/file-picker.test.ts`, `server/auto-fix.test.ts`)
 - `npm run pack:offline` — runs typecheck + tests, then builds zip/tgz + sha256 into `./dist` (or specify via `--out <dir>` / `DIST_DIR`)
-- `npm ci --prefix e2e` then `node e2e/run.mjs [--all] [--repeat N] [s1 ... s8]` (or `npm run e2e`) — end-to-end auto-fix tests against a real Paseo daemon with a scripted fake provider; see `e2e/README.md`. Cross-platform, ~5 min; results in `e2e/results/`
+- `npm ci --prefix e2e`, `npx --prefix e2e playwright install chromium`, then `node e2e/run.mjs [--all] [--repeat N] [--no-ui] [s1 ... s8 uisettings uimanual]` (or `npm run e2e`) — end-to-end tests against a real Paseo daemon with a scripted fake provider: auto-fix protocol plus browser UI checks of the client (daemon web UI in headless Chromium, screenshots); see `e2e/README.md`. Cross-platform, ~5-7 min; results and screenshots in `e2e/results/`
 
 Run typecheck and tests before committing.
 
@@ -18,7 +18,7 @@ Run typecheck and tests before committing.
 - `index.client.tsx` — client entry (registers the renderer and the `/form` and `/form-demo` slash commands)
 - `client/` — React Native UI: `renderer.tsx` (component tree), `container.tsx` (includes the error box with the "Ask agent to fix" button), `settings-screen.tsx` (auto-fix retry setting), `markdown.tsx`, `project-file-modal.tsx` (in-app file/folder picker)
 - `server/` — daemon-side handlers: `file-picker.ts` (list files, create directory), `demo.ts` (`/form-demo`), `auto-fix.ts` (on `agent.turn_ended`, asks the agent to repair invalid blocks; decision logic is pure and tested)
-- `e2e/` — end-to-end harness, its own npm package (pins `@getpaseo/server`/`@getpaseo/cli` 0.11.4; never shipped, excluded from the root `tsconfig.json`): `run.mjs` (entry), `lib/daemon.mjs` (isolated temp workspace, daemon start/stop), `lib/client.mjs` (daemon client, log helpers, results), `scenarios/scripts.mjs` (fake provider replies), `scenarios/checks.mjs` (S1–S8 + optional `restart`, `nocmid`), `plugins/irix-e2e-fake/` (test-only scripted provider plugin)
+- `e2e/` — end-to-end harness, its own npm package (pins `@getpaseo/server`/`@getpaseo/cli` 0.11.4 and `playwright`; never shipped, excluded from the root `tsconfig.json`): `run.mjs` (entry), `lib/daemon.mjs` (isolated temp workspace, daemon start/stop), `lib/client.mjs` (daemon client, log helpers, results), `lib/browser.mjs` (Playwright: web UI bootstrap, deep links, UI check + screenshot helpers), `scenarios/scripts.mjs` (fake provider replies), `scenarios/checks.mjs` (S1–S8, `uisettings`, `uimanual` + optional `restart`, `nocmid`), `scenarios/ui-checks.mjs` (browser assertions), `plugins/irix-e2e-fake/` (test-only scripted provider plugin)
 - `.github/workflows/ci.yml` — `unit` (typecheck + tests) and `e2e` (Linux/macOS/Windows) jobs
 - `shared/` — code used by both sides: `parser.ts` (extract/validate fences), `form-errors.ts` (instructive error messages), `form-fix.ts` (`[irix-form-fix]` message builder, attempt counting), `settings.ts` (`autoFixMaxRetries`), `schema.ts` (zod schemas + node types), `prompt.ts` (agent protocol instructions), `form-helpers.ts`, `pickers.ts` (RPC definitions), `demo.ts`
 
@@ -31,4 +31,5 @@ Run typecheck and tests before committing.
 - New files/directories must be added to `files` in `package.json` and to `includeFiles`/`includeDirs` in `scripts/pack-offline.mjs` if they ship with the plugin.
 - Auto-fix must fail closed: the `agent.turn_ended` timeline may cover only the finished turn, so the retry count comes from a fresh `timeline.refetch`, and nothing is sent if that fails.
 - The `/form-demo` command pushes forms through daemon RPC and must not trigger a model turn.
+- Plugin icons (`addSettingsScreen` etc.) must be Lucide export names (`"Settings"`, not `"settings"`): the host throws on unknown names and then drops the whole client plugin. The e2e UI checks fail on any "[Plugins] Failed to evaluate" warning.
 - E2E: keep `e2e/` free of shell scripts and POSIX-only commands (CI runs it on Windows too); never add its dependencies to the root `package.json`. S5 (a real message racing the fix request) is a documented Paseo limitation and is reported as informational, not as a failure.
