@@ -31,24 +31,24 @@ export async function uiS1(ctx, run, r) {
   const S = "S1";
   await ui.openAgent(r.agent.id, r.first);
   await ui.check(results, S, `run${run}: error box shows the instructive issue`, shotName("s1", "error-box", run), async () => {
-    const box = await ui.waitVisible(ui.errorBoxes().first());
+    await ui.waitVisible(ui.errorBoxes().first());
+    // The whole S1 flow has finished before the page opens, so one screenshot (s1-flow, below)
+    // shows the error box, the fix message and the corrected form together.
     // The error box line starts with the path; the fix message line starts with "- ".
     const issue = ui.page.getByText(/^Card "Volume" > children\[0\] \(Slider "Volume"\): unknown component type "Slider"/);
     await ui.waitVisible(issue.first());
     await ui.waitVisible(ui.text("Ask agent to fix").first());
-    await ui.screenshot(shotName("s1", "error-box", run), box);
   });
   await ui.check(results, S, `run${run}: exactly one ${MARKER} message shown`, shotName("s1", "fix-message", run), async () => {
-    const fix = await ui.waitVisible(ui.fixMessages().first());
+    await ui.waitVisible(ui.fixMessages().first());
     const n = await ui.fixMessages().count();
     if (n !== 1) throw new Error(`fix messages=${n}`);
-    await ui.screenshot(shotName("s1", "fix-message", run), fix);
   });
   await ui.check(results, S, `run${run}: corrected form rendered`, shotName("s1", "fixed-form", run), async () => {
     const detail = await goodFormRendered(ui);
     const boxes = await ui.errorBoxes().count();
     if (boxes !== 1) throw new Error(`error boxes=${boxes}, expected only the first reply's`);
-    await ui.screenshot(shotName("s1", "fixed-form", run), ui.text("Volume").last());
+    await ui.screenshot(shotName("s1", "flow", run), ui.text("Volume").last());
     return detail;
   });
 }

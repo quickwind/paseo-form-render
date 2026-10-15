@@ -104,7 +104,7 @@ With UI checks on (the default), S1, S2 and S7 add browser assertions after thei
 
 | Scenario | UI checks (screenshots) |
 | --- | --- |
-| S1 | the plugin's client bundle evaluated (no `[Plugins] Failed to evaluate` warning); the error box shows the instructive issue (`unknown component type "Slider"`) and "Ask agent to fix" (`s1-error-box`); exactly one `[irix-form-fix]` message (`s1-fix-message`); the corrected form renders as a form, not raw JSON (`s1-fixed-form`) |
+| S1 | the plugin's client bundle evaluated (no `[Plugins] Failed to evaluate` warning); the error box shows the instructive issue (`unknown component type "Slider"`) and "Ask agent to fix"; exactly one `[irix-form-fix]` message; the corrected form renders as a form, not raw JSON. The flow has finished before the page opens, so one screenshot (`s1-flow`) shows all three |
 | S2 | after the limit: 3 error boxes, the last one explaining the invalid JSON, exactly 2 fix messages (`s2-last-error`) |
 | S7 | a valid form renders, no error box (`s7-valid-form`, baseline) |
 
