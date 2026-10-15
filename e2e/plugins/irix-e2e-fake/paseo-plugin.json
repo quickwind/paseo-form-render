@@ -1,0 +1,6 @@
+{
+  "id": "irix-e2e-fake",
+  "name": "Irix E2E Fake Provider",
+  "description": "Test-only scripted provider and turn-end probe",
+  "requirements": { "paseo": ">=0.9.0" }
+}

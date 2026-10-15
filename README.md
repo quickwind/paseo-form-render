@@ -74,7 +74,15 @@ npm run pack:offline
 # Or specify a custom output directory
 npm run pack:offline -- /path/to/dist
 # or: DIST_DIR=/path/to/dist npm run pack:offline
+
+# End-to-end auto-fix tests against a real Paseo daemon (Linux, macOS, Windows; Node 22+)
+npm ci --prefix e2e
+npm run e2e            # or: node e2e/run.mjs --all --repeat 2
 ```
+
+The e2e harness lives in `e2e/` with its own dependencies and is not part of the plugin package; see
+[`e2e/README.md`](e2e/README.md). CI (`.github/workflows/ci.yml`) runs the unit tests and the e2e
+suite on Linux, macOS and Windows.
 
 ## License
 

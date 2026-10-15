@@ -16,7 +16,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "pack:offline": "node scripts/pack-offline.mjs"
+    "pack:offline": "node scripts/pack-offline.mjs",
+    "e2e": "npm --prefix e2e run e2e --"
   },
   "devDependencies": {
     "@getpaseo/client": "^0.11.2",

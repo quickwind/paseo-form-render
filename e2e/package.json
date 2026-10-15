@@ -1,0 +1,21 @@
+{
+  "name": "irix-ui-render-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "End-to-end tests for irix-ui-render auto-fix against a real Paseo daemon with a scripted fake provider",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "e2e": "node run.mjs"
+  },
+  "dependencies": {
+    "@getpaseo/cli": "0.11.4",
+    "@getpaseo/client": "0.11.4",
+    "@getpaseo/server": "0.11.4",
+    "tree-kill": "1.2.2",
+    "ws": "8.22.0"
+  }
+}
