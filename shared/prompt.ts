@@ -1,3 +1,5 @@
+import { IRIX_FIX_MARKER } from "./form-fix";
+
 export const IRIX_FORM_TAG = "irix-form";
 
 export const IRIX_PROMPT_INSTRUCTION = `
@@ -35,6 +37,7 @@ Available component types:
 2. When filtering files by extension, use \`"extensions": ["mp4"]\` (or comma-separated string, leading dot optional).
 3. When the user clicks a \`Button\` with \`action: "submit"\`, the client automatically sends the button's \`message\` along with all field values back to you.
 4. Keep conversational text outside the code fence. The code block should only contain valid JSON.
+5. If you receive a message starting with \`${IRIX_FIX_MARKER}\`, a previous irix-form block failed validation. Re-output only the corrected, complete irix-form block(s), addressing every listed issue, with valid JSON and no comments.
 
 ### Example:
 \`\`\`irix-form

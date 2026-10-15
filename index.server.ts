@@ -1,4 +1,5 @@
 import type { PluginServerContext } from "@getpaseo/plugin/server";
+import { registerAutoFix } from "./server/auto-fix";
 import { appendDemoForm } from "./server/demo";
 import { handleListProjectFiles, handleCreateDirectory } from "./server/file-picker";
 import { showDemoForm } from "./shared/demo";
@@ -25,5 +26,9 @@ export default function contribute(server: PluginServerContext) {
   server.handle(listProjectFilesRpc, handleListProjectFiles);
   server.handle(createDirectoryRpc, handleCreateDirectory);
 
-  return () => {};
+  const stopAutoFix = registerAutoFix(server);
+
+  return () => {
+    stopAutoFix();
+  };
 }
