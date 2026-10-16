@@ -1,7 +1,7 @@
 import type { PluginSurfaceProps } from "@getpaseo/plugin/client";
 import { useSettings } from "@getpaseo/plugin/client";
 import React from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { MAX_AUTO_FIX_RETRIES, irixSettings } from "../shared/settings";
 
 export const IrixSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
@@ -87,6 +87,21 @@ export const IrixSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
         {value === 0 ? "Automatic fixes are off." : `Up to ${value} automatic ${value === 1 ? "request" : "requests"} per reply.`}
         {settings.saving ? " Saving…" : ""}
       </Text>
+
+      <Text style={[styles.title, { color: colors.foreground }]}>Prefer forms</Text>
+      <Text style={[styles.description, { color: colors.foregroundMuted }]}>
+        By default the agent is only told it can use irix-form. Turn this on to require it to ask for choices,
+        parameters, and confirmations with a form instead of plain text. Applies to agents created after the change.
+      </Text>
+      <View style={styles.row}>
+        <Text style={[styles.label, { color: colors.foreground }]}>Require forms for user input</Text>
+        <Switch
+          accessibilityLabel="Require forms for user input"
+          value={settings.values.preferForms}
+          disabled={settings.saving}
+          onValueChange={(next) => void settings.save({ ...settings.values, preferForms: next }, settings.revision)}
+        />
+      </View>
       {settings.saveError && (
         <Text style={[styles.errorText, { color: colors.statusDanger }]}>Could not save: {settings.saveError}</Text>
       )}

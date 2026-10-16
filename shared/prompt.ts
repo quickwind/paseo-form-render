@@ -2,9 +2,7 @@ import { IRIX_FIX_MARKER } from "./form-fix";
 
 export const IRIX_FORM_TAG = "irix-form";
 
-export const IRIX_PROMPT_INSTRUCTION = `
-[irix-ui-render]
-You can render interactive forms, dashboards, parameter inputs, and approval cards by outputting a JSON specification inside a fenced code block with the tag \`\`\`irix-form.
+const PROMPT_BODY = `You can render interactive forms, dashboards, parameter inputs, and approval cards by outputting a JSON specification inside a fenced code block with the tag \`\`\`irix-form.
 
 Use this format whenever you need to:
 1. Collect input or configuration from the user (text, choices, toggles).
@@ -78,5 +76,21 @@ Available component types:
   ]
 }
 \`\`\`
-[/irix-ui-render]
 `.trim();
+
+/** Appended when the "prefer forms" setting is on; the default prompt only says the agent *can* use irix-form. */
+const PREFER_FORMS_INSTRUCTION = `
+### Required usage:
+Prefer irix-form over plain text for interacting with the user:
+- When you need anything from the user — a choice, a parameter, a value, or a go/no-go confirmation — you MUST ask with an \`irix-form\` block, not plain-text questions.
+- When presenting results, status, or structured data (metrics, progress, tables, warnings), use the matching components (Metric, Progress, Table, Alert, Badge) where they make the result clearer.
+Plain text is fine for ordinary explanation and short conversational replies.
+`.trim();
+
+export function buildPromptInstruction(options: { preferForms?: boolean } = {}): string {
+  const parts = [PROMPT_BODY];
+  if (options.preferForms) parts.push(PREFER_FORMS_INSTRUCTION);
+  return `[irix-ui-render]\n${parts.join("\n\n")}\n[/irix-ui-render]`;
+}
+
+export const IRIX_PROMPT_INSTRUCTION = buildPromptInstruction();

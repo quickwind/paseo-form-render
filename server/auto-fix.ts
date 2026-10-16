@@ -6,7 +6,7 @@ import {
   type FormFailure,
   type TimelineEntry,
 } from "../shared/form-fix";
-import { DEFAULT_AUTO_FIX_RETRIES, irixSettings } from "../shared/settings";
+import { readIrixSettings, type IrixSettingsHandle } from "./settings";
 
 /** How many of the newest timeline entries to fetch when checking the conversation history. */
 const HISTORY_LIMIT = 300;
@@ -141,18 +141,10 @@ async function checkAgentIdle(agent: {
   return idleGate(agent.status);
 }
 
-/** Registers the settings and the turn-end hook that sends automatic fix requests. */
-export function registerAutoFix(server: PluginServerContext) {
-  const settings = server.registerSettings(irixSettings);
-
+/** Registers the turn-end hook that sends automatic fix requests. */
+export function registerAutoFix(server: PluginServerContext, settings: IrixSettingsHandle) {
   async function readMaxRetries(): Promise<number> {
-    try {
-      const state = await settings.read();
-      if (state.status === "ready") return state.values.autoFixMaxRetries;
-    } catch (error) {
-      console.warn("[irix-ui-render] could not read settings, using default", error);
-    }
-    return DEFAULT_AUTO_FIX_RETRIES;
+    return (await readIrixSettings(settings)).autoFixMaxRetries;
   }
 
   return server.on("agent.turn_ended", async (event, { paseo, signal }) => {
