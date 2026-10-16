@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const MAX_AUTO_FIX_RETRIES = 5;
 export const DEFAULT_AUTO_FIX_RETRIES = 2;
+export const DEFAULT_PREFER_FORMS = true;
 
 export const irixSettings = defineSettings({
   id: "irix-ui-render",
@@ -12,6 +13,6 @@ export const irixSettings = defineSettings({
     /** How many times the agent is asked to repair an invalid irix-form block in a row. 0 disables auto-fix. */
     autoFixMaxRetries: z.number().int().min(0).max(MAX_AUTO_FIX_RETRIES).default(DEFAULT_AUTO_FIX_RETRIES),
     /** When on, the injected prompt requires agents to ask for user input with irix-form instead of plain text. */
-    preferForms: z.boolean().default(false),
+    preferForms: z.boolean().default(DEFAULT_PREFER_FORMS),
   }),
 });
