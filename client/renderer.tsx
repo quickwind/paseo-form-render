@@ -1,6 +1,6 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
 import { useRpc } from "@getpaseo/plugin/client";
-import React, { useState } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform } from "react-native";
 import {
   IrixNode,
@@ -12,6 +12,29 @@ import {
 } from "../shared/schema";
 import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
 import { ProjectFileModal } from "./project-file-modal";
+
+const MENU_WIDTH = 220;
+
+interface OpenDropdownMenu {
+  id: string;
+  left: number;
+  top: number;
+  width: number;
+  options: Array<{ label: string; value: string }>;
+  isMulti: boolean;
+}
+
+interface DropdownMenuContextValue {
+  openMenuId: string | null;
+  toggleMenu: (
+    id: string,
+    buttonRef: React.RefObject<View | null>,
+    options: Array<{ label: string; value: string }>,
+    isMulti: boolean,
+  ) => void;
+}
+
+const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null);
 
 interface NodeRendererProps {
   node: IrixNode;
@@ -48,7 +71,6 @@ function DropdownSelect({
   error,
   disabled,
   theme,
-  onChange,
 }: {
   node: SelectNode;
   value: string;
@@ -57,7 +79,9 @@ function DropdownSelect({
   theme: PluginHostProps["theme"];
   onChange: (val: string) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const menuCtx = useContext(DropdownMenuContext);
+  const buttonRef = useRef<View>(null);
+  const isOpen = menuCtx?.openMenuId === node.id;
   const selectedOption = node.options.find((opt) => opt.value === value);
 
   return (
@@ -66,76 +90,34 @@ function DropdownSelect({
         {node.label}
         {node.required && <Text style={{ color: theme.colors.statusDanger }}> *</Text>}
       </Text>
-      
-      {/* Trigger Box */}
-      <Pressable
-        disabled={disabled}
-        onPress={() => setIsOpen((prev) => !prev)}
-        style={[
-          styles.dropdownTrigger,
-          {
-            backgroundColor: theme.colors.surface2,
-            borderColor: error ? theme.colors.statusDanger : isOpen ? theme.colors.accent : theme.colors.border,
-          },
-          disabled && { opacity: 0.6 },
-        ]}
-      >
-        <Text
-          style={[
-            styles.dropdownTriggerText,
-            { color: selectedOption ? theme.colors.foreground : theme.colors.foregroundMuted },
-          ]}
-        >
-          {selectedOption ? selectedOption.label : "Select an option..."}
-        </Text>
-        <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
-          {isOpen ? "▲" : "▼"}
-        </Text>
-      </Pressable>
 
-      {/* Menu items */}
-      {isOpen && (
-        <View
+      {/* Trigger Box */}
+      <View ref={buttonRef} collapsable={false}>
+        <Pressable
+          disabled={disabled}
+          onPress={() => menuCtx?.toggleMenu(node.id, buttonRef, node.options, false)}
           style={[
-            styles.dropdownMenu,
+            styles.dropdownTrigger,
             {
-              backgroundColor: theme.colors.surface1,
-              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.surface2,
+              borderColor: error ? theme.colors.statusDanger : isOpen ? theme.colors.accent : theme.colors.border,
             },
+            disabled && { opacity: 0.6 },
           ]}
         >
-          {node.options.map((opt) => {
-            const isSelected = value === opt.value;
-            return (
-              <Pressable
-                key={opt.value}
-                style={[
-                  styles.dropdownMenuItem,
-                  { borderBottomColor: theme.colors.border },
-                  isSelected && { backgroundColor: theme.colors.surface2 },
-                ]}
-                onPress={() => {
-                  onChange(opt.value);
-                  setIsOpen(false);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.dropdownMenuItemText,
-                    { color: isSelected ? theme.colors.accent : theme.colors.foreground },
-                    isSelected && { fontWeight: "600" },
-                  ]}
-                >
-                  {opt.label}
-                </Text>
-                {isSelected && (
-                  <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
-      )}
+          <Text
+            style={[
+              styles.dropdownTriggerText,
+              { color: selectedOption ? theme.colors.foreground : theme.colors.foregroundMuted },
+            ]}
+          >
+            {selectedOption ? selectedOption.label : "Select an option..."}
+          </Text>
+          <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
+            {isOpen ? "▲" : "▼"}
+          </Text>
+        </Pressable>
+      </View>
 
       {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
     </View>
@@ -149,7 +131,6 @@ function DropdownMultiSelect({
   error,
   disabled,
   theme,
-  onChange,
 }: {
   node: MultiSelectNode;
   value: string[];
@@ -158,7 +139,9 @@ function DropdownMultiSelect({
   theme: PluginHostProps["theme"];
   onChange: (val: string[]) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const menuCtx = useContext(DropdownMenuContext);
+  const buttonRef = useRef<View>(null);
+  const isOpen = menuCtx?.openMenuId === node.id;
   const selectedOptions = node.options.filter((opt) => value.includes(opt.value));
 
   return (
@@ -169,79 +152,35 @@ function DropdownMultiSelect({
       </Text>
 
       {/* Trigger Box */}
-      <Pressable
-        disabled={disabled}
-        onPress={() => setIsOpen((prev) => !prev)}
-        style={[
-          styles.dropdownTrigger,
-          {
-            backgroundColor: theme.colors.surface2,
-            borderColor: error ? theme.colors.statusDanger : isOpen ? theme.colors.accent : theme.colors.border,
-          },
-          disabled && { opacity: 0.6 },
-        ]}
-      >
-        <Text
-          numberOfLines={1}
+      <View ref={buttonRef} collapsable={false}>
+        <Pressable
+          disabled={disabled}
+          onPress={() => menuCtx?.toggleMenu(node.id, buttonRef, node.options, true)}
           style={[
-            styles.dropdownTriggerText,
-            { color: selectedOptions.length > 0 ? theme.colors.foreground : theme.colors.foregroundMuted },
-          ]}
-        >
-          {selectedOptions.length > 0
-            ? selectedOptions.map((o) => o.label).join(", ")
-            : (node.placeholder ?? "Select options...")}
-        </Text>
-        <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
-          {isOpen ? "▲" : "▼"}
-        </Text>
-      </Pressable>
-
-      {/* Menu items */}
-      {isOpen && (
-        <View
-          style={[
-            styles.dropdownMenu,
+            styles.dropdownTrigger,
             {
-              backgroundColor: theme.colors.surface1,
-              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.surface2,
+              borderColor: error ? theme.colors.statusDanger : isOpen ? theme.colors.accent : theme.colors.border,
             },
+            disabled && { opacity: 0.6 },
           ]}
         >
-          {node.options.map((opt) => {
-            const isSelected = value.includes(opt.value);
-            return (
-              <Pressable
-                key={opt.value}
-                style={[
-                  styles.dropdownMenuItem,
-                  { borderBottomColor: theme.colors.border },
-                  isSelected && { backgroundColor: theme.colors.surface2 },
-                ]}
-                onPress={() => {
-                  const next = isSelected
-                    ? value.filter((v) => v !== opt.value)
-                    : [...value, opt.value];
-                  onChange(next);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.dropdownMenuItemText,
-                    { color: isSelected ? theme.colors.accent : theme.colors.foreground },
-                    isSelected && { fontWeight: "600" },
-                  ]}
-                >
-                  {opt.label}
-                </Text>
-                {isSelected && (
-                  <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
-      )}
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.dropdownTriggerText,
+              { color: selectedOptions.length > 0 ? theme.colors.foreground : theme.colors.foregroundMuted },
+            ]}
+          >
+            {selectedOptions.length > 0
+              ? selectedOptions.map((o) => o.label).join(", ")
+              : (node.placeholder ?? "Select options...")}
+          </Text>
+          <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
+            {isOpen ? "▲" : "▼"}
+          </Text>
+        </Pressable>
+      </View>
 
       {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
     </View>
@@ -659,6 +598,33 @@ export const IrixFormView: React.FC<IrixFormViewProps> = ({ form, theme, agentId
   const [values, setValues] = useState<Record<string, any>>(() => extractInitialValues(form));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
+  // The dropdown menu floats over the form at its root (measured position), so opening it never moves anything.
+  const [menuPos, setMenuPos] = useState<OpenDropdownMenu | null>(null);
+  const rootRef = useRef<View>(null);
+
+  const toggleMenu = (
+    id: string,
+    buttonRef: React.RefObject<View | null>,
+    options: Array<{ label: string; value: string }>,
+    isMulti: boolean,
+  ) => {
+    if (menuPos && menuPos.id === id) {
+      setMenuPos(null);
+      return;
+    }
+    rootRef.current?.measureInWindow((rx, ry) => {
+      buttonRef.current?.measureInWindow((bx, by, bw, bh) => {
+        setMenuPos({
+          id,
+          left: Math.max(0, bx - rx),
+          top: by - ry + bh + 4,
+          width: bw > 0 ? bw : MENU_WIDTH,
+          options,
+          isMulti,
+        });
+      });
+    });
+  };
 
   const handleValueChange = (id: string, val: any) => {
     setValues((prev) => ({ ...prev, [id]: val }));
@@ -672,11 +638,13 @@ export const IrixFormView: React.FC<IrixFormViewProps> = ({ form, theme, agentId
   };
 
   const handleReset = () => {
+    setMenuPos(null);
     setValues(extractInitialValues(form));
     setErrors({});
   };
 
   const handleSubmit = async (message?: string) => {
+    setMenuPos(null);
     const errs = validateForm(form, values);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -693,30 +661,96 @@ export const IrixFormView: React.FC<IrixFormViewProps> = ({ form, theme, agentId
   };
 
   return (
-    <View style={styles.formContainer}>
-      <NodeRenderer
-        node={form}
-        values={values}
-        errors={errors}
-        disabled={status !== "idle"}
-        theme={theme}
-        agentId={agentId}
-        onValueChange={handleValueChange}
-        onSubmit={handleSubmit}
-        onReset={handleReset}
-      />
-      {status === "submitted" && (
-        <View style={[styles.submittedBanner, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.statusSuccess, borderWidth: 1 }]}>
-          <Text style={[styles.submittedText, { color: theme.colors.statusSuccess }]}>✓ Form Submitted</Text>
-        </View>
-      )}
-    </View>
+    <DropdownMenuContext.Provider value={{ openMenuId: menuPos?.id ?? null, toggleMenu }}>
+      <View ref={rootRef} collapsable={false} style={[styles.formContainer, menuPos ? { zIndex: 10 } : null]}>
+        <NodeRenderer
+          node={form}
+          values={values}
+          errors={errors}
+          disabled={status !== "idle"}
+          theme={theme}
+          agentId={agentId}
+          onValueChange={handleValueChange}
+          onSubmit={handleSubmit}
+          onReset={handleReset}
+        />
+        {status === "submitted" && (
+          <View style={[styles.submittedBanner, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.statusSuccess, borderWidth: 1 }]}>
+            <Text style={[styles.submittedText, { color: theme.colors.statusSuccess }]}>✓ Form Submitted</Text>
+          </View>
+        )}
+        {menuPos ? (
+          <>
+            <Pressable
+              accessibilityLabel="Close dropdown menu"
+              onPress={() => setMenuPos(null)}
+              style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
+            />
+            <View
+              style={[
+                styles.dropdownMenu,
+                {
+                  left: menuPos.left,
+                  top: menuPos.top,
+                  width: menuPos.width,
+                  backgroundColor: theme.colors.surface1,
+                  borderColor: theme.colors.border,
+                },
+              ]}
+            >
+              {menuPos.options.map((opt) => {
+                const currentVal = values[menuPos.id];
+                const isSelected = menuPos.isMulti
+                  ? (Array.isArray(currentVal) ? currentVal : []).includes(opt.value)
+                  : (currentVal ?? "") === opt.value;
+                return (
+                  <Pressable
+                    key={opt.value}
+                    style={[
+                      styles.dropdownMenuItem,
+                      { borderBottomColor: theme.colors.border },
+                      isSelected && { backgroundColor: theme.colors.surface2 },
+                    ]}
+                    onPress={() => {
+                      if (menuPos.isMulti) {
+                        const arr = Array.isArray(currentVal) ? currentVal : [];
+                        const next = isSelected
+                          ? arr.filter((v) => v !== opt.value)
+                          : [...arr, opt.value];
+                        handleValueChange(menuPos.id, next);
+                      } else {
+                        handleValueChange(menuPos.id, opt.value);
+                        setMenuPos(null);
+                      }
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.dropdownMenuItemText,
+                        { color: isSelected ? theme.colors.accent : theme.colors.foreground },
+                        isSelected && { fontWeight: "600" },
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                    {isSelected && (
+                      <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </>
+        ) : null}
+      </View>
+    </DropdownMenuContext.Provider>
   );
 };
 
 const styles = StyleSheet.create({
   formContainer: {
     marginVertical: 8,
+    position: "relative",
   },
   card: {
     borderRadius: 8,
@@ -886,10 +920,16 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   dropdownMenu: {
+    position: "absolute",
+    zIndex: 1000,
+    elevation: 8,
     borderWidth: 1,
     borderRadius: 6,
-    marginTop: 2,
-    overflow: "hidden",
+    paddingVertical: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
   },
   dropdownMenuItem: {
     paddingHorizontal: 12,
