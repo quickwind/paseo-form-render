@@ -67,12 +67,13 @@ function failedBlock(rawJson: string, issues: FormIssue[]): ParsedBlock {
   return { type: "form", rawJson, errors, error: formatIssues(errors).join("\n") };
 }
 
-function parseFormBlock(jsonStr: string): ParsedBlock {
+export function parseFormBlock(jsonStr: string): ParsedBlock {
+  const trimmed = jsonStr.trim();
   let parsedJson: unknown;
   try {
-    parsedJson = JSON.parse(jsonStr);
+    parsedJson = JSON.parse(trimmed);
   } catch (e) {
-    return failedBlock(jsonStr, formatJsonParseError(jsonStr, e));
+    return failedBlock(trimmed, formatJsonParseError(trimmed, e));
   }
 
   const validation = IrixFormSchema.safeParse(parsedJson);
@@ -81,9 +82,9 @@ function parseFormBlock(jsonStr: string): ParsedBlock {
     ...findDuplicateIdIssues(parsedJson),
   ];
   if (issues.length > 0) {
-    return failedBlock(jsonStr, issues);
+    return failedBlock(trimmed, issues);
   }
-  return { type: "form", form: validation.data as IrixForm, rawJson: jsonStr };
+  return { type: "form", form: validation.data as IrixForm, rawJson: trimmed };
 }
 
 export function parseMessageContent(text: string): ParsedBlock[] {

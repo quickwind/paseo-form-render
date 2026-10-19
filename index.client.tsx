@@ -1,10 +1,12 @@
 import type { PluginClientContext, PluginTimelineItemProps } from "@getpaseo/plugin/client";
 import { usePaseo } from "@getpaseo/plugin/client";
 import React from "react";
+import { Platform } from "react-native";
 import { z } from "zod";
 import { hasFormBlock } from "./shared/parser";
 import { MessageContainer } from "./client/container";
 import { IrixSettingsScreen } from "./client/settings-screen";
+import { installWebFormMounter } from "./client/web";
 import { showDemoForm } from "./shared/demo";
 import { IRIX_PROMPT_INSTRUCTION } from "./shared/prompt";
 
@@ -24,34 +26,47 @@ function TimelineMessageView({
     await paseo.agents.ref(agentId).send(formattedMessage);
   };
 
-  return <MessageContainer text={item.data.text} theme={theme} agentId={agentId} onSubmit={handleSubmit} />;
+  return (
+    <MessageContainer
+      text={item.data.text}
+      theme={theme}
+      agentId={agentId}
+      onSubmit={handleSubmit}
+    />
+  );
 }
 
 export default function contribute(client: PluginClientContext) {
-  // Transform assistant messages that include irix-form fences
-  client.addTimelineTransformer({
-    id: "irix-ui-transformer",
-    query: { itemType: "assistant_message" },
-    transform({ item }) {
-      if (!hasFormBlock(item.text)) {
-        return;
-      }
-      return {
-        items: [
-          {
-            type: "plugin",
-            kind: timelineKind,
-            version: 1,
-            data: {
-              text: item.text,
-            },
-          },
-        ],
-      };
-    },
-  });
+  const cleanupWeb = installWebFormMounter(client);
 
-  // Render the transformed timeline item
+  // On non-web hosts (mobile React Native), transform assistant messages that include irix-form fences.
+  // On web/desktop, installWebFormMounter mounts forms in-place inside Paseo's native code blocks so
+  // native Markdown rendering (tables, etc.) and other plugins (e.g. Quote selection) are unaffected.
+  if (Platform.OS !== "web") {
+    client.addTimelineTransformer({
+      id: "irix-ui-transformer",
+      query: { itemType: "assistant_message" },
+      transform({ item }) {
+        if (!hasFormBlock(item.text)) {
+          return;
+        }
+        return {
+          items: [
+            {
+              type: "plugin",
+              kind: timelineKind,
+              version: 1,
+              data: {
+                text: item.text,
+              },
+            },
+          ],
+        };
+      },
+    });
+  }
+
+  // Render plugin timeline items (used by /form-demo and non-web fallback)
   client.addTimelineRenderer({
     kind: timelineKind,
     version: 1,
@@ -93,5 +108,7 @@ export default function contribute(client: PluginClientContext) {
     },
   });
 
-  return () => {};
+  return () => {
+    cleanupWeb();
+  };
 }

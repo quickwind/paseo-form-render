@@ -1,5 +1,4 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
-import { useRpc } from "@getpaseo/plugin/client";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Modal,
@@ -17,6 +16,7 @@ import {
   type FilePickerShortcut,
 } from "../shared/pickers";
 import { normalizeExtensions } from "../shared/schema";
+import { useIrixRpc } from "./rpc-bridge";
 
 interface ProjectFileModalProps {
   visible: boolean;
@@ -41,8 +41,8 @@ export function ProjectFileModal({
   initialPath,
   theme,
 }: ProjectFileModalProps) {
-  const listProjectFiles = useRpc(listProjectFilesRpc);
-  const createDir = useRpc(createDirectoryRpc);
+  const listProjectFiles = useIrixRpc(listProjectFilesRpc);
+  const createDir = useIrixRpc(createDirectoryRpc);
   const [currentPath, setCurrentPath] = useState("");
   const [parentPath, setParentPath] = useState<string | null>(null);
   const [entries, setEntries] = useState<ProjectFileEntry[]>([]);

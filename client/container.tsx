@@ -1,16 +1,27 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { formatIssues } from "../shared/form-errors";
 import { buildFixMessage } from "../shared/form-fix";
-import { parseMessageContent, type ParsedBlock } from "../shared/parser";
+import { parseFormBlock, parseMessageContent, type ParsedBlock } from "../shared/parser";
 import { IrixFormView } from "./renderer";
 import { MarkdownText } from "./markdown";
+import { IrixRpcProvider, type IrixRpcFn } from "./rpc-bridge";
 
 export interface MessageContainerProps {
   text: string;
   theme: PluginHostProps["theme"];
   agentId?: string;
+  rpc?: IrixRpcFn;
+  onSubmit: (formattedMessage: string) => Promise<void> | void;
+}
+
+export interface FormBlockViewProps {
+  rawJson: string;
+  blockNumber: number;
+  theme: PluginHostProps["theme"];
+  agentId?: string;
+  rpc?: IrixRpcFn;
   onSubmit: (formattedMessage: string) => Promise<void> | void;
 }
 
@@ -88,51 +99,84 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
   );
 };
 
-export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme, agentId, onSubmit }) => {
+export const FormBlockView: React.FC<FormBlockViewProps> = ({
+  rawJson,
+  blockNumber,
+  theme,
+  agentId,
+  rpc,
+  onSubmit,
+}) => {
+  const block = useMemo(() => parseFormBlock(rawJson), [rawJson]);
+
+  return (
+    <IrixRpcProvider rpc={rpc}>
+      {block.error ? (
+        <FormErrorBox
+          block={block}
+          blockNumber={blockNumber}
+          theme={theme}
+          onSubmit={onSubmit}
+        />
+      ) : block.form ? (
+        <IrixFormView
+          form={block.form}
+          theme={theme}
+          agentId={agentId}
+          onSubmit={onSubmit}
+        />
+      ) : null}
+    </IrixRpcProvider>
+  );
+};
+
+export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme, agentId, rpc, onSubmit }) => {
   const blocks = parseMessageContent(text);
 
   return (
-    <View style={styles.container}>
-      {blocks.map((block, idx) => {
-        if (block.type === "text" && block.content) {
-          return (
-            <MarkdownText
-              key={idx}
-              text={block.content}
-              theme={theme}
-            />
-          );
-        }
-
-        if (block.type === "form") {
-          if (block.error) {
+    <IrixRpcProvider rpc={rpc}>
+      <View style={styles.container} testID="assistant-message">
+        {blocks.map((block, idx) => {
+          if (block.type === "text" && block.content) {
             return (
-              <FormErrorBox
+              <MarkdownText
                 key={idx}
-                block={block}
-                blockNumber={blocks.slice(0, idx).filter((b) => b.type === "form").length + 1}
+                text={block.content}
                 theme={theme}
-                onSubmit={onSubmit}
               />
             );
           }
 
-          if (block.form) {
-            return (
-              <IrixFormView
-                key={idx}
-                form={block.form}
-                theme={theme}
-                agentId={agentId}
-                onSubmit={onSubmit}
-              />
-            );
-          }
-        }
+          if (block.type === "form") {
+            if (block.error) {
+              return (
+                <FormErrorBox
+                  key={idx}
+                  block={block}
+                  blockNumber={blocks.slice(0, idx).filter((b) => b.type === "form").length + 1}
+                  theme={theme}
+                  onSubmit={onSubmit}
+                />
+              );
+            }
 
-        return null;
-      })}
-    </View>
+            if (block.form) {
+              return (
+                <IrixFormView
+                  key={idx}
+                  form={block.form}
+                  theme={theme}
+                  agentId={agentId}
+                  onSubmit={onSubmit}
+                />
+              );
+            }
+          }
+
+          return null;
+        })}
+      </View>
+    </IrixRpcProvider>
   );
 };
 
