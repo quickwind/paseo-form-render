@@ -103,6 +103,8 @@ function parseBlocks(src: string): MarkdownBlock[] {
   return blocks;
 }
 
+const WEB_TEXT_SELECTABLE = Platform.OS === "web" ? { userSelect: "text" as const } : {};
+
 function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
   const regex = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
   const parts: ReactNode[] = [];
@@ -118,11 +120,14 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       parts.push(
         <Text
           key={match.index}
+          selectable
+          dataSet={{ paseoMarkdownTag: "code" }}
           style={{
             color,
             fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
             fontSize: 13,
             backgroundColor: codeBg,
+            ...WEB_TEXT_SELECTABLE,
           }}
         >
           {token.slice(1, -1)}
@@ -130,13 +135,31 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       );
     } else if (token.startsWith("**") && token.endsWith("**")) {
       parts.push(
-        <Text key={match.index} style={{ fontWeight: "bold", color }}>
+        <Text
+          key={match.index}
+          selectable
+          dataSet={{ paseoMarkdownTag: "strong" }}
+          style={{
+            fontWeight: "bold",
+            color,
+            ...WEB_TEXT_SELECTABLE,
+          }}
+        >
           {token.slice(2, -2)}
         </Text>,
       );
     } else if (token.startsWith("*") && token.endsWith("*")) {
       parts.push(
-        <Text key={match.index} style={{ fontStyle: "italic", color }}>
+        <Text
+          key={match.index}
+          selectable
+          dataSet={{ paseoMarkdownTag: "em" }}
+          style={{
+            fontStyle: "italic",
+            color,
+            ...WEB_TEXT_SELECTABLE,
+          }}
+        >
           {token.slice(1, -1)}
         </Text>,
       );
@@ -144,7 +167,16 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       const closeBracket = token.indexOf("]");
       const linkText = token.slice(1, closeBracket);
       parts.push(
-        <Text key={match.index} style={{ color, textDecorationLine: "underline" }}>
+        <Text
+          key={match.index}
+          selectable
+          dataSet={{ paseoMarkdownTag: "a" }}
+          style={{
+            color,
+            textDecorationLine: "underline",
+            ...WEB_TEXT_SELECTABLE,
+          }}
+        >
           {linkText}
         </Text>,
       );
@@ -179,11 +211,14 @@ export function MarkdownText({
           return (
             <Text
               key={index}
+              selectable
+              dataSet={{ paseoMarkdownTag: `h${block.level || 1}` }}
               style={{
                 color,
                 fontSize,
                 fontWeight: "600",
                 marginVertical: 6,
+                ...WEB_TEXT_SELECTABLE,
               }}
             >
               {parseInline(block.text ?? "", color, codeBg)}
@@ -194,11 +229,14 @@ export function MarkdownText({
           return (
             <Text
               key={index}
+              selectable
+              dataSet={{ paseoMarkdownTag: "p" }}
               style={{
                 color,
                 lineHeight: 22,
                 fontSize: 14,
                 marginBottom: 8,
+                ...WEB_TEXT_SELECTABLE,
               }}
             >
               {parseInline(block.text ?? "", color, codeBg)}
@@ -207,11 +245,28 @@ export function MarkdownText({
         }
         if (block.type === "list-item") {
           return (
-            <View key={index} style={styles.listRow}>
-              <Text style={{ color: theme.colors.foregroundMuted, lineHeight: 22, width: 18 }}>
+            <View
+              key={index}
+              dataSet={{ paseoMarkdownTag: "li" }}
+              style={styles.listRow}
+            >
+              <Text
+                selectable
+                dataSet={{ paseoMarkdownIgnore: "true", paseoMarkdownListMarker: "true" }}
+                style={{ color: theme.colors.foregroundMuted, lineHeight: 22, width: 18 }}
+              >
                 {block.bullet?.endsWith(".") ? block.bullet : "•"}
               </Text>
-              <Text style={{ color, lineHeight: 22, fontSize: 14, flex: 1 }}>
+              <Text
+                selectable
+                style={{
+                  color,
+                  lineHeight: 22,
+                  fontSize: 14,
+                  flex: 1,
+                  ...WEB_TEXT_SELECTABLE,
+                }}
+              >
                 {parseInline(block.text ?? "", color, codeBg)}
               </Text>
             </View>
@@ -223,12 +278,14 @@ export function MarkdownText({
           return (
             <View
               key={index}
+              dataSet={{ paseoMarkdownTag: "table" }}
               style={[
                 styles.tableContainer,
                 { borderColor: theme.colors.border },
               ]}
             >
               <View
+                dataSet={{ paseoMarkdownTag: "thead" }}
                 style={[
                   styles.tableHeaderRow,
                   {
@@ -238,12 +295,18 @@ export function MarkdownText({
                 ]}
               >
                 {headers.map((header, colIdx) => (
-                  <View key={colIdx} style={styles.tableCell}>
+                  <View
+                    key={colIdx}
+                    dataSet={{ paseoMarkdownTag: "th" }}
+                    style={styles.tableCell}
+                  >
                     <Text
+                      selectable
                       style={{
                         color,
                         fontSize: 13,
                         fontWeight: "600",
+                        ...WEB_TEXT_SELECTABLE,
                       }}
                     >
                       {parseInline(header, color, codeBg)}
@@ -254,6 +317,7 @@ export function MarkdownText({
               {rows.map((row, rowIdx) => (
                 <View
                   key={rowIdx}
+                  dataSet={{ paseoMarkdownTag: "tr" }}
                   style={[
                     styles.tableRow,
                     rowIdx < rows.length - 1
@@ -265,8 +329,19 @@ export function MarkdownText({
                   ]}
                 >
                   {headers.map((_, colIdx) => (
-                    <View key={colIdx} style={styles.tableCell}>
-                      <Text style={{ color, fontSize: 13 }}>
+                    <View
+                      key={colIdx}
+                      dataSet={{ paseoMarkdownTag: "td" }}
+                      style={styles.tableCell}
+                    >
+                      <Text
+                        selectable
+                        style={{
+                          color,
+                          fontSize: 13,
+                          ...WEB_TEXT_SELECTABLE,
+                        }}
+                      >
                         {parseInline(row[colIdx] ?? "", color, codeBg)}
                       </Text>
                     </View>
@@ -280,17 +355,24 @@ export function MarkdownText({
           return (
             <View
               key={index}
+              dataSet={{
+                paseoMarkdownTag: "pre",
+                paseoMarkdownLanguage: block.lang || undefined,
+              }}
               style={[
                 styles.codeBlock,
                 { backgroundColor: codeBg },
               ]}
             >
               <Text
+                selectable
+                dataSet={{ paseoMarkdownTag: "code" }}
                 style={{
                   color,
                   fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
                   fontSize: 12,
                   lineHeight: 18,
+                  ...WEB_TEXT_SELECTABLE,
                 }}
               >
                 {block.code?.trimEnd() ?? ""}
@@ -307,6 +389,7 @@ export function MarkdownText({
 const styles = StyleSheet.create({
   container: {
     marginVertical: 2,
+    ...(Platform.OS === "web" ? { userSelect: "text" as const } : {}),
   },
   listRow: {
     flexDirection: "row",

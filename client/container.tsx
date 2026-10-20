@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
   container: {
     gap: 8,
     width: "100%",
+    ...(Platform.OS === "web" ? { userSelect: "text" as const } : {}),
   },
   errorBox: {
     borderWidth: 1,
