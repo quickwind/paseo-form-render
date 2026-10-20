@@ -119,7 +119,7 @@ function DropdownSelect({
         </Pressable>
       </View>
 
-      {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
+      {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
     </View>
   );
 }
@@ -182,7 +182,7 @@ function DropdownMultiSelect({
         </Pressable>
       </View>
 
-      {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
+      {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
     </View>
   );
 }
@@ -276,7 +276,7 @@ function FilePickerField({
             contentContainerStyle={styles.pathInspectorScrollContent}
             style={styles.pathInspectorScroll}
           >
-            <Text selectable style={[styles.pathInspectorText, { color: colors.foreground }]}>
+            <Text style={[styles.pathInspectorText, { color: colors.foreground }]}>
               {value}
             </Text>
           </ScrollView>
@@ -318,10 +318,10 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
     case "Card":
       return (
         <View style={[styles.card, { backgroundColor: theme.colors.surface1, borderColor: theme.colors.border }]}>
-          {node.title && <Text style={[styles.cardTitle, { color: theme.colors.foreground }]}>{node.title}</Text>}
-          {node.description && <Text style={[styles.cardDescription, { color: theme.colors.foregroundMuted }]}>{node.description}</Text>}
+          {node.title ? <Text style={[styles.cardTitle, { color: theme.colors.foreground }]}>{node.title}</Text> : null}
+          {node.description ? <Text style={[styles.cardDescription, { color: theme.colors.foregroundMuted }]}>{node.description}</Text> : null}
           <View style={styles.cardBody}>
-            {node.children.map((child, index) => (
+            {(node.children || []).map((child, index) => (
               <NodeRenderer
                 key={index}
                 node={child}
@@ -342,7 +342,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
     case "Stack":
       return (
         <View style={[styles.stack, node.direction === "horizontal" ? styles.stackRow : styles.stackColumn]}>
-          {node.children.map((child, index) => (
+          {(node.children || []).map((child, index) => (
             <NodeRenderer
               key={index}
               node={child}
@@ -398,7 +398,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
       const c = getToneColors(node.tone, theme);
       return (
         <View style={[styles.alert, { backgroundColor: c.bg, borderColor: c.border }]}>
-          {node.title && <Text style={[styles.alertTitle, { color: c.text }]}>{node.title}</Text>}
+          {node.title ? <Text style={[styles.alertTitle, { color: c.text }]}>{node.title}</Text> : null}
           <Text style={[styles.alertText, { color: c.text }]}>{node.text}</Text>
         </View>
       );
@@ -417,27 +417,34 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
         </View>
       );
 
-    case "Table":
+    case "Table": {
+      const columns = node.columns || [];
+      const rows = node.rows || [];
       return (
         <View style={[styles.table, { borderColor: theme.colors.border }]}>
           <View style={[styles.tableHeaderRow, { backgroundColor: theme.colors.surface2, borderBottomColor: theme.colors.border }]}>
-            {node.columns.map((col) => (
-              <Text key={col.key} style={[styles.tableHeaderCell, { color: theme.colors.foregroundMuted }]}>
-                {col.label}
-              </Text>
+            {columns.map((col) => (
+              <View key={col.key} style={styles.tableCellContainer}>
+                <Text style={[styles.tableHeaderCell, { color: theme.colors.foregroundMuted }]}>
+                  {col.label}
+                </Text>
+              </View>
             ))}
           </View>
-          {node.rows.map((row, rIdx) => (
+          {rows.map((row, rIdx) => (
             <View key={rIdx} style={[styles.tableRow, { borderBottomColor: theme.colors.border }]}>
-              {node.columns.map((col) => (
-                <Text key={col.key} style={[styles.tableCell, { color: theme.colors.foreground }]}>
-                  {row[col.key] !== null && row[col.key] !== undefined ? String(row[col.key]) : "-"}
-                </Text>
+              {columns.map((col) => (
+                <View key={col.key} style={styles.tableCellContainer}>
+                  <Text style={[styles.tableCell, { color: theme.colors.foreground }]}>
+                    {row[col.key] !== null && row[col.key] !== undefined ? String(row[col.key]) : "-"}
+                  </Text>
+                </View>
               ))}
             </View>
           ))}
         </View>
       );
+    }
 
     case "Input": {
       const error = errors[node.id];
@@ -477,7 +484,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
             secureTextEntry={isPassword}
             maxLength={maxLen}
           />
-          {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
+          {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
         </View>
       );
     }
@@ -524,7 +531,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
               disabled={disabled}
             />
           </View>
-          {error && <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text>}
+          {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
         </View>
       );
     }
@@ -863,9 +870,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
   },
-  tableHeaderCell: {
+  tableCellContainer: {
     flex: 1,
     padding: 8,
+  },
+  tableHeaderCell: {
     fontSize: 12,
     fontWeight: "600",
   },
@@ -874,8 +883,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   tableCell: {
-    flex: 1,
-    padding: 8,
     fontSize: 12,
   },
   fieldContainer: {
@@ -894,8 +901,10 @@ const styles = StyleSheet.create({
   },
   inputMultiline: {
     minHeight: 64,
-    textAlignVertical: "top",
     ...Platform.select({
+      android: {
+        textAlignVertical: "top",
+      },
       web: {
         resize: "vertical",
       } as any,

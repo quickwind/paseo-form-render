@@ -217,6 +217,8 @@ export function ProjectFileModal({
 
   const colors = theme.colors;
 
+  if (!visible) return null;
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -463,7 +465,6 @@ export function ProjectFileModal({
                   style={{ marginTop: 2 }}
                 >
                   <Text
-                    selectable
                     style={{ color: colors.foreground, fontSize: 13, fontWeight: "500" }}
                   >
                     {effectiveSelected}

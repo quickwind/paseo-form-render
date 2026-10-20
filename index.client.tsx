@@ -6,7 +6,6 @@ import { z } from "zod";
 import { hasFormBlock } from "./shared/parser";
 import { MessageContainer } from "./client/container";
 import { IrixSettingsScreen } from "./client/settings-screen";
-import { installWebFormMounter } from "./client/web";
 import { showDemoForm } from "./shared/demo";
 import { IRIX_PROMPT_INSTRUCTION } from "./shared/prompt";
 
@@ -15,33 +14,29 @@ const timelineDataSchema = z.object({
   text: z.string(),
 });
 
-function TimelineMessageView({
-  item,
-  agentId,
-  theme,
-}: PluginTimelineItemProps<z.output<typeof timelineDataSchema>>) {
-  const paseo = usePaseo();
-
-  const handleSubmit = async (formattedMessage: string) => {
-    await paseo.agents.ref(agentId).send(formattedMessage);
-  };
-
-  return (
-    <MessageContainer
-      text={item.data.text}
-      theme={theme}
-      agentId={agentId}
-      onSubmit={handleSubmit}
-    />
-  );
-}
-
 export default function contribute(client: PluginClientContext) {
-  const cleanupWeb = installWebFormMounter(client);
+  function TimelineMessageView({
+    item,
+    agentId,
+    theme,
+  }: PluginTimelineItemProps<z.output<typeof timelineDataSchema>>) {
+    const paseo = usePaseo();
 
+    const handleSubmit = async (formattedMessage: string) => {
+      await paseo.agents.ref(agentId).send(formattedMessage);
+    };
+
+    return (
+      <MessageContainer
+        text={item.data.text}
+        theme={theme}
+        agentId={agentId}
+        rpc={client.rpc}
+        onSubmit={handleSubmit}
+      />
+    );
+  }
   // On non-web hosts (mobile React Native), transform assistant messages that include irix-form fences.
-  // On web/desktop, installWebFormMounter mounts forms in-place inside Paseo's native code blocks so
-  // native Markdown rendering (tables, etc.) and other plugins (e.g. Quote selection) are unaffected.
   if (Platform.OS !== "web") {
     client.addTimelineTransformer({
       id: "irix-ui-transformer",
@@ -66,7 +61,7 @@ export default function contribute(client: PluginClientContext) {
     });
   }
 
-  // Render plugin timeline items (used by /form-demo and non-web fallback)
+  // Render plugin timeline items
   client.addTimelineRenderer({
     kind: timelineKind,
     version: 1,
@@ -78,8 +73,6 @@ export default function contribute(client: PluginClientContext) {
   client.addSettingsScreen({
     id: "irix-ui-render-settings",
     title: "Irix UI Render",
-    // A Lucide export name (PascalCase): the host throws on unknown names such as "settings", and
-    // a throwing contribute() unloads the whole client plugin (no form rendering at all).
     icon: "Settings",
     Component: IrixSettingsScreen,
   });
@@ -96,8 +89,7 @@ export default function contribute(client: PluginClientContext) {
     },
   });
 
-  // Slash command to show a sample form: the daemon appends it to the timeline, the agent is not asked
-  // anything, so it costs no model call and shows no raw JSON.
+  // Slash command to show a sample form
   client.addSlashCommand({
     name: "form-demo",
     description: "Show a demo interactive form",
@@ -108,7 +100,5 @@ export default function contribute(client: PluginClientContext) {
     },
   });
 
-  return () => {
-    cleanupWeb();
-  };
+  return () => {};
 }

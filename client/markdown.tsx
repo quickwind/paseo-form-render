@@ -1,6 +1,6 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
 import React, { useMemo, type ReactNode } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
 interface MarkdownBlock {
   type: "heading" | "paragraph" | "list-item" | "code" | "table";
@@ -118,15 +118,11 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       parts.push(
         <Text
           key={match.index}
-          selectable
           style={{
             color,
-            fontFamily: "monospace",
+            fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
             fontSize: 13,
             backgroundColor: codeBg,
-            paddingHorizontal: 4,
-            paddingVertical: 1,
-            borderRadius: 4,
           }}
         >
           {token.slice(1, -1)}
@@ -134,13 +130,13 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       );
     } else if (token.startsWith("**") && token.endsWith("**")) {
       parts.push(
-        <Text key={match.index} selectable style={{ fontWeight: "bold", color }}>
+        <Text key={match.index} style={{ fontWeight: "bold", color }}>
           {token.slice(2, -2)}
         </Text>,
       );
     } else if (token.startsWith("*") && token.endsWith("*")) {
       parts.push(
-        <Text key={match.index} selectable style={{ fontStyle: "italic", color }}>
+        <Text key={match.index} style={{ fontStyle: "italic", color }}>
           {token.slice(1, -1)}
         </Text>,
       );
@@ -148,7 +144,7 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
       const closeBracket = token.indexOf("]");
       const linkText = token.slice(1, closeBracket);
       parts.push(
-        <Text key={match.index} selectable style={{ color, textDecorationLine: "underline" }}>
+        <Text key={match.index} style={{ color, textDecorationLine: "underline" }}>
           {linkText}
         </Text>,
       );
@@ -165,7 +161,13 @@ export function MarkdownText({
   text,
   theme,
 }: Pick<PluginHostProps, "theme"> & { text: string }) {
-  const blocks = useMemo(() => parseBlocks(text), [text]);
+  const blocks = useMemo(() => {
+    try {
+      return parseBlocks(text);
+    } catch {
+      return [{ type: "paragraph" as const, text }];
+    }
+  }, [text]);
   const color = theme.colors.foreground;
   const codeBg = theme.colors.surface2;
 
@@ -177,7 +179,6 @@ export function MarkdownText({
           return (
             <Text
               key={index}
-              selectable
               style={{
                 color,
                 fontSize,
@@ -193,7 +194,6 @@ export function MarkdownText({
           return (
             <Text
               key={index}
-              selectable
               style={{
                 color,
                 lineHeight: 22,
@@ -208,10 +208,10 @@ export function MarkdownText({
         if (block.type === "list-item") {
           return (
             <View key={index} style={styles.listRow}>
-              <Text selectable style={{ color: theme.colors.foregroundMuted, lineHeight: 22, width: 18 }}>
+              <Text style={{ color: theme.colors.foregroundMuted, lineHeight: 22, width: 18 }}>
                 {block.bullet?.endsWith(".") ? block.bullet : "•"}
               </Text>
-              <Text selectable style={{ color, lineHeight: 22, fontSize: 14, flex: 1 }}>
+              <Text style={{ color, lineHeight: 22, fontSize: 14, flex: 1 }}>
                 {parseInline(block.text ?? "", color, codeBg)}
               </Text>
             </View>
@@ -240,7 +240,6 @@ export function MarkdownText({
                 {headers.map((header, colIdx) => (
                   <View key={colIdx} style={styles.tableCell}>
                     <Text
-                      selectable
                       style={{
                         color,
                         fontSize: 13,
@@ -267,7 +266,7 @@ export function MarkdownText({
                 >
                   {headers.map((_, colIdx) => (
                     <View key={colIdx} style={styles.tableCell}>
-                      <Text selectable style={{ color, fontSize: 13 }}>
+                      <Text style={{ color, fontSize: 13 }}>
                         {parseInline(row[colIdx] ?? "", color, codeBg)}
                       </Text>
                     </View>
@@ -279,22 +278,24 @@ export function MarkdownText({
         }
         if (block.type === "code") {
           return (
-            <Text
+            <View
               key={index}
-              selectable
-              style={{
-                color,
-                fontFamily: "monospace",
-                fontSize: 12,
-                lineHeight: 18,
-                padding: 10,
-                borderRadius: 6,
-                backgroundColor: codeBg,
-                marginVertical: 4,
-              }}
+              style={[
+                styles.codeBlock,
+                { backgroundColor: codeBg },
+              ]}
             >
-              {block.code?.trimEnd() ?? ""}
-            </Text>
+              <Text
+                style={{
+                  color,
+                  fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
+                  fontSize: 12,
+                  lineHeight: 18,
+                }}
+              >
+                {block.code?.trimEnd() ?? ""}
+              </Text>
+            </View>
           );
         }
         return null;
@@ -332,5 +333,10 @@ const styles = StyleSheet.create({
   tableCell: {
     flex: 1,
     paddingRight: 8,
+  },
+  codeBlock: {
+    borderRadius: 6,
+    padding: 10,
+    marginVertical: 4,
   },
 });

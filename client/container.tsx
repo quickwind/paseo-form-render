@@ -1,6 +1,6 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
 import React, { useMemo, useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
 import { formatIssues } from "../shared/form-errors";
 import { buildFixMessage } from "../shared/form-fix";
 import { parseFormBlock, parseMessageContent, type ParsedBlock } from "../shared/parser";
@@ -32,6 +32,56 @@ interface FormErrorBoxProps {
   onSubmit: MessageContainerProps["onSubmit"];
 }
 
+interface BlockErrorBoundaryProps {
+  fallbackText?: string;
+  children: React.ReactNode;
+}
+
+interface BlockErrorBoundaryState {
+  hasError: boolean;
+  errorMessage: string;
+}
+
+// ES5 class component for Hermes compatibility (Hermes throws syntax error on ES6 `class` keyword).
+const BlockErrorBoundary: React.ComponentClass<BlockErrorBoundaryProps, BlockErrorBoundaryState> = function (
+  this: any,
+  props: BlockErrorBoundaryProps
+) {
+  (React.Component as any).call(this, props);
+  this.state = { hasError: false, errorMessage: "" };
+} as any;
+BlockErrorBoundary.prototype = Object.create(React.Component.prototype);
+BlockErrorBoundary.prototype.constructor = BlockErrorBoundary;
+(BlockErrorBoundary as any).getDerivedStateFromError = function (error: any): BlockErrorBoundaryState {
+  const msg = error instanceof Error ? error.message : String(error);
+  return { hasError: true, errorMessage: msg };
+};
+BlockErrorBoundary.prototype.componentDidCatch = function (error: any, info: any) {
+  console.warn("[irix-ui-render] Block render failed:", error, info?.componentStack);
+};
+BlockErrorBoundary.prototype.render = function (this: any) {
+  if (this.state.hasError) {
+    return (
+      <View style={[styles.errorBox, { borderColor: "#ef4444", backgroundColor: "#fee2e2" }]}>
+        <Text style={[styles.errorTitle, { color: "#dc2626" }]}>
+          [UI Render Error]
+        </Text>
+        <Text style={[styles.errorDetail, { color: "#991b1b" }]}>
+          {this.state.errorMessage}
+        </Text>
+        {this.props.fallbackText ? (
+          <View style={styles.rawJsonBox}>
+            <Text style={[styles.rawJsonText, { color: "#1f2937" }]}>
+              {this.props.fallbackText}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    );
+  }
+  return this.props.children;
+};
+
 const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, onSubmit }) => {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const errors = block.errors ?? [];
@@ -60,22 +110,29 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
         [irix-form Syntax Error]
       </Text>
       {formatIssues(errors).map((line, i) => (
-        <Text key={i} selectable style={[styles.errorDetail, { color: theme.colors.statusDanger }]}>
+        <Text key={i} style={[styles.errorDetail, { color: theme.colors.statusDanger }]}>
           {line}
         </Text>
       ))}
-      <Text
-        selectable
+      <View
         style={[
-          styles.rawJson,
+          styles.rawJsonBox,
           {
             backgroundColor: theme.colors.surface1,
-            color: theme.colors.foreground,
           },
         ]}
       >
-        {block.rawJson}
-      </Text>
+        <Text
+          style={[
+            styles.rawJsonText,
+            {
+              color: theme.colors.foreground,
+            },
+          ]}
+        >
+          {block.rawJson}
+        </Text>
+      </View>
       {status === "sent" ? (
         <Text style={[styles.sentText, { color: theme.colors.statusSuccess }]}>
           ✓ Fix requested; the agent will reply with a corrected form
@@ -139,36 +196,39 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
         {blocks.map((block, idx) => {
           if (block.type === "text" && block.content) {
             return (
-              <MarkdownText
-                key={idx}
-                text={block.content}
-                theme={theme}
-              />
+              <BlockErrorBoundary key={idx} fallbackText={block.content}>
+                <MarkdownText
+                  text={block.content}
+                  theme={theme}
+                />
+              </BlockErrorBoundary>
             );
           }
 
           if (block.type === "form") {
             if (block.error) {
               return (
-                <FormErrorBox
-                  key={idx}
-                  block={block}
-                  blockNumber={blocks.slice(0, idx).filter((b) => b.type === "form").length + 1}
-                  theme={theme}
-                  onSubmit={onSubmit}
-                />
+                <BlockErrorBoundary key={idx} fallbackText={block.rawJson ?? ""}>
+                  <FormErrorBox
+                    block={block}
+                    blockNumber={blocks.slice(0, idx).filter((b) => b.type === "form").length + 1}
+                    theme={theme}
+                    onSubmit={onSubmit}
+                  />
+                </BlockErrorBoundary>
               );
             }
 
             if (block.form) {
               return (
-                <IrixFormView
-                  key={idx}
-                  form={block.form}
-                  theme={theme}
-                  agentId={agentId}
-                  onSubmit={onSubmit}
-                />
+                <BlockErrorBoundary key={idx} fallbackText={block.rawJson ?? ""}>
+                  <IrixFormView
+                    form={block.form}
+                    theme={theme}
+                    agentId={agentId}
+                    onSubmit={onSubmit}
+                  />
+                </BlockErrorBoundary>
               );
             }
           }
@@ -214,10 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  rawJson: {
-    fontFamily: "monospace",
-    fontSize: 11,
+  rawJsonBox: {
     padding: 8,
     borderRadius: 4,
+  },
+  rawJsonText: {
+    fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
+    fontSize: 11,
   },
 });
