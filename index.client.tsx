@@ -36,30 +36,28 @@ export default function contribute(client: PluginClientContext) {
       />
     );
   }
-  // On non-web hosts (mobile React Native), transform assistant messages that include irix-form fences.
-  if (Platform.OS !== "web") {
-    client.addTimelineTransformer({
-      id: "irix-ui-transformer",
-      query: { itemType: "assistant_message" },
-      transform({ item }) {
-        if (!hasFormBlock(item.text)) {
-          return;
-        }
-        return {
-          items: [
-            {
-              type: "plugin",
-              kind: timelineKind,
-              version: 1,
-              data: {
-                text: item.text,
-              },
+  // Transform assistant messages that include irix-form fences across all platforms (web & mobile).
+  client.addTimelineTransformer({
+    id: "irix-ui-transformer",
+    query: { itemType: "assistant_message" },
+    transform({ item }) {
+      if (!hasFormBlock(item.text)) {
+        return;
+      }
+      return {
+        items: [
+          {
+            type: "plugin",
+            kind: timelineKind,
+            version: 1,
+            data: {
+              text: item.text,
             },
-          ],
-        };
-      },
-    });
-  }
+          },
+        ],
+      };
+    },
+  });
 
   // Render plugin timeline items
   client.addTimelineRenderer({
