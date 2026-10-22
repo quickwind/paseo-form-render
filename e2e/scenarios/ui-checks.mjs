@@ -17,6 +17,24 @@ async function goodFormRendered(ui) {
   return `"Volume" texts=${await ui.text("Volume").count()}`;
 }
 
+/**
+ * Computed font sizes of the rendered text `needle`. When the same text is rendered several times
+ * (e.g. in the tab title and in the chat) every size is returned.
+ */
+async function fontSizesOf(ui, needle, { exact = true } = {}) {
+  return ui.page.evaluate(
+    ({ needle, exact }) => {
+      const nodes = Array.from(document.querySelectorAll("div,span,p")).filter((node) => {
+        if (node.children.length !== 0) return false;
+        const text = (node.textContent || "").trim();
+        return exact ? text === needle : text.startsWith(needle);
+      });
+      return nodes.map((node) => parseFloat(getComputedStyle(node).fontSize));
+    },
+    { needle, exact },
+  );
+}
+
 /** Checks shared by every UI scenario: the plugin's client bundle evaluated without errors. */
 export async function uiPluginLoaded(ctx, scenario) {
   const { ui, results } = ctx;
@@ -74,7 +92,7 @@ export async function uiS2(ctx, run, r) {
 }
 
 /** S7: a valid form renders fully, without an error box (baseline screenshot). */
-export async function uiS7(ctx, run, r) {
+export async function uiS7(ctx, run, r, plain) {
   const { ui, results } = ctx;
   await ui.openAgent(r.agent.id, r.first);
   await ui.check(results, "S7", `run${run}: valid form rendered without error box`, shotName("s7", "valid-form", run), async () => {
@@ -83,6 +101,21 @@ export async function uiS7(ctx, run, r) {
     if (boxes) throw new Error(`error boxes=${boxes}`);
     await ui.screenshot(shotName("s7", "valid-form", run), ui.text("Volume").last());
     return detail;
+  });
+  // The text around the form is rendered by the plugin instead of the host's markdown renderer, so it
+  // has to use the host's body font size; otherwise such replies look shrunk next to plain ones.
+  await ui.check(results, "S7", `run${run}: text around the form uses the host font size`, shotName("s7", "font-size", run), async () => {
+    const pluginSizes = await fontSizesOf(ui, "Fixed:");
+    if (!pluginSizes.length) throw new Error('the reply text "Fixed:" was not rendered');
+    await ui.openAgent(plain.agent.id, plain.first);
+    const hostSizes = await fontSizesOf(ui, "Just plain text", { exact: false });
+    if (!hostSizes.length) throw new Error('the plain reply text was not rendered');
+    const pluginSize = Math.max(...pluginSizes);
+    const hostSize = Math.max(...hostSizes);
+    if (pluginSize !== hostSize) {
+      throw new Error(`the plugin renders the reply text at ${pluginSize}px but the host uses ${hostSize}px`);
+    }
+    return `${pluginSize}px`;
   });
 }
 

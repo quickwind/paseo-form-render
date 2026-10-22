@@ -105,6 +105,28 @@ function parseBlocks(src: string): MarkdownBlock[] {
 
 const WEB_TEXT_SELECTABLE = Platform.OS === "web" ? { userSelect: "text" as const } : {};
 
+/**
+ * Typography that mirrors Paseo's own markdown scale: body text uses `fontSize.content` (15) with a
+ * 1.4 line height, inline/code blocks use `fontSize.code` (12) and headings are scaled from the same
+ * base (h1 28, h2 24, h3 21, h4 19, h5/h6 17 with a 1.3 line height).
+ *
+ * This matters because a message that contains an irix-form block is rendered by this plugin instead
+ * of the host's markdown renderer. With smaller values the surrounding text of such a reply looked
+ * shrunk compared to the same text in a plain assistant message.
+ */
+const CONTENT_FONT_SIZE = 15;
+const CONTENT_LINE_HEIGHT = 21;
+const CODE_FONT_SIZE = 12;
+const CODE_LINE_HEIGHT = 22;
+const HEADING_FONT_SIZES = [28, 24, 21, 19, 17, 17];
+const HEADING_LINE_HEIGHTS = [36, 31, 27, 25, 22, 22];
+/** Host spacing scale (spacing[2] = 8, spacing[3] = 12, spacing[4] = 16, spacing[6] = 24). */
+const SPACE_1 = 4;
+const SPACE_2 = 8;
+const SPACE_3 = 12;
+const SPACE_4 = 16;
+const SPACE_6 = 24;
+
 function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
   const regex = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
   const parts: ReactNode[] = [];
@@ -125,8 +147,12 @@ function parseInline(text: string, color: string, codeBg: string): ReactNode[] {
           style={{
             color,
             fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
-            fontSize: 13,
+            fontSize: CODE_FONT_SIZE,
+            lineHeight: CODE_LINE_HEIGHT,
             backgroundColor: codeBg,
+            paddingHorizontal: SPACE_1,
+            paddingVertical: 2,
+            borderRadius: 4,
             ...WEB_TEXT_SELECTABLE,
           }}
         >
@@ -207,17 +233,29 @@ export function MarkdownText({
     <View style={styles.container}>
       {blocks.map((block, index) => {
         if (block.type === "heading") {
-          const fontSize = block.level === 1 ? 20 : block.level === 2 ? 17 : 15;
+          const level = Math.min(Math.max(block.level || 1, 1), 6);
+          const fontSize = HEADING_FONT_SIZES[level - 1];
+          const lineHeight = HEADING_LINE_HEIGHTS[level - 1];
           return (
             <Text
               key={index}
               selectable
-              dataSet={{ paseoMarkdownTag: `h${block.level || 1}` }}
+              dataSet={{ paseoMarkdownTag: `h${level}` }}
               style={{
                 color,
                 fontSize,
-                fontWeight: "600",
-                marginVertical: 6,
+                lineHeight,
+                fontWeight: level <= 2 ? "bold" : "600",
+                marginTop: level === 1 ? SPACE_6 : level <= 4 ? SPACE_4 : SPACE_3,
+                marginBottom: level === 1 ? SPACE_3 : level <= 4 ? SPACE_2 : SPACE_1,
+                ...(level === 1
+                  ? {
+                      borderBottomWidth: 1,
+                      borderBottomColor: theme.colors.border,
+                      paddingBottom: SPACE_2,
+                    }
+                  : null),
+                ...(level === 6 ? { textTransform: "uppercase" as const, letterSpacing: 0.5 } : null),
                 ...WEB_TEXT_SELECTABLE,
               }}
             >
@@ -233,9 +271,9 @@ export function MarkdownText({
               dataSet={{ paseoMarkdownTag: "p" }}
               style={{
                 color,
-                lineHeight: 22,
-                fontSize: 14,
-                marginBottom: 8,
+                lineHeight: CONTENT_LINE_HEIGHT,
+                fontSize: CONTENT_FONT_SIZE,
+                marginBottom: SPACE_3,
                 ...WEB_TEXT_SELECTABLE,
               }}
             >
@@ -253,7 +291,12 @@ export function MarkdownText({
               <Text
                 selectable
                 dataSet={{ paseoMarkdownIgnore: "true", paseoMarkdownListMarker: "true" }}
-                style={{ color: theme.colors.foregroundMuted, lineHeight: 22, width: 18 }}
+                style={{
+                  color: theme.colors.foregroundMuted,
+                  lineHeight: CONTENT_LINE_HEIGHT,
+                  fontSize: CONTENT_FONT_SIZE,
+                  width: 18,
+                }}
               >
                 {block.bullet?.endsWith(".") ? block.bullet : "•"}
               </Text>
@@ -261,8 +304,8 @@ export function MarkdownText({
                 selectable
                 style={{
                   color,
-                  lineHeight: 22,
-                  fontSize: 14,
+                  lineHeight: CONTENT_LINE_HEIGHT,
+                  fontSize: CONTENT_FONT_SIZE,
                   flex: 1,
                   ...WEB_TEXT_SELECTABLE,
                 }}
@@ -304,7 +347,8 @@ export function MarkdownText({
                       selectable
                       style={{
                         color,
-                        fontSize: 13,
+                        fontSize: CONTENT_FONT_SIZE,
+                        lineHeight: CONTENT_LINE_HEIGHT,
                         fontWeight: "600",
                         ...WEB_TEXT_SELECTABLE,
                       }}
@@ -338,7 +382,8 @@ export function MarkdownText({
                         selectable
                         style={{
                           color,
-                          fontSize: 13,
+                          fontSize: CONTENT_FONT_SIZE,
+                          lineHeight: CONTENT_LINE_HEIGHT,
                           ...WEB_TEXT_SELECTABLE,
                         }}
                       >
@@ -370,8 +415,8 @@ export function MarkdownText({
                 style={{
                   color,
                   fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }),
-                  fontSize: 12,
-                  lineHeight: 18,
+                  fontSize: CODE_FONT_SIZE,
+                  lineHeight: CODE_LINE_HEIGHT,
                   ...WEB_TEXT_SELECTABLE,
                 }}
               >
@@ -400,26 +445,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     overflow: "hidden",
-    marginVertical: 6,
+    marginVertical: SPACE_2,
   },
   tableHeaderRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: SPACE_2,
+    paddingHorizontal: SPACE_2,
   },
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: SPACE_2,
+    paddingHorizontal: SPACE_2,
   },
   tableCell: {
     flex: 1,
-    paddingRight: 8,
+    paddingRight: SPACE_2,
   },
   codeBlock: {
     borderRadius: 6,
-    padding: 10,
-    marginVertical: 4,
+    padding: SPACE_3,
+    marginVertical: SPACE_2,
   },
 });

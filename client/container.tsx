@@ -5,7 +5,7 @@ import { formatIssues } from "../shared/form-errors";
 import { buildFixMessage } from "../shared/form-fix";
 import { parseFormBlock, parseMessageContent, type ParsedBlock } from "../shared/parser";
 import { IrixFormView } from "./renderer";
-import { MarkdownText } from "./markdown";
+import { HostMarkdown } from "./host-markdown";
 import { IrixRpcProvider, type IrixRpcFn } from "./rpc-bridge";
 
 export interface MessageContainerProps {
@@ -197,7 +197,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
           if (block.type === "text" && block.content) {
             return (
               <BlockErrorBoundary key={idx} fallbackText={block.content}>
-                <MarkdownText
+                <HostMarkdown
                   text={block.content}
                   theme={theme}
                 />

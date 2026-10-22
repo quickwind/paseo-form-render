@@ -207,11 +207,13 @@ export const SCENARIOS = {
 
   /** Valid forms and plain text never trigger a fix. */
   async s7(ctx, run) {
+    const agents = {};
     for (const name of ["s7good", "s7plain"]) {
       const r = await simple(ctx, name, `S7-${name}`, { quietMs: 4000 });
+      agents[name] = r;
       ctx.results.check("S7", `run${run}: ${name}: no fix`, r.fixes.length === 0 && r.prompts.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
-      if (ctx.ui && name === "s7good") await uiS7(ctx, run, r);
     }
+    if (ctx.ui) await uiS7(ctx, run, agents.s7good, agents.s7plain);
   },
 
   /** Message shapes: streamed chunks, split fences, several messages, long turns, long history. */

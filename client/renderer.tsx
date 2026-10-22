@@ -770,7 +770,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   cardDescription: {
-    fontSize: 13,
+    fontSize: 14,
   },
   cardBody: {
     gap: 12,
@@ -787,13 +787,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   heading: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "600",
     marginVertical: 4,
   },
   text: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 21,
   },
   divider: {
     height: 1,
@@ -807,7 +807,7 @@ const styles = StyleSheet.create({
     minWidth: 100,
   },
   metricLabel: {
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 4,
   },
   metricValue: {
@@ -822,7 +822,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "500",
   },
   alert: {
@@ -832,11 +832,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   alertTitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
   },
   alertText: {
-    fontSize: 13,
+    fontSize: 14,
   },
   progressContainer: {
     gap: 6,
@@ -846,10 +846,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   progressLabel: {
-    fontSize: 13,
+    fontSize: 14,
   },
   progressValue: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "500",
   },
   progressBarTrack: {
@@ -875,7 +875,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   tableHeaderCell: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
   },
   tableRow: {
@@ -883,13 +883,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   tableCell: {
-    fontSize: 12,
+    fontSize: 13,
   },
   fieldContainer: {
     gap: 4,
   },
   fieldLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "500",
   },
   input: {
@@ -897,7 +897,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    fontSize: 14,
+    fontSize: 15,
   },
   inputMultiline: {
     minHeight: 64,
@@ -921,7 +921,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dropdownTriggerText: {
-    fontSize: 14,
+    fontSize: 15,
     flex: 1,
   },
   dropdownChevron: {
@@ -949,10 +949,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   dropdownMenuItemText: {
-    fontSize: 14,
+    fontSize: 15,
   },
   dropdownCheckmark: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
   },
   toggleRow: {
@@ -969,11 +969,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
   },
   errorMessage: {
-    fontSize: 12,
+    fontSize: 13,
   },
   submittedBanner: {
     marginTop: 8,
@@ -982,7 +982,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submittedText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
   },
   fieldLabelRow: {
