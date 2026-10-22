@@ -105,9 +105,13 @@ export async function uiS7(ctx, run, r, plain) {
   // The text around the form is rendered by the plugin instead of the host's markdown renderer, so it
   // has to use the host's body font size; otherwise such replies look shrunk next to plain ones.
   await ui.check(results, "S7", `run${run}: text around the form uses the host font size`, shotName("s7", "font-size", run), async () => {
+    // The first prompt also appears in the sidebar title, so openAgent can return before the chat
+    // has loaded: wait for the reply text itself.
+    await ui.text("Fixed:", false).first().waitFor({ timeout: ui.ms() });
     const pluginSizes = await fontSizesOf(ui, "Fixed:");
     if (!pluginSizes.length) throw new Error('the reply text "Fixed:" was not rendered');
     await ui.openAgent(plain.agent.id, plain.first);
+    await ui.text("Just plain text", false).first().waitFor({ timeout: ui.ms() });
     const hostSizes = await fontSizesOf(ui, "Just plain text", { exact: false });
     if (!hostSizes.length) throw new Error('the plain reply text was not rendered');
     const pluginSize = Math.max(...pluginSizes);
