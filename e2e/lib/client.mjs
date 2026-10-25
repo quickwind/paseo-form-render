@@ -15,7 +15,7 @@ export async function connect(daemon) {
     url: `ws://${daemon.host}/ws`,
     clientId: `e2e-${randomUUID()}`,
     clientType: "cli",
-    appVersion: "0.11.4",
+    appVersion: "0.13.0",
     localCredential: () => readLocalCredentialForTarget(daemon.ws.paseoHome, daemon.host) ?? undefined,
     connectTimeoutMs: 30000,
     webSocketFactory: (url, config) => new WebSocket(url, config?.protocols, { headers: config?.headers }),

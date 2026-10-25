@@ -15,6 +15,8 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
 - **Provider Agnostic**:
   - Fully compatible with **Devin**, **Claude**, **Antigravity**, **Gemini**, and OpenAI providers.
   - Automatically injects protocol instructions on agent initialization.
+- **Localized Interface**:
+  - Labels, buttons, and the picker and settings screens follow the Paseo app language (English and 简体中文). Form content and the error details are not translated.
 - **Full Mobile & Hermes Compatibility**:
   - 100% pure React Native UI primitives (`View`, `Text`, `TextInput`, `Pressable`, `Switch`).
   - Zero external runtime dependencies in the client bundle.

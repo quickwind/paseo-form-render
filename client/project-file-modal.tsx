@@ -1,4 +1,5 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
+import { useTranslation } from "@getpaseo/plugin/client";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Modal,
@@ -16,6 +17,7 @@ import {
   type FilePickerShortcut,
 } from "../shared/pickers";
 import { normalizeExtensions } from "../shared/schema";
+import { messages } from "./messages";
 import { usePfrRpc } from "./rpc-bridge";
 
 interface ProjectFileModalProps {
@@ -43,6 +45,7 @@ export function ProjectFileModal({
 }: ProjectFileModalProps) {
   const listProjectFiles = usePfrRpc(listProjectFilesRpc);
   const createDir = usePfrRpc(createDirectoryRpc);
+  const { t } = useTranslation(messages);
   const [currentPath, setCurrentPath] = useState("");
   const [parentPath, setParentPath] = useState<string | null>(null);
   const [entries, setEntries] = useState<ProjectFileEntry[]>([]);
@@ -112,7 +115,7 @@ export function ProjectFileModal({
     if (!agentId || !newFolderName.trim() || creatingFolderLoading) return;
     const name = newFolderName.trim();
     if (/[<>:"/\\|?*]/.test(name) || name === "." || name === "..") {
-      setNewFolderError('Folder name contains invalid characters (/ \\ : * ? " < > |).');
+      setNewFolderError(t("picker.invalidFolderName"));
       return;
     }
     setCreatingFolderLoading(true);
@@ -132,7 +135,7 @@ export function ProjectFileModal({
           setSelectedPath(res.relativePath || res.fullPath);
         }
       } else {
-        setNewFolderError(res.error || "Failed to create folder.");
+        setNewFolderError(res.error || t("picker.createFailed"));
       }
     } catch (err) {
       setNewFolderError(err instanceof Error ? err.message : String(err));
@@ -159,9 +162,9 @@ export function ProjectFileModal({
 
   const breadcrumbs = useMemo(() => {
     if (isWorkspaceRelative) {
-      if (!currentPath) return [{ label: "Project Root", path: "" }];
+      if (!currentPath) return [{ label: t("picker.projectRoot"), path: "" }];
       const parts = currentPath.split("/").filter(Boolean);
-      const crumbs = [{ label: "Project", path: "" }];
+      const crumbs = [{ label: t("picker.project"), path: "" }];
       let accum = "";
       for (const part of parts) {
         accum = accum ? `${accum}/${part}` : part;
@@ -190,7 +193,7 @@ export function ProjectFileModal({
       }
       return crumbs;
     }
-  }, [currentPath, isWorkspaceRelative]);
+  }, [currentPath, isWorkspaceRelative, t]);
 
   const handleEntryPress = (entry: ProjectFileEntry) => {
     if (entry.isDirectory) {
@@ -227,7 +230,7 @@ export function ProjectFileModal({
           <View style={[styles.header, { borderBottomColor: colors.border }]}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, marginRight: 8 }}>
               <Text style={[styles.title, { color: colors.foreground }]}>
-                {pickerType === "folder" ? "Select Folder" : "Select File"}
+                {pickerType === "folder" ? t("picker.selectFolder") : t("picker.selectFile")}
               </Text>
               {cleanExts && cleanExts.length > 0 && (
                 <View style={[styles.filterBadge, { backgroundColor: colors.surface1, borderColor: colors.border }]}>
@@ -245,7 +248,7 @@ export function ProjectFileModal({
           {/* Quick Shortcuts Bar */}
           {shortcuts.length > 0 && (
             <View style={[styles.shortcutsBar, { borderBottomColor: colors.border, backgroundColor: colors.surface1 }]}>
-              <Text style={[styles.shortcutsLabel, { color: colors.foregroundMuted }]}>Quick:</Text>
+              <Text style={[styles.shortcutsLabel, { color: colors.foregroundMuted }]}>{t("picker.quick")}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.shortcutsList}>
                 {shortcuts.map((sc) => (
                   <Pressable
@@ -298,7 +301,7 @@ export function ProjectFileModal({
                   borderColor: colors.border,
                 },
               ]}
-              placeholder="Search files/folders in directory..."
+              placeholder={t("picker.searchPlaceholder")}
               placeholderTextColor={colors.foregroundMuted}
               value={search}
               onChangeText={setSearch}
@@ -353,7 +356,7 @@ export function ProjectFileModal({
                       borderColor: colors.border,
                     },
                   ]}
-                  placeholder="New folder name..."
+                  placeholder={t("picker.newFolderPlaceholder")}
                   placeholderTextColor={colors.foregroundMuted}
                   value={newFolderName}
                   onChangeText={(t) => {
@@ -375,7 +378,7 @@ export function ProjectFileModal({
                   ]}
                 >
                   <Text style={{ color: colors.surface0, fontSize: 12, fontWeight: "600" }}>
-                    {creatingFolderLoading ? "..." : "Create"}
+                    {creatingFolderLoading ? "..." : t("picker.create")}
                   </Text>
                 </Pressable>
                 <Pressable
@@ -407,16 +410,16 @@ export function ProjectFileModal({
                 onPress={() => loadDirectory(parentPath)}
               >
                 <Text style={styles.entryIcon}>📁</Text>
-                <Text style={{ color: colors.foregroundMuted, fontSize: 14 }}>.. (Up to parent)</Text>
+                <Text style={{ color: colors.foregroundMuted, fontSize: 14 }}>{t("picker.upToParent")}</Text>
               </Pressable>
             )}
 
             {loading ? (
-              <Text style={[styles.emptyText, { color: colors.foregroundMuted }]}>Loading files...</Text>
+              <Text style={[styles.emptyText, { color: colors.foregroundMuted }]}>{t("picker.loading")}</Text>
             ) : error ? (
               <Text style={[styles.emptyText, { color: colors.statusDanger }]}>{error}</Text>
             ) : filteredEntries.length === 0 ? (
-              <Text style={[styles.emptyText, { color: colors.foregroundMuted }]}>No matching entries found</Text>
+              <Text style={[styles.emptyText, { color: colors.foregroundMuted }]}>{t("picker.noMatches")}</Text>
             ) : (
               filteredEntries.map((entry) => {
                 const isSelected = selectedPath === entry.relativePath;
@@ -445,7 +448,7 @@ export function ProjectFileModal({
                       {entry.name}
                     </Text>
                     {isSelected && (
-                      <Text style={{ color: colors.accent, fontWeight: "600", fontSize: 13 }}>✓ Selected</Text>
+                      <Text style={{ color: colors.accent, fontWeight: "600", fontSize: 13 }}>{t("picker.selected")}</Text>
                     )}
                   </Pressable>
                 );
@@ -456,7 +459,7 @@ export function ProjectFileModal({
           {/* Footer */}
           <View style={[styles.footer, { borderTopColor: colors.border }]}>
             <View style={{ flex: 1, marginRight: 10, overflow: "hidden" }}>
-              <Text style={{ color: colors.foregroundMuted, fontSize: 12 }}>Selected:</Text>
+              <Text style={{ color: colors.foregroundMuted, fontSize: 12 }}>{t("picker.selectedLabel")}</Text>
               {effectiveSelected ? (
                 <ScrollView
                   horizontal
@@ -489,7 +492,7 @@ export function ProjectFileModal({
                 onPress={onClose}
                 style={[styles.actionBtn, { borderColor: colors.border, borderWidth: 1 }]}
               >
-                <Text style={{ color: colors.foreground, fontSize: 13 }}>Cancel</Text>
+                <Text style={{ color: colors.foreground, fontSize: 13 }}>{t("picker.cancel")}</Text>
               </Pressable>
 
               <Pressable
@@ -504,7 +507,7 @@ export function ProjectFileModal({
                 ]}
               >
                 <Text style={{ color: "#fff", fontWeight: "600", fontSize: 13 }}>
-                  {pickerType === "folder" ? "Choose Folder" : "Choose File"}
+                  {pickerType === "folder" ? t("picker.chooseFolder") : t("picker.chooseFile")}
                 </Text>
               </Pressable>
             </View>

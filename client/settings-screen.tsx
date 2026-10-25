@@ -1,11 +1,13 @@
 import type { PluginSurfaceProps } from "@getpaseo/plugin/client";
-import { useSettings } from "@getpaseo/plugin/client";
+import { useSettings, useTranslation } from "@getpaseo/plugin/client";
 import React from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { MAX_AUTO_FIX_RETRIES, pfrSettings } from "../shared/settings";
+import { messages } from "./messages";
 
 export const PfrSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
   const settings = useSettings(pfrSettings);
+  const { t } = useTranslation(messages);
   const { colors } = theme;
 
   if (settings.status === "loading") {
@@ -20,20 +22,20 @@ export const PfrSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
     return (
       <View style={styles.container}>
         <Text style={[styles.errorText, { color: colors.statusDanger }]}>
-          Could not load settings: {settings.error}
+          {t("settings.loadError", { error: settings.error })}
         </Text>
         <Pressable
           style={[styles.stepButton, styles.retryButton, { borderColor: colors.border, backgroundColor: colors.surface2 }]}
           onPress={() => void settings.reload()}
         >
-          <Text style={[styles.stepText, { color: colors.foreground }]}>Retry</Text>
+          <Text style={[styles.stepText, { color: colors.foreground }]}>{t("settings.retry")}</Text>
         </Pressable>
         {settings.status === "invalid" && (
           <Pressable
             style={[styles.stepButton, styles.retryButton, { borderColor: colors.border, backgroundColor: colors.surface2 }]}
             onPress={() => void settings.reset()}
           >
-            <Text style={[styles.stepText, { color: colors.foreground }]}>Reset to defaults</Text>
+            <Text style={[styles.stepText, { color: colors.foreground }]}>{t("settings.resetDefaults")}</Text>
           </Pressable>
         )}
       </View>
@@ -53,18 +55,14 @@ export const PfrSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.foreground }]}>Automatic form fixes</Text>
-      <Text style={[styles.description, { color: colors.foregroundMuted }]}>
-        When an agent replies with a pfr-form block that fails validation, ask it to re-send a corrected block
-        automatically. This sets how many times in a row the agent is asked; 0 turns automatic fixes off. The
-        "Ask agent to fix" button on an error box always works.
-      </Text>
+      <Text style={[styles.title, { color: colors.foreground }]}>{t("settings.autoFixTitle")}</Text>
+      <Text style={[styles.description, { color: colors.foregroundMuted }]}>{t("settings.autoFixDescription")}</Text>
 
       <View style={styles.row}>
-        <Text style={[styles.label, { color: colors.foreground }]}>Maximum retries</Text>
+        <Text style={[styles.label, { color: colors.foreground }]}>{t("settings.maxRetries")}</Text>
         <View style={styles.stepper}>
           <Pressable
-            accessibilityLabel="Decrease retries"
+            accessibilityLabel={t("settings.decreaseRetries")}
             disabled={value <= 0 || settings.saving}
             style={stepStyle(value <= 0 || settings.saving)}
             onPress={() => change(value - 1)}
@@ -73,7 +71,7 @@ export const PfrSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
           </Pressable>
           <Text style={[styles.value, { color: colors.foreground }]}>{value}</Text>
           <Pressable
-            accessibilityLabel="Increase retries"
+            accessibilityLabel={t("settings.increaseRetries")}
             disabled={value >= MAX_AUTO_FIX_RETRIES || settings.saving}
             style={stepStyle(value >= MAX_AUTO_FIX_RETRIES || settings.saving)}
             onPress={() => change(value + 1)}
@@ -84,26 +82,23 @@ export const PfrSettingsScreen: React.FC<PluginSurfaceProps> = ({ theme }) => {
       </View>
 
       <Text style={[styles.hint, { color: colors.foregroundMuted }]}>
-        {value === 0 ? "Automatic fixes are off." : `Up to ${value} automatic ${value === 1 ? "request" : "requests"} per reply.`}
-        {settings.saving ? " Saving…" : ""}
+        {value === 0 ? t("settings.hintOff") : t("settings.hint", { count: value })}
+        {settings.saving ? ` ${t("settings.saving")}` : ""}
       </Text>
 
-      <Text style={[styles.title, { color: colors.foreground }]}>Prefer forms</Text>
-      <Text style={[styles.description, { color: colors.foregroundMuted }]}>
-        By default the agent is only told it can use pfr-form. Turn this on to require it to ask for choices,
-        parameters, and confirmations with a form instead of plain text. Applies to agents created after the change.
-      </Text>
+      <Text style={[styles.title, { color: colors.foreground }]}>{t("settings.preferFormsTitle")}</Text>
+      <Text style={[styles.description, { color: colors.foregroundMuted }]}>{t("settings.preferFormsDescription")}</Text>
       <View style={styles.row}>
-        <Text style={[styles.label, { color: colors.foreground }]}>Require forms for user input</Text>
+        <Text style={[styles.label, { color: colors.foreground }]}>{t("settings.requireForms")}</Text>
         <Switch
-          accessibilityLabel="Require forms for user input"
+          accessibilityLabel={t("settings.requireForms")}
           value={settings.values.preferForms}
           disabled={settings.saving}
           onValueChange={(next) => void settings.save({ ...settings.values, preferForms: next }, settings.revision)}
         />
       </View>
       {settings.saveError && (
-        <Text style={[styles.errorText, { color: colors.statusDanger }]}>Could not save: {settings.saveError}</Text>
+        <Text style={[styles.errorText, { color: colors.statusDanger }]}>{t("settings.saveError", { error: settings.saveError })}</Text>
       )}
     </View>
   );

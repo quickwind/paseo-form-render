@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 import { z } from "zod";
 import { hasFormBlock } from "./shared/parser";
 import { MessageContainer } from "./client/container";
+import { messages } from "./client/messages";
 import { PfrSettingsScreen } from "./client/settings-screen";
 import { showDemoForm } from "./shared/demo";
 import { PFR_PROMPT_INSTRUCTION } from "./shared/prompt";
@@ -78,7 +79,7 @@ export default function contribute(client: PluginClientContext) {
   // Slash command to enable pfr-form in an existing agent session
   client.addSlashCommand({
     name: "form",
-    description: "Instruct the agent to use pfr-form protocol",
+    description: messages.message("slash.form"),
     argumentHint: "[task]",
     context: "agent",
     async onSubmit({ args, paseo, agent }) {
@@ -90,7 +91,7 @@ export default function contribute(client: PluginClientContext) {
   // Slash command to show a sample form
   client.addSlashCommand({
     name: "form-demo",
-    description: "Show a demo interactive form",
+    description: messages.message("slash.formDemo"),
     argumentHint: "",
     context: "agent",
     async onSubmit({ rpc, agent }) {

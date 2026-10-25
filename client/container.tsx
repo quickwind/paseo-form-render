@@ -1,9 +1,11 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
+import { useTranslation } from "@getpaseo/plugin/client";
 import React, { useMemo, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
 import { formatIssues } from "../shared/form-errors";
 import { buildFixMessage } from "../shared/form-fix";
 import { parseFormBlock, parseMessageContent, type ParsedBlock } from "../shared/parser";
+import { messages } from "./messages";
 import { PfrFormView } from "./renderer";
 import { HostMarkdown } from "./host-markdown";
 import { PfrRpcProvider, type PfrRpcFn } from "./rpc-bridge";
@@ -83,6 +85,7 @@ BlockErrorBoundary.prototype.render = function (this: any) {
 };
 
 const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, onSubmit }) => {
+  const { t } = useTranslation(messages);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const errors = block.errors ?? [];
 
@@ -107,7 +110,7 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
       ]}
     >
       <Text style={[styles.errorTitle, { color: theme.colors.statusDanger }]}>
-        [pfr-form Syntax Error]
+        {t("errorBox.title")}
       </Text>
       {formatIssues(errors).map((line, i) => (
         <Text key={i} style={[styles.errorDetail, { color: theme.colors.statusDanger }]}>
@@ -135,7 +138,7 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
       </View>
       {status === "sent" ? (
         <Text style={[styles.sentText, { color: theme.colors.statusSuccess }]}>
-          ✓ Fix requested; the agent will reply with a corrected form
+          {t("errorBox.fixRequested")}
         </Text>
       ) : (
         <Pressable
@@ -148,7 +151,7 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
           onPress={askAgentToFix}
         >
           <Text style={[styles.fixButtonText, { color: theme.colors.accentForeground }]}>
-            {status === "sending" ? "Sending…" : "Ask agent to fix"}
+            {status === "sending" ? t("errorBox.sending") : t("errorBox.askFix")}
           </Text>
         </Pressable>
       )}

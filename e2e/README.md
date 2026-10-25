@@ -2,7 +2,7 @@
 
 End-to-end tests for the pfr-form **auto-fix** feature (`server/auto-fix.ts`) and the plugin's
 **client UI**. They run the plugin under test inside a real Paseo daemon (`@getpaseo/server`/
-`@getpaseo/cli` 0.11.4, pinned in this directory's `package.json`) and drive agents through a
+`@getpaseo/cli` 0.13.0, pinned in this directory's `package.json`) and drive agents through a
 scripted fake provider, so no model, API key or network is involved. The UI checks open the
 daemon's bundled web UI in headless Chromium (Playwright, pinned too) and assert on what the user
 sees: rendered forms, the `[pfr-form Syntax Error]` box, the "Ask agent to fix" button and the

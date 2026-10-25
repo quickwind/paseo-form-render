@@ -1,5 +1,5 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
-import { useRpc } from "@getpaseo/plugin/client";
+import { useRpc, useTranslation } from "@getpaseo/plugin/client";
 import React, { createContext, useContext, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform } from "react-native";
 import {
@@ -11,6 +11,7 @@ import {
   normalizeExtensions,
 } from "../shared/schema";
 import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { messages } from "./messages";
 import { ProjectFileModal } from "./project-file-modal";
 
 const MENU_WIDTH = 220;
@@ -83,6 +84,7 @@ function DropdownSelect({
   const buttonRef = useRef<View>(null);
   const isOpen = menuCtx?.openMenuId === node.id;
   const selectedOption = node.options.find((opt) => opt.value === value);
+  const { t } = useTranslation(messages);
 
   return (
     <View style={styles.fieldContainer}>
@@ -111,7 +113,7 @@ function DropdownSelect({
               { color: selectedOption ? theme.colors.foreground : theme.colors.foregroundMuted },
             ]}
           >
-            {selectedOption ? selectedOption.label : "Select an option..."}
+            {selectedOption ? selectedOption.label : t("dropdown.placeholder")}
           </Text>
           <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
             {isOpen ? "▲" : "▼"}
@@ -143,6 +145,7 @@ function DropdownMultiSelect({
   const buttonRef = useRef<View>(null);
   const isOpen = menuCtx?.openMenuId === node.id;
   const selectedOptions = node.options.filter((opt) => value.includes(opt.value));
+  const { t } = useTranslation(messages);
 
   return (
     <View style={styles.fieldContainer}>
@@ -174,7 +177,7 @@ function DropdownMultiSelect({
           >
             {selectedOptions.length > 0
               ? selectedOptions.map((o) => o.label).join(", ")
-              : (node.placeholder ?? "Select options...")}
+              : (node.placeholder ?? t("dropdown.multiPlaceholder"))}
           </Text>
           <Text style={[styles.dropdownChevron, { color: theme.colors.foregroundMuted }]}>
             {isOpen ? "▲" : "▼"}
@@ -205,6 +208,7 @@ function FilePickerField({
   onChange: (val: string) => void;
 }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const { t } = useTranslation(messages);
   const colors = theme.colors;
   const cleanExts = normalizeExtensions(node.extensions, node.extension);
 
@@ -239,9 +243,7 @@ function FilePickerField({
           onChangeText={onChange}
           placeholder={
             node.placeholder ||
-            (node.pickerType === "folder"
-              ? "Enter or select folder..."
-              : "Enter or select file...")
+            (node.pickerType === "folder" ? t("file.folderPlaceholder") : t("file.filePlaceholder"))
           }
           placeholderTextColor={colors.foregroundMuted}
           editable={!disabled}
@@ -262,14 +264,14 @@ function FilePickerField({
             onPress={() => setModalVisible(true)}
             style={[styles.pickerBrowseBtn, { backgroundColor: colors.surface1, borderColor: colors.border }]}
           >
-            <Text style={{ color: colors.foreground, fontSize: 12, fontWeight: "500" }}>Browse...</Text>
+            <Text style={{ color: colors.foreground, fontSize: 12, fontWeight: "500" }}>{t("file.browse")}</Text>
           </Pressable>
         </View>
       </View>
 
       {value ? (
         <View style={[styles.pathInspector, { backgroundColor: colors.surface1, borderColor: colors.border }]}>
-          <Text style={[styles.pathInspectorLabel, { color: colors.foregroundMuted }]}>Full path:</Text>
+          <Text style={[styles.pathInspectorLabel, { color: colors.foregroundMuted }]}>{t("file.fullPath")}</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={true}
@@ -608,6 +610,7 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
   // The dropdown menu floats over the form at its root (measured position), so opening it never moves anything.
   const [menuPos, setMenuPos] = useState<OpenDropdownMenu | null>(null);
   const rootRef = useRef<View>(null);
+  const { t } = useTranslation(messages);
 
   const toggleMenu = (
     id: string,
@@ -683,13 +686,13 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
         />
         {status === "submitted" && (
           <View style={[styles.submittedBanner, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.statusSuccess, borderWidth: 1 }]}>
-            <Text style={[styles.submittedText, { color: theme.colors.statusSuccess }]}>✓ Form Submitted</Text>
+            <Text style={[styles.submittedText, { color: theme.colors.statusSuccess }]}>{t("form.submitted")}</Text>
           </View>
         )}
         {menuPos ? (
           <>
             <Pressable
-              accessibilityLabel="Close dropdown menu"
+              accessibilityLabel={t("dropdown.close")}
               onPress={() => setMenuPos(null)}
               style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
             />

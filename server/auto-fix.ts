@@ -147,10 +147,29 @@ export function registerAutoFix(server: PluginServerContext, settings: PfrSettin
     return (await readPfrSettings(settings)).autoFixMaxRetries;
   }
 
+  /** The newest history of the agent, or null when it cannot be read (the caller then sends nothing). */
+  async function readTail(agent: {
+    timeline: { refetch(options: { direction: "tail"; limit: number; projection: "projected" }): Promise<unknown> };
+  }): Promise<TimelineEntry[] | null> {
+    try {
+      const history = timelineFromPayload(
+        await agent.timeline.refetch({ direction: "tail", limit: HISTORY_LIMIT, projection: "projected" }),
+      );
+      return history?.items ?? null;
+    } catch (error) {
+      console.warn("[paseo-form-render] could not fetch agent history, skipping auto-fix", error);
+      return null;
+    }
+  }
+
   return server.on("agent.turn_ended", async (event, { paseo, signal }) => {
     try {
+      const agent = paseo.agents.ref(event.agent.id);
+      // Paseo 0.13 sends an always-empty `timeline` on this event (deprecated), so the finished turn is read from history.
+      const turnTimeline = event.timeline.length > 0 ? event.timeline : await readTail(agent);
+      if (!turnTimeline) return;
       const turn: TurnInput = {
-        turnTimeline: event.timeline,
+        turnTimeline,
         outcome: event.outcome,
         maxRetries: await readMaxRetries(),
       };
@@ -161,7 +180,6 @@ export function registerAutoFix(server: PluginServerContext, settings: PfrSettin
       await new Promise<void>((resolve) => setTimeout(resolve, 0));
       if (signal.aborted) return;
 
-      const agent = paseo.agents.ref(event.agent.id);
       let history: ReturnType<typeof timelineFromPayload> = null;
       try {
         history = timelineFromPayload(
