@@ -1,0 +1,84 @@
+name: CI
+
+# Manual only: this repository is private, so every run bills Actions minutes. Run it from the
+# Actions tab (or `gh workflow run CI`) when a change needs the full suite; nothing runs on push.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Typecheck and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  e2e:
+    name: E2E (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      # Paseo 0.11.4 runs on Node >= 21.3 (its CLI uses --disable-warning); CI uses Node 22 LTS.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+
+      # The plugin under test is copied without node_modules: the daemon compiles it with its own
+      # esbuild and provides zod and the plugin SDK, so the root dependencies are not needed here.
+      - name: Install e2e dependencies
+        run: npm ci --prefix e2e
+
+      # Browser UI checks: headless Chromium for the pinned Playwright (e2e/package.json), kept
+      # outside the checkout (the harness copies the repo as the plugin under test).
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw-browsers
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('e2e/package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
+        run: npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
+
+      - name: Run e2e scenarios (with browser UI checks)
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/pw-browsers
+        run: node e2e/run.mjs --all --time-scale 1.5 --out e2e/results
+
+      - name: Upload e2e results, screenshots and daemon logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-${{ matrix.os }}
+          path: e2e/results/
+          if-no-files-found: warn
+          retention-days: 14

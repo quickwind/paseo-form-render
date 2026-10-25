@@ -1,0 +1,8 @@
+{
+  "id": "paseo-form-render",
+  "name": "Paseo Form Render",
+  "description": "Render interactive forms, metrics, and dashboards in conversations using pfr-form code blocks",
+  "requirements": {
+    "paseo": ">=0.11.4"
+  }
+}

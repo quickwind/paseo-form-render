@@ -1,0 +1,44 @@
+# AGENTS.md
+
+Paseo plugin that renders interactive forms/dashboards in conversations from ```` ```pfr-form ```` JSON code fences. See `README.md` for user-facing features and installation.
+
+## Commands
+
+- `npm run typecheck` — `tsc --noEmit`
+- `npm test` — `vitest run` (tests: `shared/parser.test.ts`, `shared/form-errors.test.ts`, `shared/form-fix.test.ts`, `server/file-picker.test.ts`, `server/auto-fix.test.ts`)
+- `npm pack --dry-run` — inspect the npm tarball: the package ships TypeScript sources + `paseo-plugin.json` (the daemon compiles them); `files` in `package.json` is the allowlist and its negated pattern keeps `*.test.ts` out. Releases are run **by hand** from the `Publish` workflow (`workflow_dispatch` with a `version` input, `dry_run` to verify only): it checks the version against `package.json`, runs typecheck + tests, `npm publish --access public` with the `NPM_TOKEN` secret, then pushes the `v<version>` tag and opens the GitHub release. No workflow has an automatic trigger — the repository is private, so Actions minutes are billed; CI and Snyk are `workflow_dispatch` as well
+- `npm run pack:offline` — optional offline bundle (for users without npm): runs typecheck + tests, then builds zip/tgz + sha256 into `./dist` (or specify via `--out <dir>` / `DIST_DIR`)
+- `npm ci --prefix e2e`, `npx --prefix e2e playwright install chromium`, then `node e2e/run.mjs [--all] [--repeat N] [--no-ui] [s1 ... s8 uisettings uimanual]` (or `npm run e2e`) — end-to-end tests against a real Paseo daemon with a scripted fake provider: auto-fix protocol plus browser UI checks of the client (daemon web UI in headless Chromium, screenshots); see `e2e/README.md`. Cross-platform, ~5-7 min; results and screenshots in `e2e/results/`
+
+Run typecheck and tests before committing.
+
+## Layout
+
+- `paseo-plugin.json` — plugin manifest
+- `index.server.ts` — server entry: injects `PFR_PROMPT_INSTRUCTION` into the system prompt on `agent.create` (idempotent via the `[paseo-form-render]` marker), registers RPC handlers, and registers auto-fix (`server/auto-fix.ts`)
+- `index.client.tsx` — client entry (registers the renderer and the `/form` and `/form-demo` slash commands)
+- `client/` — React Native UI: `renderer.tsx` (component tree), `container.tsx` (includes the error box with the "Ask agent to fix" button), `settings-screen.tsx` (auto-fix retry setting), `markdown.tsx`, `project-file-modal.tsx` (in-app file/folder picker)
+- `server/` — daemon-side handlers: `file-picker.ts` (list files, create directory), `settings.ts` (registers/reads plugin settings, defaults on failure), `demo.ts` (`/form-demo`), `auto-fix.ts` (on `agent.turn_ended`, asks the agent to repair invalid blocks; decision logic is pure and tested)
+- `e2e/` — end-to-end harness, its own npm package (pins `@getpaseo/server`/`@getpaseo/cli` 0.11.4 and `playwright`; never shipped, excluded from the root `tsconfig.json`): `run.mjs` (entry), `lib/daemon.mjs` (isolated temp workspace, daemon start/stop), `lib/client.mjs` (daemon client, log helpers, results), `lib/browser.mjs` (Playwright: web UI bootstrap, deep links, UI check + screenshot helpers), `scenarios/scripts.mjs` (fake provider replies), `scenarios/checks.mjs` (S1–S8, `uisettings`, `uimanual` + optional `restart`, `nocmid`), `scenarios/ui-checks.mjs` (browser assertions), `plugins/pfr-e2e-fake/` (test-only scripted provider plugin)
+- `.github/workflows/ci.yml` — `unit` (typecheck + tests) and `e2e` (Linux/macOS/Windows) jobs
+- `shared/` — code used by both sides: `parser.ts` (extract/validate fences), `form-errors.ts` (instructive error messages), `form-fix.ts` (`[pfr-form-fix]` message builder, attempt counting), `settings.ts` (`autoFixMaxRetries`, `preferForms`), `schema.ts` (zod schemas + node types), `prompt.ts` (agent protocol instructions; `buildPromptInstruction` adds the strong "Required usage" section when `preferForms` is on), `form-helpers.ts`, `pickers.ts` (RPC definitions), `demo.ts`
+
+## Conventions and gotchas
+
+- **Cross-platform Timeline Transformer (NEVER bypass on web)**: Never gate `client.addTimelineTransformer` behind `Platform.OS !== "web"`. Paseo's timeline transformers and renderers are fully cross-platform and work identically in browser web, mobile, and desktop. Attempting to bypass the timeline transformer on web via direct DOM hacking (e.g. `MutationObserver`, CSS `display: none !important`, blanking text nodes, and React Fiber sniffing) is fragile and causes forms to silently disappear when fiber structures or lifecycle hooks drift. Always use Paseo's official Plugin Timeline API on all platforms.
+- **Client must stay Hermes/React Native compatible**: use only RN primitives (`View`, `Text`, `TextInput`, `Pressable`, `Switch`); no DOM elements and no new runtime dependencies in the client bundle. All deps are `devDependencies` by design.
+- **Hermes syntax compatibility (CRITICAL)**: Hermes does not support ES6 `class` syntax (`class Foo extends ...`). Any class component (such as an Error Boundary) MUST be written with ES5 prototype inheritance (`function ErrorBoundary(props) { ... }`, `Object.create(React.Component.prototype)`). Using the `class` keyword causes `hermesc` compilation and runtime evaluation to throw a syntax error.
+- **React Native raw string in View crash (`Invariant Violation`)**: In React Native, strings cannot be direct children of a `<View>`. Never use `{condition && <Text>}` when `condition` may evaluate to an empty string `""` or `0`, because `{"" && <Text>}` resolves to `""`, rendering an unadorned string inside `<View>` and triggering an unhandled `Invariant Violation: Text strings must be rendered within a <Text> component` fatal crash (`SIGABRT: 6`) on iOS release builds. Always use `{condition ? <Text>...</Text> : null}`.
+- **Error boundary isolation**: Wrap all custom form blocks and renderer components inside a Hermes-compatible `BlockErrorBoundary` so unexpected errors (e.g. malformed markdown or data structures) are contained in a fallback box instead of escalating to React Native's fatal error reporter.
+- **Plugin-rendered markdown must match the host typography**: A reply that contains a pfr-form block is rendered by the plugin (the timeline transformer replaces the assistant message), so its text uses the plugin's own styles instead of Paseo's markdown renderer. Keep `client/markdown.tsx` on Paseo's markdown scale (body 15/21, code 12, headings 28/24/21/19/17/17) or such replies look shrunk next to plain ones; `e2e/scenarios/ui-checks.mjs` (S7) compares the rendered sizes.
+- **Native Modal lazy mounting**: In React Native, `<Modal visible={false}>` mounts an active `RCTModalHostView` in UIKit. Always guard modals with `if (!visible) return null;` so native modal views and view controllers are unmounted until opened.
+- **Platform-specific styles**: Properties such as `textAlignVertical` are Android-only. Never apply them globally; gate with `Platform.select({ android: { textAlignVertical: "top" } })` to prevent native style errors on iOS.
+- **Table / Grid cell layout**: Do not apply `flex: 1` directly to `<Text>` across platforms. Wrap text cells in a `<View style={{ flex: 1 }}>` container to avoid font metrics and layout calculation errors on iOS.
+- **Adding or changing a component type** requires updating together: `shared/schema.ts` (including `PFR_NODE_TYPES`, which the compiler checks is complete), the renderer in `client/renderer.tsx`, the component list in `shared/prompt.ts` (so agents know about it), and parser tests.
+- Keep `shared/` free of Node-only and React Native-only imports since both sides load it.
+- File-picker paths: inside the workspace are returned project-relative, outside as host absolute paths. `server/file-picker.ts` expands `~` and resolves relative paths against the workspace cwd; keep tests in `server/file-picker.test.ts` passing when changing them.
+- New files/directories must be added to `files` in `package.json` and to `includeFiles`/`includeDirs` in `scripts/pack-offline.mjs` if they ship with the plugin.
+- Auto-fix must fail closed: the `agent.turn_ended` timeline may cover only the finished turn, so the retry count comes from a fresh `timeline.refetch`, and nothing is sent if that fails.
+- The `/form-demo` command pushes forms through daemon RPC and must not trigger a model turn.
+- Plugin icons (`addSettingsScreen` etc.) must be Lucide export names (`"Settings"`, not `"settings"`): the host throws on unknown names and then drops the whole client plugin. The e2e UI checks fail on any "[Plugins] Failed to evaluate" warning.
+- E2E: keep `e2e/` free of shell scripts and POSIX-only commands (CI runs it on Windows too); never add its dependencies to the root `package.json`. S5 (a real message racing the fix request) is a documented Paseo limitation and is reported as informational, not as a failure.

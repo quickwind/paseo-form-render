@@ -1,0 +1,81 @@
+name: Publish
+
+# Manual release: Actions tab -> Publish -> Run workflow, or
+#   gh workflow run Publish --repo quickwind/paseo-form-render -f version=0.1.0
+# Nothing runs automatically: this repository is private, so every run bills Actions minutes.
+#
+# The run verifies the version against package.json, re-runs typecheck and the unit tests,
+# publishes to npm with the NPM_TOKEN secret, then pushes the v<version> tag and opens the
+# GitHub release. Use dry_run to check everything without publishing.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish, without the leading v (must equal package.json)"
+        required: true
+      dry_run:
+        description: "Verify and pack only, publish nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.version }} to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # push the tag and create the release
+      # Provenance needs a public repository: add `id-token: write` and append --provenance
+      # to the publish command once this repo is public.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: Check the version and the tag
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "$version" != "${{ inputs.version }}" ]; then
+            echo "::error::input ${{ inputs.version }} does not match package.json version $version"
+            exit 1
+          fi
+          if git rev-parse "refs/tags/v$version" >/dev/null 2>&1; then
+            echo "::error::tag v$version already exists"
+            exit 1
+          fi
+
+      - name: Show what would be published
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        if: ${{ !inputs.dry_run }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag and open the release
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ inputs.version }}"
+          git tag -a "v$version" -m "paseo-form-render $version"
+          git push origin "v$version"
+          gh release create "v$version" --generate-notes --title "v$version"
