@@ -1,5 +1,5 @@
 import type { PluginClientContext, PluginTimelineItemProps } from "@getpaseo/plugin/client";
-import { usePaseo } from "@getpaseo/plugin/client";
+import { usePaseo, useAgent } from "@getpaseo/plugin/client";
 import React from "react";
 import { Platform } from "react-native";
 import { z } from "zod";
@@ -13,6 +13,7 @@ import { PFR_PROMPT_INSTRUCTION } from "./shared/prompt";
 const timelineKind = "pfr-form";
 const timelineDataSchema = z.object({
   text: z.string(),
+  isStreaming: z.boolean().optional(),
 });
 
 export default function contribute(client: PluginClientContext) {
@@ -22,6 +23,8 @@ export default function contribute(client: PluginClientContext) {
     theme,
   }: PluginTimelineItemProps<z.output<typeof timelineDataSchema>>) {
     const paseo = usePaseo();
+    const agentStatus = useAgent(agentId, (agent) => agent?.status);
+    const isStreaming = Boolean(item.data.isStreaming || agentStatus === "running");
 
     const handleSubmit = async (formattedMessage: string) => {
       await paseo.agents.ref(agentId).send(formattedMessage);
@@ -34,6 +37,7 @@ export default function contribute(client: PluginClientContext) {
         agentId={agentId}
         rpc={client.rpc}
         onSubmit={handleSubmit}
+        isStreaming={isStreaming}
       />
     );
   }
@@ -41,7 +45,7 @@ export default function contribute(client: PluginClientContext) {
   client.addTimelineTransformer({
     id: "pfr-transformer",
     query: { itemType: "assistant_message" },
-    transform({ item }) {
+    transform({ item, phase }) {
       if (!hasFormBlock(item.text)) {
         return;
       }
@@ -53,6 +57,7 @@ export default function contribute(client: PluginClientContext) {
             version: 1,
             data: {
               text: item.text,
+              isStreaming: phase === "streaming",
             },
           },
         ],

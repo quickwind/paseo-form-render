@@ -16,6 +16,7 @@ export interface MessageContainerProps {
   agentId?: string;
   rpc?: PfrRpcFn;
   onSubmit: (formattedMessage: string) => Promise<void> | void;
+  isStreaming?: boolean;
 }
 
 export interface FormBlockViewProps {
@@ -25,6 +26,7 @@ export interface FormBlockViewProps {
   agentId?: string;
   rpc?: PfrRpcFn;
   onSubmit: (formattedMessage: string) => Promise<void> | void;
+  isStreaming?: boolean;
 }
 
 interface FormErrorBoxProps {
@@ -32,6 +34,7 @@ interface FormErrorBoxProps {
   blockNumber: number;
   theme: PluginHostProps["theme"];
   onSubmit: MessageContainerProps["onSubmit"];
+  isStreaming?: boolean;
 }
 
 interface BlockErrorBoundaryProps {
@@ -84,7 +87,7 @@ BlockErrorBoundary.prototype.render = function (this: any) {
   return this.props.children;
 };
 
-const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, onSubmit }) => {
+const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, onSubmit, isStreaming }) => {
   const { t } = useTranslation(messages);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const errors = block.errors ?? [];
@@ -136,7 +139,7 @@ const FormErrorBox: React.FC<FormErrorBoxProps> = ({ block, blockNumber, theme, 
           {block.rawJson}
         </Text>
       </View>
-      {status === "sent" ? (
+      {isStreaming ? null : status === "sent" ? (
         <Text style={[styles.sentText, { color: theme.colors.statusSuccess }]}>
           {t("errorBox.fixRequested")}
         </Text>
@@ -166,6 +169,7 @@ export const FormBlockView: React.FC<FormBlockViewProps> = ({
   agentId,
   rpc,
   onSubmit,
+  isStreaming,
 }) => {
   const block = useMemo(() => parseFormBlock(rawJson), [rawJson]);
 
@@ -177,6 +181,7 @@ export const FormBlockView: React.FC<FormBlockViewProps> = ({
           blockNumber={blockNumber}
           theme={theme}
           onSubmit={onSubmit}
+          isStreaming={isStreaming}
         />
       ) : block.form ? (
         <PfrFormView
@@ -190,7 +195,14 @@ export const FormBlockView: React.FC<FormBlockViewProps> = ({
   );
 };
 
-export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme, agentId, rpc, onSubmit }) => {
+export const MessageContainer: React.FC<MessageContainerProps> = ({
+  text,
+  theme,
+  agentId,
+  rpc,
+  onSubmit,
+  isStreaming,
+}) => {
   const blocks = parseMessageContent(text);
 
   return (
@@ -217,6 +229,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({ text, theme,
                     blockNumber={blocks.slice(0, idx).filter((b) => b.type === "form").length + 1}
                     theme={theme}
                     onSubmit={onSubmit}
+                    isStreaming={isStreaming}
                   />
                 </BlockErrorBoundary>
               );

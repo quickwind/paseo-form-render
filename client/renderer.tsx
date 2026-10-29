@@ -1,7 +1,7 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
 import { useRpc, useTranslation } from "@getpaseo/plugin/client";
 import React, { createContext, useContext, useRef, useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform, Modal, Dimensions } from "react-native";
 import {
   PfrNode,
   SelectNode,
@@ -21,6 +21,7 @@ interface OpenDropdownMenu {
   left: number;
   top: number;
   width: number;
+  maxHeight: number;
   options: Array<{ label: string; value: string }>;
   isMulti: boolean;
 }
@@ -607,9 +608,8 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
   const [values, setValues] = useState<Record<string, any>>(() => extractInitialValues(form));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
-  // The dropdown menu floats over the form at its root (measured position), so opening it never moves anything.
+  // The dropdown menu floats over the form using a full-screen Modal, so it can extend beyond any container and close on outside click.
   const [menuPos, setMenuPos] = useState<OpenDropdownMenu | null>(null);
-  const rootRef = useRef<View>(null);
   const { t } = useTranslation(messages);
 
   const toggleMenu = (
@@ -622,16 +622,35 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
       setMenuPos(null);
       return;
     }
-    rootRef.current?.measureInWindow((rx, ry) => {
-      buttonRef.current?.measureInWindow((bx, by, bw, bh) => {
-        setMenuPos({
-          id,
-          left: Math.max(0, bx - rx),
-          top: by - ry + bh + 4,
-          width: bw > 0 ? bw : MENU_WIDTH,
-          options,
-          isMulti,
-        });
+    buttonRef.current?.measureInWindow((bx, by, bw, bh) => {
+      if (typeof bx !== "number" || typeof by !== "number" || isNaN(bx) || isNaN(by)) {
+        return;
+      }
+      const windowDim = Dimensions.get("window");
+      const windowWidth = windowDim.width || 800;
+      const windowHeight = windowDim.height || 600;
+
+      const menuWidth = bw > 0 ? bw : MENU_WIDTH;
+      const left = Math.max(8, Math.min(bx, windowWidth - menuWidth - 8));
+
+      const estimatedHeight = Math.min(260, options.length * 40 + 8);
+      const spaceBelow = windowHeight - (by + bh + 4);
+      const spaceAbove = by - 4;
+
+      const openUpwards = spaceBelow < estimatedHeight && spaceAbove > spaceBelow;
+      const top = openUpwards
+        ? Math.max(8, by - estimatedHeight - 4)
+        : by + bh + 4;
+      const maxHeight = Math.min(260, Math.max(100, openUpwards ? spaceAbove - 8 : spaceBelow - 8));
+
+      setMenuPos({
+        id,
+        left,
+        top,
+        width: menuWidth,
+        maxHeight,
+        options,
+        isMulti,
       });
     });
   };
@@ -672,7 +691,7 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
 
   return (
     <DropdownMenuContext.Provider value={{ openMenuId: menuPos?.id ?? null, toggleMenu }}>
-      <View ref={rootRef} collapsable={false} style={[styles.formContainer, menuPos ? { zIndex: 10 } : null]}>
+      <View collapsable={false} style={[styles.formContainer, menuPos ? { zIndex: 10 } : null]}>
         <NodeRenderer
           node={form}
           values={values}
@@ -690,11 +709,16 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
           </View>
         )}
         {menuPos ? (
-          <>
+          <Modal
+            visible={true}
+            transparent={true}
+            animationType="none"
+            onRequestClose={() => setMenuPos(null)}
+          >
             <Pressable
               accessibilityLabel={t("dropdown.close")}
               onPress={() => setMenuPos(null)}
-              style={[StyleSheet.absoluteFill, { zIndex: 999 }]}
+              style={StyleSheet.absoluteFill}
             />
             <View
               style={[
@@ -703,54 +727,62 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
                   left: menuPos.left,
                   top: menuPos.top,
                   width: menuPos.width,
+                  maxHeight: menuPos.maxHeight,
                   backgroundColor: theme.colors.surface1,
                   borderColor: theme.colors.border,
                 },
               ]}
             >
-              {menuPos.options.map((opt) => {
-                const currentVal = values[menuPos.id];
-                const isSelected = menuPos.isMulti
-                  ? (Array.isArray(currentVal) ? currentVal : []).includes(opt.value)
-                  : (currentVal ?? "") === opt.value;
-                return (
-                  <Pressable
-                    key={opt.value}
-                    style={[
-                      styles.dropdownMenuItem,
-                      { borderBottomColor: theme.colors.border },
-                      isSelected && { backgroundColor: theme.colors.surface2 },
-                    ]}
-                    onPress={() => {
-                      if (menuPos.isMulti) {
-                        const arr = Array.isArray(currentVal) ? currentVal : [];
-                        const next = isSelected
-                          ? arr.filter((v) => v !== opt.value)
-                          : [...arr, opt.value];
-                        handleValueChange(menuPos.id, next);
-                      } else {
-                        handleValueChange(menuPos.id, opt.value);
-                        setMenuPos(null);
-                      }
-                    }}
-                  >
-                    <Text
+              <ScrollView
+                bounces={false}
+                showsVerticalScrollIndicator={true}
+                style={{ maxHeight: menuPos.maxHeight }}
+              >
+                {menuPos.options.map((opt, idx) => {
+                  const currentVal = values[menuPos.id];
+                  const isSelected = menuPos.isMulti
+                    ? (Array.isArray(currentVal) ? currentVal : []).includes(opt.value)
+                    : (currentVal ?? "") === opt.value;
+                  return (
+                    <Pressable
+                      key={opt.value}
                       style={[
-                        styles.dropdownMenuItemText,
-                        { color: isSelected ? theme.colors.accent : theme.colors.foreground },
-                        isSelected && { fontWeight: "600" },
+                        styles.dropdownMenuItem,
+                        { borderBottomColor: theme.colors.border },
+                        idx === menuPos.options.length - 1 ? { borderBottomWidth: 0 } : null,
+                        isSelected ? { backgroundColor: theme.colors.surface2 } : null,
                       ]}
+                      onPress={() => {
+                        if (menuPos.isMulti) {
+                          const arr = Array.isArray(currentVal) ? currentVal : [];
+                          const next = isSelected
+                            ? arr.filter((v) => v !== opt.value)
+                            : [...arr, opt.value];
+                          handleValueChange(menuPos.id, next);
+                        } else {
+                          handleValueChange(menuPos.id, opt.value);
+                          setMenuPos(null);
+                        }
+                      }}
                     >
-                      {opt.label}
-                    </Text>
-                    {isSelected && (
-                      <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
-                    )}
-                  </Pressable>
-                );
-              })}
+                      <Text
+                        style={[
+                          styles.dropdownMenuItemText,
+                          { color: isSelected ? theme.colors.accent : theme.colors.foreground },
+                          isSelected ? { fontWeight: "600" } : null,
+                        ]}
+                      >
+                        {opt.label}
+                      </Text>
+                      {isSelected ? (
+                        <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
+                      ) : null}
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
             </View>
-          </>
+          </Modal>
         ) : null}
       </View>
     </DropdownMenuContext.Provider>
@@ -937,6 +969,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     borderWidth: 1,
     borderRadius: 6,
+    overflow: "hidden",
     paddingVertical: 2,
     shadowColor: "#000",
     shadowOpacity: 0.2,
