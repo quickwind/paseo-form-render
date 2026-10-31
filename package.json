@@ -1,6 +1,6 @@
 {
   "name": "paseo-form-render",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Interactive forms, dashboards, and metric displays in Paseo conversations using pfr-form code fences.",
   "license": "MIT",
   "files": [
