@@ -216,10 +216,12 @@ function FilePickerField({
   return (
     <View style={styles.fieldContainer}>
       <View style={styles.fieldLabelRow}>
-        <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
-          {node.label}
-          {node.required && <Text style={{ color: colors.statusDanger }}> *</Text>}
-        </Text>
+        <View style={styles.fieldLabelGrow}>
+          <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
+            {node.label}
+            {node.required && <Text style={{ color: colors.statusDanger }}> *</Text>}
+          </Text>
+        </View>
         {cleanExts && cleanExts.length > 0 && (
           <View style={[styles.extBadge, { backgroundColor: colors.surface2, borderColor: colors.border }]}>
             <Text style={[styles.extBadgeText, { color: colors.accent }]}>
@@ -411,7 +413,9 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
       return (
         <View style={styles.progressContainer}>
           <View style={styles.progressHeader}>
-            <Text style={[styles.progressLabel, { color: theme.colors.foreground }]}>{node.label}</Text>
+            <View style={styles.progressHeaderLabel}>
+              <Text style={[styles.progressLabel, { color: theme.colors.foreground }]}>{node.label}</Text>
+            </View>
             <Text style={[styles.progressValue, { color: theme.colors.foreground }]}>{node.value}%</Text>
           </View>
           <View style={[styles.progressBarTrack, { backgroundColor: theme.colors.surface2 }]}>
@@ -524,14 +528,22 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
       return (
         <View style={styles.fieldContainer}>
           <View style={styles.toggleRow}>
-            <Text style={[styles.fieldLabel, { color: theme.colors.foreground }]}>
-              {node.label}
-              {node.required && <Text style={{ color: theme.colors.statusDanger }}> *</Text>}
-            </Text>
+            <View style={styles.toggleLabel}>
+              <Text style={[styles.fieldLabel, { color: theme.colors.foreground }]}>
+                {node.label}
+                {node.required && <Text style={{ color: theme.colors.statusDanger }}> *</Text>}
+              </Text>
+            </View>
             <Switch
               value={isChecked}
               onValueChange={(val) => onValueChange(node.id, val)}
               disabled={disabled}
+              trackColor={{ false: theme.colors.surface2, true: theme.colors.accent }}
+              thumbColor={Platform.select({
+                android: isChecked ? theme.colors.accentForeground : theme.colors.foregroundMuted,
+                default: undefined,
+              })}
+              ios_backgroundColor={theme.colors.surface2}
             />
           </View>
           {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
@@ -879,6 +891,12 @@ const styles = StyleSheet.create({
   progressHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
+  },
+  progressHeaderLabel: {
+    flex: 1,
+    flexShrink: 1,
   },
   progressLabel: {
     fontSize: 14,
@@ -986,15 +1004,23 @@ const styles = StyleSheet.create({
   },
   dropdownMenuItemText: {
     fontSize: 15,
+    flexShrink: 1,
   },
   dropdownCheckmark: {
     fontSize: 15,
     fontWeight: "600",
+    marginLeft: 8,
+    flexShrink: 0,
   },
   toggleRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 12,
+  },
+  toggleLabel: {
+    flex: 1,
+    flexShrink: 1,
   },
   button: {
     borderRadius: 6,
@@ -1025,16 +1051,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    gap: 8,
+  },
+  fieldLabelGrow: {
+    flex: 1,
+    flexShrink: 1,
   },
   extBadge: {
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
     borderWidth: 1,
+    flexShrink: 1,
   },
   extBadgeText: {
     fontSize: 11,
     fontWeight: "600",
+    flexShrink: 1,
   },
   pickerRow: {
     borderWidth: 1,
