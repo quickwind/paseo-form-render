@@ -8,6 +8,12 @@ export const OptionSchema = z.object({
 export type Option = z.infer<typeof OptionSchema>;
 
 // Table column schema
+export const StepItemSchema = z.object({
+  title: z.string(),
+  detail: z.string().optional(),
+  status: z.enum(["pending", "current", "done", "blocked"]).optional(),
+});
+
 export const TableColumnSchema = z.object({
   key: z.string(),
   label: z.string(),
@@ -35,7 +41,10 @@ export type PfrNode =
   | MultiSelectNode
   | ToggleNode
   | FilePickerNode
-  | ButtonNode;
+  | ButtonNode
+  | CodeNode
+  | StepsNode
+  | DetailsNode;
 
 /** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
 export const PFR_NODE_TYPES = [
@@ -55,6 +64,9 @@ export const PFR_NODE_TYPES = [
   "Toggle",
   "FilePicker",
   "Button",
+  "Code",
+  "Steps",
+  "Details",
 ] as const satisfies readonly PfrNode["type"][];
 type MissingNodeTypes = Exclude<PfrNode["type"], (typeof PFR_NODE_TYPES)[number]>;
 const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = true;
@@ -67,6 +79,34 @@ export interface CardNode {
   type: "Card";
   title?: string;
   description?: string;
+  children: PfrNode[];
+}
+
+export interface CodeNode {
+  type: "Code";
+  code: string;
+  /** Shown as a label only; there is no syntax highlighting. */
+  language?: string;
+}
+
+export type StepStatus = "pending" | "current" | "done" | "blocked";
+
+export interface StepItem {
+  title: string;
+  detail?: string;
+  status?: StepStatus;
+}
+
+export interface StepsNode {
+  type: "Steps";
+  items: StepItem[];
+}
+
+/** A collapsible section; its children keep working (values, validation, submit) while collapsed. */
+export interface DetailsNode {
+  type: "Details";
+  title: string;
+  open?: boolean;
   children: PfrNode[];
 }
 
@@ -322,6 +362,21 @@ export const PfrNodeSchema: z.ZodType<PfrNode> = z.lazy(() =>
       variant: z.enum(["primary", "secondary", "danger"]).optional(),
       action: z.enum(["submit", "reset"]),
       message: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("Code"),
+      code: z.string(),
+      language: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("Steps"),
+      items: z.array(StepItemSchema).min(1),
+    }),
+    z.object({
+      type: z.literal("Details"),
+      title: z.string(),
+      open: z.boolean().optional(),
+      children: z.array(PfrNodeSchema),
     }),
   ]),
 );

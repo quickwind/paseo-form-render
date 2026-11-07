@@ -124,6 +124,26 @@ export async function uiS7(ctx, run, r, plain) {
   });
 }
 
+/** S7: Code, Steps and Details render; Details starts collapsed and opens on a click. */
+export async function uiRichComponents(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: Code, Steps and Details render, Details toggles`, shotName("s7", "rich", run), async () => {
+    for (const t of ["Run the tests", "needs 2FA", "git tag v1.2.3 && git push --tags", "Advanced options"]) {
+      await ui.waitVisible(ui.text(t).last());
+    }
+    const boxes = await ui.errorBoxes().count();
+    if (boxes) throw new Error(`error boxes=${boxes}`);
+    const hiddenBefore = await ui.text("Hidden until expanded").count();
+    if (hiddenBefore) throw new Error("Details content is visible while collapsed");
+    await ui.text("Advanced options").last().click();
+    await ui.waitVisible(ui.text("Hidden until expanded").last());
+    await ui.waitVisible(ui.text("One-time code", false).last());
+    await ui.screenshot(shotName("s7", "rich", run), ui.text("Release plan").last());
+    return "rendered, expanded on click";
+  });
+}
+
 /** Waits until the settings RPC reports `value` (the screen saved it through the daemon). */
 async function settingPersisted(ctx, value) {
   const { h, ui } = ctx;

@@ -12,6 +12,9 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
   - `Select`: Dropdown selection menus with customizable options
   - `Toggle`: Boolean switches
   - `Button`: Submit and action buttons with custom payloads
+  - `Code`: Monospace code block that scrolls sideways (no syntax highlighting)
+  - `Steps`: Numbered steps with pending / current / done / blocked state
+  - `Details`: Collapsible section; fields inside are still validated and submitted
 - **Provider Agnostic**:
   - Fully compatible with **Devin**, **Claude**, **Antigravity**, **Gemini**, and OpenAI providers.
   - Automatically injects protocol instructions on agent initialization.

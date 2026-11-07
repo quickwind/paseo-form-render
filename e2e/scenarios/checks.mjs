@@ -2,7 +2,7 @@
 // `h` is the Harness (e2e/lib/client.mjs); scripts for the fake provider are in ./scripts.mjs.
 import { MARKER, fixTexts, readSettings, resetSettings, short, writeSettings } from "../lib/client.mjs";
 import { sleep } from "../lib/daemon.mjs";
-import { uiManualFix, uiPluginLoaded, uiS1, uiS2, uiS7, uiSettings } from "./ui-checks.mjs";
+import { uiManualFix, uiPluginLoaded, uiS1, uiS2, uiRichComponents, uiS7, uiSettings } from "./ui-checks.mjs";
 
 function uniq(name) {
   return `SCENARIO:${name} run=${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -208,12 +208,15 @@ export const SCENARIOS = {
   /** Valid forms and plain text never trigger a fix. */
   async s7(ctx, run) {
     const agents = {};
-    for (const name of ["s7good", "s7plain"]) {
+    for (const name of ["s7good", "s7plain", "s7rich"]) {
       const r = await simple(ctx, name, `S7-${name}`, { quietMs: 4000 });
       agents[name] = r;
       ctx.results.check("S7", `run${run}: ${name}: no fix`, r.fixes.length === 0 && r.prompts.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
     }
-    if (ctx.ui) await uiS7(ctx, run, agents.s7good, agents.s7plain);
+    if (ctx.ui) {
+      await uiS7(ctx, run, agents.s7good, agents.s7plain);
+      await uiRichComponents(ctx, run, agents.s7rich);
+    }
   },
 
   /** Message shapes: streamed chunks, split fences, several messages, long turns, long history. */

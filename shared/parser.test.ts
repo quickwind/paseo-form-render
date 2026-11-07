@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseMessageContent, hasFormBlock } from "./parser";
 import { PfrFormSchema } from "./schema";
-import { extractInitialValues, validateForm, formatSubmissionMessage } from "./form-helpers";
+import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "./form-helpers";
 
 describe("pfr-form Parser & Validation", () => {
   it("detects pfr-form fence blocks", () => {
@@ -340,5 +340,53 @@ describe("lenient JSON repair", () => {
     const [block] = parseMessageContent(wrap(`{ "type": "Card" "children": [] }`));
     expect(block.form).toBeUndefined();
     expect(block.errors?.[0].path).toBe("JSON");
+  });
+});
+
+describe("Code, Steps and Details components", () => {
+  const wrap = (node: unknown) => "```pfr-form\n" + JSON.stringify(node) + "\n```";
+  const parse = (node: unknown) => parseMessageContent(wrap(node))[0];
+
+  it("accepts a Code block with and without a language", () => {
+    for (const code of [{ type: "Code", code: "npm test" }, { type: "Code", code: "{}", language: "json" }]) {
+      expect(parse({ type: "Card", children: [code] }).error).toBeUndefined();
+    }
+  });
+
+  it("accepts Steps with every status and rejects an unknown one or an empty list", () => {
+    const items = ["pending", "current", "done", "blocked"].map((status) => ({ title: status, detail: "d", status }));
+    expect(parse({ type: "Card", children: [{ type: "Steps", items }] }).error).toBeUndefined();
+    expect(parse({ type: "Card", children: [{ type: "Steps", items: [{ title: "x", status: "late" }] }] }).error).toBeDefined();
+    expect(parse({ type: "Card", children: [{ type: "Steps", items: [] }] }).error).toBeDefined();
+  });
+
+  it("collects and validates fields inside a Details section", () => {
+    const form = {
+      type: "Card",
+      children: [
+        {
+          type: "Details",
+          title: "Advanced",
+          children: [{ type: "Input", id: "token", label: "Token", required: true, defaultValue: "abc" }],
+        },
+      ],
+    };
+    const block = parse(form);
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ token: "abc" });
+    expect(validateForm(node, { token: "" })).toEqual({ token: "Token is required." });
+    expect(collectFieldIds(node)).toEqual(["token"]);
+    expect(formatSubmissionMessage(undefined, node, { token: "abc" })).toContain("Token");
+  });
+
+  it("flags duplicate ids across a Details boundary", () => {
+    const input = { type: "Input", id: "a", label: "A" };
+    const block = parse({ type: "Card", children: [input, { type: "Details", title: "d", children: [input] }] });
+    expect(block.error).toContain("duplicate field id");
+  });
+
+  it("requires a title on Details", () => {
+    expect(parse({ type: "Card", children: [{ type: "Details", children: [] }] }).error).toBeDefined();
   });
 });

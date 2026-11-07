@@ -19,6 +19,7 @@ export function extractInitialValues(node: PfrNode, result: Record<string, any> 
       break;
     case "Card":
     case "Stack":
+    case "Details":
       for (const child of node.children) {
         extractInitialValues(child, result);
       }
@@ -167,6 +168,7 @@ export function validateForm(
     }
     case "Card":
     case "Stack":
+    case "Details":
       for (const child of node.children) {
         validateForm(child, values, errors);
       }
@@ -211,4 +213,13 @@ export function formatSubmissionMessage(
   }
 
   return lines.join("\n");
+}
+
+/** Ids of every field inside `node` (used to open a collapsed section that holds an invalid field). */
+export function collectFieldIds(node: PfrNode, ids: string[] = []): string[] {
+  if ("id" in node && typeof node.id === "string") ids.push(node.id);
+  if ("children" in node && Array.isArray(node.children)) {
+    for (const child of node.children) collectFieldIds(child, ids);
+  }
+  return ids;
 }

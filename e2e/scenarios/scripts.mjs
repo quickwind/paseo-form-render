@@ -18,13 +18,18 @@ const BAD2 = "Second try:\n\n" + fence(JSON.stringify({ type: "Card", title: "Vo
 const BADJSON = "Broken:\n\n" + fence('{ "type": "Card", "children": [ { "type": "Text" "text": "hi" } ] }');
 const GOOD = "Fixed:\n\n" + fence(JSON.stringify({ type: "Card", title: "Volume", children: [{ type: "Input", id: "vol", label: "Volume", inputType: "number" }] }, null, 2));
 const TYPO = "Typo form:\n\n" + fence(JSON.stringify({ type: "Card", children: [{ type: "Inpt", id: "a", label: "A" }] }));
+const RICH = "Rich:\n\n" + fence(JSON.stringify({ type: "Card", title: "Release plan", children: [
+  { type: "Steps", items: [{ title: "Run the tests", detail: "npm test", status: "done" }, { title: "Tag the release", status: "current" }, { title: "Publish", detail: "needs 2FA", status: "blocked" }] },
+  { type: "Code", language: "bash", code: "git tag v1.2.3 && git push --tags" },
+  { type: "Details", title: "Advanced options", children: [{ type: "Text", text: "Hidden until expanded" }, { type: "Input", id: "otp", label: "One-time code", required: true }] },
+] }, null, 2));
 const PLAIN = "Just plain text, no form here. ```js\nconsole.log(1)\n```";
 const goodHalfA = "Split form:\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Split\",\n";
 const goodHalfB = "  \"children\": [ { \"type\": \"Text\", \"text\": \"hello\" } ]\n}\n```\nDone.";
 const steps = (n) => Array.from({ length: n }, (_, i) => `working step ${i}`);
 
 export const SCRIPTS = {
-  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, TYPO },
+  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, RICH, TYPO },
   s1: [{ text: "@BAD" }, { text: "@GOOD" }],
   s1b: [{ text: "@TYPO" }, { text: "@GOOD" }],
   s2: [{ text: "@BAD" }, { text: "@BAD2" }, { text: "@BADJSON" }, { text: "@BAD" }],
@@ -39,6 +44,7 @@ export const SCRIPTS = {
   s6failafter: [{ text: "@BAD" }, { text: "@BAD", outcome: "failed" }, { text: "@PLAIN" }],
   s7good: [{ text: "@GOOD" }],
   s7plain: [{ text: "@PLAIN" }],
+  s7rich: [{ text: "@RICH" }],
   s8chunks: [{ chunks: ["Here is ", "your form:\n\n```pfr-", "form\n{\"type\":\"Card\",\"children\":[{\"type\":\"Sli", "der\",\"id\":\"v\"}]}\n```\n", "End."], chunkDelayMs: 30 }, { text: "@GOOD" }],
   s8split: [{ messages: [goodHalfA, goodHalfB] }, { text: "@GOOD" }],
   s8splittool: [{ messages: [goodHalfA, goodHalfB], toolBetween: true }, { text: "@GOOD" }],

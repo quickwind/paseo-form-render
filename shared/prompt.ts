@@ -29,6 +29,9 @@ Available component types:
   * Unified in-app modal file and folder picker with quick shortcuts (Project, Home, Desktop, Downloads, OneDrive). Returns project-relative path if inside workspace, or host absolute path if outside. Zero cold start latency, foreground-guaranteed. When asking for specific file types (e.g. mp4, mov, png, json), ALWAYS specify "extensions": ["mp4"].
 - **Toggle**: { "type": "Toggle", "id": string, "label": string, "defaultValue"?: boolean, "required"?: boolean }
 - **Button**: { "type": "Button", "label": string, "variant"?: "primary"|"secondary"|"danger", "action": "submit"|"reset", "message"?: string }
+- **Code**: { "type": "Code", "code": string, "language"?: string }  (monospace block, scrolls sideways, no syntax highlighting; "language" is only a label)
+- **Steps**: { "type": "Steps", "items": [{ "title": string, "detail"?: string, "status"?: "pending"|"current"|"done"|"blocked" }] }  (numbered steps with progress state)
+- **Details**: { "type": "Details", "title": string, "open"?: boolean, "children": [...] }  (collapsible section, closed by default; fields inside it are still collected on submit)
 
 ### Important Rules:
 1. Always give input fields (\`Input\`, \`Select\`, \`MultiSelect\`, \`FilePicker\`, \`Toggle\`) a unique \`id\`.

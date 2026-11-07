@@ -7,10 +7,12 @@ import {
   SelectNode,
   MultiSelectNode,
   FilePickerNode,
+  DetailsNode,
+  StepStatus,
   Tone,
   normalizeExtensions,
 } from "../shared/schema";
-import { extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
 import { messages } from "./messages";
 import { ProjectFileModal } from "./project-file-modal";
 
@@ -64,6 +66,58 @@ function getToneColors(tone: Tone | undefined, theme: PluginHostProps["theme"]) 
     default:
       return { bg: theme.colors.surface2, border: theme.colors.border, text: theme.colors.foregroundMuted };
   }
+}
+
+const MONO_FONT = Platform.select({ ios: "Menlo", android: "monospace", default: "monospace" });
+
+function stepColor(status: StepStatus | undefined, theme: PluginHostProps["theme"]) {
+  switch (status) {
+    case "done":
+      return theme.colors.statusSuccess;
+    case "current":
+      return theme.colors.accent;
+    case "blocked":
+      return theme.colors.statusDanger;
+    default:
+      return theme.colors.foregroundMuted;
+  }
+}
+
+function stepMarker(status: StepStatus | undefined, index: number): string {
+  if (status === "done") return "✓";
+  if (status === "blocked") return "!";
+  return String(index + 1);
+}
+
+// Collapsible section. Collapsing only unmounts the view: values live in the form state, so the
+// fields inside are still validated and submitted. A section holding an invalid field opens itself.
+function DetailsBlock(props: NodeRendererProps & { node: DetailsNode }) {
+  const { node, errors, theme } = props;
+  const [open, setOpen] = useState(node.open === true);
+  const hasError = collectFieldIds(node).some((id) => !!errors[id]);
+  const expanded = open || hasError;
+  return (
+    <View style={[styles.details, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        onPress={() => setOpen(!expanded)}
+        style={styles.detailsHeader}
+      >
+        <View style={styles.detailsTitleBox}>
+          <Text style={[styles.detailsTitle, { color: theme.colors.foreground }]}>{node.title}</Text>
+        </View>
+        <Text style={[styles.detailsChevron, { color: theme.colors.foregroundMuted }]}>{expanded ? "▾" : "▸"}</Text>
+      </Pressable>
+      {expanded ? (
+        <View style={styles.detailsBody}>
+          {(node.children || []).map((child, index) => (
+            <NodeRenderer key={index} {...props} node={child} />
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 // Collapsible Dropdown Component for single Select
@@ -590,6 +644,61 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
       );
     }
 
+    case "Code":
+      return (
+        <View style={[styles.code, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
+          {node.language ? (
+            <View style={[styles.codeHeader, { borderBottomColor: theme.colors.border }]}>
+              <Text style={[styles.codeLanguage, { color: theme.colors.foregroundMuted }]}>{node.language}</Text>
+            </View>
+          ) : null}
+          <ScrollView horizontal>
+            <View style={styles.codeBody}>
+              <Text selectable style={[styles.codeText, { color: theme.colors.foreground, fontFamily: MONO_FONT }]}>
+                {node.code}
+              </Text>
+            </View>
+          </ScrollView>
+        </View>
+      );
+
+    case "Steps":
+      return (
+        <View style={styles.steps}>
+          {(node.items || []).map((item, index) => {
+            const color = stepColor(item.status, theme);
+            return (
+              <View key={index} style={styles.stepRow}>
+                <View style={[styles.stepMarker, { borderColor: color, backgroundColor: theme.colors.surface2 }]}>
+                  <Text style={[styles.stepMarkerText, { color }]}>{stepMarker(item.status, index)}</Text>
+                </View>
+                <View style={styles.stepBody}>
+                  <Text style={[styles.stepTitle, { color: theme.colors.foreground }]}>{item.title}</Text>
+                  {item.detail ? (
+                    <Text style={[styles.stepDetail, { color: theme.colors.foregroundMuted }]}>{item.detail}</Text>
+                  ) : null}
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      );
+
+    case "Details":
+      return (
+        <DetailsBlock
+          node={node}
+          values={values}
+          errors={errors}
+          disabled={disabled}
+          theme={theme}
+          agentId={agentId}
+          onValueChange={onValueChange}
+          onSubmit={onSubmit}
+          onReset={onReset}
+        />
+      );
+
     case "FilePicker": {
       return (
         <FilePickerField
@@ -871,6 +980,86 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 13,
     fontWeight: "500",
+  },
+  code: {
+    borderRadius: 8,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  codeHeader: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderBottomWidth: 1,
+  },
+  codeLanguage: {
+    fontSize: 11,
+  },
+  codeBody: {
+    padding: 10,
+  },
+  codeText: {
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  steps: {
+    gap: 10,
+  },
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  stepMarker: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+  },
+  stepMarkerText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  stepBody: {
+    flex: 1,
+    gap: 2,
+  },
+  stepTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  stepDetail: {
+    fontSize: 13,
+  },
+  details: {
+    borderRadius: 8,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  detailsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  detailsTitleBox: {
+    flex: 1,
+  },
+  detailsTitle: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  detailsChevron: {
+    fontSize: 14,
+  },
+  detailsBody: {
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    gap: 12,
   },
   alert: {
     borderWidth: 1,
