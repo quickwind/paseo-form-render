@@ -230,10 +230,13 @@ export const SCENARIOS = {
       // messages gets a (misleading) fix request.
       results.check("S8", `run${run}: ${name}: valid form split across messages gets no fix`, r.fixes.length === 0, `fixes=${r.fixes.length}`, { known: true });
     }
-    for (const name of ["s8big", "s8huge"]) {
+    // s8big (~284 entries) fits the 300-entry window used to find the user's message, so it is
+    // fixed. s8huge (~400) does not: auto-fix fails closed ("history-truncated") and sends nothing.
+    for (const [name, expected] of [["s8big", 1], ["s8huge", 0]]) {
       const r = await simple(ctx, name, `S8-${name}`, { quietMs: 6000 });
       const probe = h.probesFor(r.agent.id).find((p) => p.kind === "turn_ended");
-      results.check("S8", `run${run}: ${name} (long turn, ${probe?.eventTimelineLength} timeline entries): exactly one fix`, r.fixes.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
+      const what = expected === 1 ? "exactly one fix" : "no fix (history beyond the window, fails closed)";
+      results.check("S8", `run${run}: ${name} (long turn, ${probe?.eventTimelineLength} timeline entries): ${what}`, r.fixes.length === expected, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
     }
     // Long history: every real user message restarts the count, so each one gets 2 more fixes.
     const r = await simple(ctx, "s2", "S8-long", { quietMs: 5000 });
