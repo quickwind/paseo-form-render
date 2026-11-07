@@ -6,6 +6,7 @@ import {
   formatZodIssues,
   type FormIssue,
 } from "./form-errors";
+import { repairJson } from "./json-repair";
 import { PfrForm, PfrFormSchema } from "./schema";
 
 export interface ParsedBlock {
@@ -73,7 +74,15 @@ export function parseFormBlock(jsonStr: string): ParsedBlock {
   try {
     parsedJson = JSON.parse(trimmed);
   } catch (e) {
-    return failedBlock(trimmed, formatJsonParseError(trimmed, e));
+    // Fix harmless syntax slips (trailing commas, comments, single quotes, bare keys) before
+    // giving up; the schema below still validates the result. Errors refer to the original text.
+    const repaired = repairJson(trimmed);
+    try {
+      if (!repaired.repaired) throw e;
+      parsedJson = JSON.parse(repaired.text);
+    } catch {
+      return failedBlock(trimmed, formatJsonParseError(trimmed, e));
+    }
   }
 
   const validation = PfrFormSchema.safeParse(parsedJson);

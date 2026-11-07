@@ -318,3 +318,27 @@ describe("pfr-form Parser & Validation", () => {
   });
 });
 
+
+describe("lenient JSON repair", () => {
+  const wrap = (json: string) => "```pfr-form\n" + json + "\n```";
+
+  it("renders a form whose JSON has trailing commas, comments and single quotes", () => {
+    const [block] = parseMessageContent(
+      wrap(`{ // note\n 'type': "Card", children: [ { "type": "Text", "text": "hi", }, ], }`),
+    );
+    expect(block.error).toBeUndefined();
+    expect(block.form?.type).toBe("Card");
+  });
+
+  it("still validates the repaired result against the schema", () => {
+    const [block] = parseMessageContent(wrap(`{ "type": "Card", "children": [ { "type": "Slider", }, ], }`));
+    expect(block.form).toBeUndefined();
+    expect(block.errors?.[0].message).toContain("Slider");
+  });
+
+  it("reports unrepairable JSON against the original text", () => {
+    const [block] = parseMessageContent(wrap(`{ "type": "Card" "children": [] }`));
+    expect(block.form).toBeUndefined();
+    expect(block.errors?.[0].path).toBe("JSON");
+  });
+});

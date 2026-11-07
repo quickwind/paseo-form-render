@@ -15,7 +15,7 @@ const fence = (json) => "```pfr-form\n" + json + "\n```";
 
 const BAD = "Here is your form:\n\n" + fence(JSON.stringify({ type: "Card", title: "Volume", children: [{ type: "Slider", id: "vol", label: "Volume" }] }, null, 2)) + "\n\nLet me know.";
 const BAD2 = "Second try:\n\n" + fence(JSON.stringify({ type: "Card", title: "Volume", children: [{ type: "Input", id: "vol" }] }, null, 2));
-const BADJSON = "Broken:\n\n" + fence('{ "type": "Card", "children": [ { "type": "Text", "text": "hi" }, ] }');
+const BADJSON = "Broken:\n\n" + fence('{ "type": "Card", "children": [ { "type": "Text" "text": "hi" } ] }');
 const GOOD = "Fixed:\n\n" + fence(JSON.stringify({ type: "Card", title: "Volume", children: [{ type: "Input", id: "vol", label: "Volume", inputType: "number" }] }, null, 2));
 const TYPO = "Typo form:\n\n" + fence(JSON.stringify({ type: "Card", children: [{ type: "Inpt", id: "a", label: "A" }] }));
 const PLAIN = "Just plain text, no form here. ```js\nconsole.log(1)\n```";

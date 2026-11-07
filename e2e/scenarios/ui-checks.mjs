@@ -82,8 +82,8 @@ export async function uiS2(ctx, run, r) {
     await last.scrollIntoViewIfNeeded();
     await ui.waitVisible(last);
     await ui.waitVisible(ui.text("Ask agent to fix").last());
-    // The last reply (BADJSON) is invalid JSON; its box explains the trailing comma.
-    await ui.waitVisible(ui.page.getByText(/is not valid JSON\. Hint: trailing comma/).last());
+    // The last reply (BADJSON) is invalid JSON that the lenient parser cannot repair (missing comma).
+    await ui.waitVisible(ui.page.getByText(/syntax error at line/).last());
     await ui.screenshot(shotName("s2", "last-error", run), last);
     // The run is quiet already (waitQuiet); the UI must not show a further fix request.
     const fixes = await ui.fixMessages().count();
