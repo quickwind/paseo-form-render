@@ -286,6 +286,14 @@ export function findDuplicateIdIssues(json: unknown): FormIssue[] {
     if (Array.isArray(node.children)) {
       node.children.forEach((child, index) => visit(child, [...path, "children", index], depth + 1));
     }
+    if (Array.isArray(node.tabs)) {
+      node.tabs.forEach((tab, tabIndex) => {
+        if (!isRecord(tab) || !Array.isArray(tab.children)) return;
+        tab.children.forEach((child, index) =>
+          visit(child, [...path, "tabs", tabIndex, "children", index], depth + 1),
+        );
+      });
+    }
   };
   visit(json, [], 0);
 

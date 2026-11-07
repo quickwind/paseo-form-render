@@ -150,6 +150,25 @@ export async function uiRichComponents(ctx, run, r) {
   });
 }
 
+/** S7: SegmentedBar, KeyValue and Tabs render; a failed submit shows the tab that holds the invalid field. */
+export async function uiRich2Components(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: SegmentedBar, KeyValue and Tabs render; Tabs shows the tab with an invalid field`, shotName("s7", "rich2", run), async () => {
+    for (const t of ["40 GB (50%)", "10 GB (13%)", "eu-west", "Hostname"]) {
+      await ui.waitVisible(ui.text(t, false).last());
+    }
+    const boxes = await ui.errorBoxes().count();
+    if (boxes) throw new Error(`error boxes=${boxes}`);
+    if (await ui.text("Access token", false).count()) throw new Error("the second tab is visible while the first is selected");
+    await ui.text("Apply").last().click();
+    await ui.waitVisible(ui.text("Access token is required.").last());
+    if (await ui.text("Hostname", false).count()) throw new Error("the first tab is still visible after the failed submit");
+    await ui.screenshot(shotName("s7", "rich2", run), ui.text("Server report").last());
+    return "rendered, switched to the invalid tab";
+  });
+}
+
 /** Waits until the settings RPC reports `value` (the screen saved it through the daemon). */
 async function settingPersisted(ctx, value) {
   const { h, ui } = ctx;

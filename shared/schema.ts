@@ -24,6 +24,17 @@ export type TableColumn = z.infer<typeof TableColumnSchema>;
 export const ToneSchema = z.enum(["neutral", "info", "success", "warning", "danger"]);
 export type Tone = z.infer<typeof ToneSchema>;
 
+export const SegmentedBarPartSchema = z.object({
+  label: z.string(),
+  value: z.number().nonnegative(),
+  tone: ToneSchema.optional(),
+});
+
+export const KeyValuePairSchema = z.object({
+  label: z.string(),
+  value: z.union([z.string(), z.number()]),
+});
+
 // Node base definition
 export type PfrNode =
   | CardNode
@@ -44,7 +55,10 @@ export type PfrNode =
   | ButtonNode
   | CodeNode
   | StepsNode
-  | DetailsNode;
+  | DetailsNode
+  | SegmentedBarNode
+  | KeyValueNode
+  | TabsNode;
 
 /** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
 export const PFR_NODE_TYPES = [
@@ -67,6 +81,9 @@ export const PFR_NODE_TYPES = [
   "Code",
   "Steps",
   "Details",
+  "SegmentedBar",
+  "KeyValue",
+  "Tabs",
 ] as const satisfies readonly PfrNode["type"][];
 type MissingNodeTypes = Exclude<PfrNode["type"], (typeof PFR_NODE_TYPES)[number]>;
 const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = true;
@@ -108,6 +125,40 @@ export interface DetailsNode {
   title: string;
   open?: boolean;
   children: PfrNode[];
+}
+
+export interface SegmentedBarPart {
+  label: string;
+  value: number;
+  tone?: Tone;
+}
+
+/** Shares of one whole as a single bar with a legend; segments without a tone get distinct colors. */
+export interface SegmentedBarNode {
+  type: "SegmentedBar";
+  parts: SegmentedBarPart[];
+  unit?: string;
+}
+
+export interface KeyValuePair {
+  label: string;
+  value: string | number;
+}
+
+export interface KeyValueNode {
+  type: "KeyValue";
+  pairs: KeyValuePair[];
+}
+
+export interface TabItem {
+  label: string;
+  children: PfrNode[];
+}
+
+/** Tabs show one group at a time; every tab's fields stay in the form and are submitted. */
+export interface TabsNode {
+  type: "Tabs";
+  tabs: TabItem[];
 }
 
 export interface StackNode {
@@ -377,6 +428,19 @@ export const PfrNodeSchema: z.ZodType<PfrNode> = z.lazy(() =>
       title: z.string(),
       open: z.boolean().optional(),
       children: z.array(PfrNodeSchema),
+    }),
+    z.object({
+      type: z.literal("SegmentedBar"),
+      parts: z.array(SegmentedBarPartSchema).min(1),
+      unit: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("KeyValue"),
+      pairs: z.array(KeyValuePairSchema).min(1),
+    }),
+    z.object({
+      type: z.literal("Tabs"),
+      tabs: z.array(z.object({ label: z.string(), children: z.array(PfrNodeSchema) })).min(1),
     }),
   ]),
 );

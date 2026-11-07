@@ -390,3 +390,56 @@ describe("Code, Steps and Details components", () => {
     expect(parse({ type: "Card", children: [{ type: "Details", children: [] }] }).error).toBeDefined();
   });
 });
+
+describe("SegmentedBar, KeyValue and Tabs components", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const card = (child: unknown) => ({ type: "Card", children: [child] });
+
+  it("accepts SegmentedBar parts with and without tone/unit and rejects bad ones", () => {
+    const ok = { type: "SegmentedBar", unit: "GB", parts: [{ label: "Code", value: 40 }, { label: "Cache", value: 0, tone: "warning" }] };
+    expect(parse(card(ok)).error).toBeUndefined();
+    expect(parse(card({ type: "SegmentedBar", parts: [{ label: "x", value: -1 }] })).error).toBeDefined();
+    expect(parse(card({ type: "SegmentedBar", parts: [] })).error).toBeDefined();
+  });
+
+  it("accepts KeyValue pairs with string or number values", () => {
+    expect(parse(card({ type: "KeyValue", pairs: [{ label: "Region", value: "eu" }, { label: "Nodes", value: 3 }] })).error).toBeUndefined();
+    expect(parse(card({ type: "KeyValue", pairs: [] })).error).toBeDefined();
+    expect(parse(card({ type: "KeyValue", pairs: [{ label: "a", value: true }] })).error).toBeDefined();
+  });
+
+  const tabsForm = {
+    type: "Card",
+    children: [
+      {
+        type: "Tabs",
+        tabs: [
+          { label: "General", children: [{ type: "Input", id: "name", label: "Name", defaultValue: "x" }] },
+          { label: "Advanced", children: [{ type: "Toggle", id: "debug", label: "Debug", defaultValue: true }, { type: "Input", id: "token", label: "Token", required: true }] },
+        ],
+      },
+    ],
+  };
+
+  it("collects, validates and labels fields in every tab", () => {
+    const block = parse(tabsForm);
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ name: "x", debug: true, token: "" });
+    expect(validateForm(node, { name: "x", debug: true, token: "" })).toEqual({ token: "Token is required." });
+    expect(collectFieldIds(node)).toEqual(["name", "debug", "token"]);
+    const message = formatSubmissionMessage(undefined, node, { name: "x", debug: true, token: "t" });
+    expect(message).toContain("- Debug: Yes");
+    expect(message).toContain("- Token: t");
+  });
+
+  it("flags a duplicate id across tabs with the tab in the path", () => {
+    const input = { type: "Input", id: "a", label: "A" };
+    const block = parse(card({ type: "Tabs", tabs: [{ label: "1", children: [input] }, { label: "2", children: [input] }] }));
+    expect(block.error).toContain("duplicate field id");
+  });
+
+  it("requires at least one tab", () => {
+    expect(parse(card({ type: "Tabs", tabs: [] })).error).toBeDefined();
+  });
+});

@@ -32,6 +32,9 @@ Available component types:
 - **Code**: { "type": "Code", "code": string, "language"?: string }  (monospace block, scrolls sideways, no syntax highlighting; "language" is only a label)
 - **Steps**: { "type": "Steps", "items": [{ "title": string, "detail"?: string, "status"?: "pending"|"current"|"done"|"blocked" }] }  (numbered steps with progress state)
 - **Details**: { "type": "Details", "title": string, "open"?: boolean, "children": [...] }  (collapsible section, closed by default; fields inside it are still collected on submit)
+- **SegmentedBar**: { "type": "SegmentedBar", "parts": [{ "label": string, "value": number, "tone"?: "neutral"|"info"|"success"|"warning"|"danger" }], "unit"?: string }  (shares of one whole as a single bar with a legend; use it for proportions instead of a table)
+- **KeyValue**: { "type": "KeyValue", "pairs": [{ "label": string, "value": string|number }] }  (compact "property: value" list)
+- **Tabs**: { "type": "Tabs", "tabs": [{ "label": string, "children": [...] }] }  (one group at a time; fields in every tab are still collected on submit)
 
 ### Important Rules:
 1. Always give input fields (\`Input\`, \`Select\`, \`MultiSelect\`, \`FilePicker\`, \`Toggle\`) a unique \`id\`.

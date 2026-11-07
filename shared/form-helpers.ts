@@ -1,5 +1,19 @@
 import { PfrForm, PfrNode, normalizeExtensions } from "./schema";
 
+/** The nodes directly inside a container (Card, Stack, Details, or every tab of Tabs). */
+export function childNodes(node: PfrNode): PfrNode[] {
+  switch (node.type) {
+    case "Card":
+    case "Stack":
+    case "Details":
+      return node.children;
+    case "Tabs":
+      return node.tabs.flatMap((tab) => tab.children);
+    default:
+      return [];
+  }
+}
+
 export function extractInitialValues(node: PfrNode, result: Record<string, any> = {}): Record<string, any> {
   switch (node.type) {
     case "Input":
@@ -20,7 +34,8 @@ export function extractInitialValues(node: PfrNode, result: Record<string, any> 
     case "Card":
     case "Stack":
     case "Details":
-      for (const child of node.children) {
+    case "Tabs":
+      for (const child of childNodes(node)) {
         extractInitialValues(child, result);
       }
       break;
@@ -169,7 +184,8 @@ export function validateForm(
     case "Card":
     case "Stack":
     case "Details":
-      for (const child of node.children) {
+    case "Tabs":
+      for (const child of childNodes(node)) {
         validateForm(child, values, errors);
       }
       break;
@@ -193,9 +209,7 @@ export function formatSubmissionMessage(
     if ("id" in n && "label" in n) {
       fieldLabels[n.id] = n.label;
     }
-    if ("children" in n && Array.isArray(n.children)) {
-      n.children.forEach(collectLabels);
-    }
+    childNodes(n).forEach(collectLabels);
   }
   collectLabels(node);
 
@@ -218,8 +232,6 @@ export function formatSubmissionMessage(
 /** Ids of every field inside `node` (used to open a collapsed section that holds an invalid field). */
 export function collectFieldIds(node: PfrNode, ids: string[] = []): string[] {
   if ("id" in node && typeof node.id === "string") ids.push(node.id);
-  if ("children" in node && Array.isArray(node.children)) {
-    for (const child of node.children) collectFieldIds(child, ids);
-  }
+  for (const child of childNodes(node)) collectFieldIds(child, ids);
   return ids;
 }

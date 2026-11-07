@@ -1,6 +1,6 @@
 import type { PluginHostProps } from "@getpaseo/plugin/client";
 import { useRpc, useTranslation } from "@getpaseo/plugin/client";
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, Switch, ScrollView, Platform, Modal, Dimensions } from "react-native";
 import {
   PfrNode,
@@ -8,7 +8,9 @@ import {
   MultiSelectNode,
   FilePickerNode,
   DetailsNode,
+  SegmentedBarPart,
   StepStatus,
+  TabsNode,
   Tone,
   normalizeExtensions,
 } from "../shared/schema";
@@ -87,6 +89,82 @@ function stepMarker(status: StepStatus | undefined, index: number): string {
   if (status === "done") return "✓";
   if (status === "blocked") return "!";
   return String(index + 1);
+}
+
+/** Segment color: the part's tone, or (no tone / neutral) the next color of a fixed palette. */
+function segmentColor(part: SegmentedBarPart, index: number, theme: PluginHostProps["theme"]) {
+  if (part.tone && part.tone !== "neutral") return getToneColors(part.tone, theme).text;
+  const palette = [
+    theme.colors.accent,
+    theme.colors.statusWarning,
+    theme.colors.foregroundMuted,
+    theme.colors.statusDanger,
+    theme.colors.statusSuccess,
+  ];
+  return palette[index % palette.length];
+}
+
+function formatNumber(value: number): string {
+  return Number.isInteger(value) ? String(value) : String(Math.round(value * 100) / 100);
+}
+
+// Tabs show one group at a time. Fields of hidden tabs stay in the form state; when a submit fails
+// on a field in another tab, that tab is shown.
+function TabsBlock(props: NodeRendererProps & { node: TabsNode }) {
+  const { node, errors, theme } = props;
+  const tabs = node.tabs || [];
+  const [selected, setSelected] = useState(0);
+  const active = Math.min(selected, Math.max(0, tabs.length - 1));
+  const tabHasError = (index: number) =>
+    (tabs[index]?.children || []).some((child) => collectFieldIds(child).some((id) => !!errors[id]));
+  useEffect(() => {
+    if (tabHasError(active)) return;
+    const first = tabs.findIndex((_, index) => tabHasError(index));
+    if (first !== -1) setSelected(first);
+    // Only when the errors change: the user may browse other tabs afterwards.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
+  return (
+    <View style={styles.tabs}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={[styles.tabBar, { borderBottomColor: theme.colors.border }]}>
+          {tabs.map((tab, index) => {
+            const isActive = index === active;
+            return (
+              <Pressable
+                key={index}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isActive }}
+                onPress={() => setSelected(index)}
+                style={[styles.tabButton, { backgroundColor: isActive ? theme.colors.surface2 : "transparent" }]}
+              >
+                <Text
+                  style={[
+                    styles.tabLabel,
+                    {
+                      color: tabHasError(index)
+                        ? theme.colors.statusDanger
+                        : isActive
+                          ? theme.colors.foreground
+                          : theme.colors.foregroundMuted,
+                      fontWeight: isActive ? "600" : "400",
+                    },
+                  ]}
+                >
+                  {tab.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
+      <View style={styles.tabBody}>
+        {(tabs[active]?.children || []).map((child, index) => (
+          <NodeRenderer key={`${active}:${index}`} {...props} node={child} />
+        ))}
+      </View>
+    </View>
+  );
 }
 
 // Collapsible section. Collapsing only unmounts the view: values live in the form state, so the
@@ -684,6 +762,74 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
         </View>
       );
 
+    case "SegmentedBar": {
+      const parts = node.parts || [];
+      const total = parts.reduce((sum, part) => sum + part.value, 0);
+      const unit = node.unit ? ` ${node.unit}` : "";
+      return (
+        <View style={styles.segBar}>
+          <View style={[styles.segTrack, { backgroundColor: theme.colors.surface2 }]}>
+            {parts.map((part, index) =>
+              part.value > 0 ? (
+                <View
+                  key={index}
+                  style={{ flex: part.value, backgroundColor: segmentColor(part, index, theme) }}
+                />
+              ) : null,
+            )}
+          </View>
+          <View style={styles.segLegend}>
+            {parts.map((part, index) => (
+              <View key={index} style={styles.segLegendItem}>
+                <View style={[styles.segDot, { backgroundColor: segmentColor(part, index, theme) }]} />
+                <Text style={[styles.segLegendText, { color: theme.colors.foreground }]}>
+                  {part.label}:{" "}
+                  <Text style={{ color: theme.colors.foregroundMuted }}>
+                    {formatNumber(part.value)}
+                    {unit}
+                    {total > 0 ? ` (${Math.round((part.value / total) * 100)}%)` : ""}
+                  </Text>
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      );
+    }
+
+    case "KeyValue":
+      return (
+        <View style={styles.kv}>
+          {(node.pairs || []).map((pair, index) => (
+            <View key={index} style={styles.kvRow}>
+              <View style={styles.kvLabelBox}>
+                <Text style={[styles.kvLabel, { color: theme.colors.foregroundMuted }]}>{pair.label}</Text>
+              </View>
+              <View style={styles.kvValueBox}>
+                <Text selectable style={[styles.kvValue, { color: theme.colors.foreground }]}>
+                  {String(pair.value)}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      );
+
+    case "Tabs":
+      return (
+        <TabsBlock
+          node={node}
+          values={values}
+          errors={errors}
+          disabled={disabled}
+          theme={theme}
+          agentId={agentId}
+          onValueChange={onValueChange}
+          onSubmit={onSubmit}
+          onReset={onReset}
+        />
+      );
+
     case "Details":
       return (
         <DetailsBlock
@@ -1059,6 +1205,75 @@ const styles = StyleSheet.create({
   detailsBody: {
     paddingHorizontal: 12,
     paddingBottom: 12,
+    gap: 12,
+  },
+  segBar: {
+    gap: 8,
+  },
+  segTrack: {
+    flexDirection: "row",
+    height: 12,
+    borderRadius: 6,
+    overflow: "hidden",
+    gap: 2,
+  },
+  segLegend: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    columnGap: 12,
+    rowGap: 4,
+  },
+  segLegendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  segDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  segLegendText: {
+    fontSize: 13,
+  },
+  kv: {
+    gap: 6,
+  },
+  kvRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  kvLabelBox: {
+    flex: 1,
+  },
+  kvValueBox: {
+    flex: 2,
+  },
+  kvLabel: {
+    fontSize: 13,
+  },
+  kvValue: {
+    fontSize: 14,
+  },
+  tabs: {
+    gap: 10,
+  },
+  tabBar: {
+    flexDirection: "row",
+    gap: 4,
+    borderBottomWidth: 1,
+    paddingBottom: 6,
+  },
+  tabButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+  },
+  tabLabel: {
+    fontSize: 13,
+  },
+  tabBody: {
     gap: 12,
   },
   alert: {

@@ -24,13 +24,22 @@ const RICH = "Rich:\n\n" + fence(JSON.stringify({ type: "Card", title: "Release 
   { type: "Details", title: "Advanced options", children: [{ type: "Text", text: "Hidden until expanded" }, { type: "Input", id: "otp", label: "One-time code", required: true }] },
   { type: "Button", label: "Publish now", variant: "primary", action: "submit", message: "go" },
 ] }, null, 2));
+const RICH2 = "Rich2:\n\n" + fence(JSON.stringify({ type: "Card", title: "Server report", children: [
+  { type: "SegmentedBar", unit: "GB", parts: [{ label: "Code", value: 40 }, { label: "Deps", value: 30 }, { label: "Cache", value: 10 }] },
+  { type: "KeyValue", pairs: [{ label: "Region", value: "eu-west" }, { label: "Nodes", value: 3 }] },
+  { type: "Tabs", tabs: [
+    { label: "General", children: [{ type: "Input", id: "host", label: "Hostname", defaultValue: "srv1" }] },
+    { label: "Advanced", children: [{ type: "Input", id: "token", label: "Access token", required: true }] },
+  ] },
+  { type: "Button", label: "Apply", variant: "primary", action: "submit", message: "go" },
+] }, null, 2));
 const PLAIN = "Just plain text, no form here. ```js\nconsole.log(1)\n```";
 const goodHalfA = "Split form:\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Split\",\n";
 const goodHalfB = "  \"children\": [ { \"type\": \"Text\", \"text\": \"hello\" } ]\n}\n```\nDone.";
 const steps = (n) => Array.from({ length: n }, (_, i) => `working step ${i}`);
 
 export const SCRIPTS = {
-  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, RICH, TYPO },
+  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, RICH, RICH2, TYPO },
   s1: [{ text: "@BAD" }, { text: "@GOOD" }],
   s1b: [{ text: "@TYPO" }, { text: "@GOOD" }],
   s2: [{ text: "@BAD" }, { text: "@BAD2" }, { text: "@BADJSON" }, { text: "@BAD" }],
@@ -46,6 +55,7 @@ export const SCRIPTS = {
   s7good: [{ text: "@GOOD" }],
   s7plain: [{ text: "@PLAIN" }],
   s7rich: [{ text: "@RICH" }],
+  s7rich2: [{ text: "@RICH2" }],
   s8chunks: [{ chunks: ["Here is ", "your form:\n\n```pfr-", "form\n{\"type\":\"Card\",\"children\":[{\"type\":\"Sli", "der\",\"id\":\"v\"}]}\n```\n", "End."], chunkDelayMs: 30 }, { text: "@GOOD" }],
   s8split: [{ messages: [goodHalfA, goodHalfB] }, { text: "@GOOD" }],
   s8splittool: [{ messages: [goodHalfA, goodHalfB], toolBetween: true }, { text: "@GOOD" }],

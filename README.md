@@ -15,6 +15,9 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
   - `Code`: Monospace code block that scrolls sideways (no syntax highlighting)
   - `Steps`: Numbered steps with pending / current / done / blocked state
   - `Details`: Collapsible section; fields inside are still validated and submitted
+  - `SegmentedBar`: Shares of one whole as a single bar with a legend
+  - `KeyValue`: Compact "property: value" list
+  - `Tabs`: One group at a time; fields in every tab are still validated and submitted
 - **Provider Agnostic**:
   - Fully compatible with **Devin**, **Claude**, **Antigravity**, **Gemini**, and OpenAI providers.
   - Automatically injects protocol instructions on agent initialization.
