@@ -144,4 +144,5 @@ for (const arm of Object.keys(ARMS)) {
   console.log(`${arm}: n=${rs.length} fence=${pct(rs.filter((r) => r.fence).length, rs.length)} strict=${pct(rs.filter((r) => r.strict).length, rs.length)} lenient=${pct(rs.filter((r) => r.lenient).length, rs.length)} avgChars=${Math.round(avg)}`);
 }
 await vite.close();
+fs.rmSync(cwd, { recursive: true, force: true }); // the empty temp working directory
 process.exit(0);
