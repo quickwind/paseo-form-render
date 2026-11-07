@@ -4,6 +4,8 @@ import { z } from "zod";
 export const OptionSchema = z.object({
   label: z.string(),
   value: z.string(),
+  /** A short explanation shown under the label in the options menu. */
+  description: z.string().optional(),
 });
 export type Option = z.infer<typeof OptionSchema>;
 
@@ -58,7 +60,10 @@ export type PfrNode =
   | DetailsNode
   | SegmentedBarNode
   | KeyValueNode
-  | TabsNode;
+  | TabsNode
+  | MarkdownNode
+  | RatingNode
+  | SparklineNode;
 
 /** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
 export const PFR_NODE_TYPES = [
@@ -83,6 +88,9 @@ export const PFR_NODE_TYPES = [
   "Details",
   "SegmentedBar",
   "KeyValue",
+  "Rating",
+  "Sparkline",
+  "Markdown",
   "Tabs",
 ] as const satisfies readonly PfrNode["type"][];
 type MissingNodeTypes = Exclude<PfrNode["type"], (typeof PFR_NODE_TYPES)[number]>;
@@ -90,7 +98,7 @@ const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = t
 void _allNodeTypesListed;
 
 /** Node types that collect a value and therefore need a unique `id`. */
-export const PFR_FIELD_TYPES = ["Input", "Select", "MultiSelect", "Toggle", "FilePicker"] as const;
+export const PFR_FIELD_TYPES = ["Input", "Select", "MultiSelect", "Toggle", "FilePicker", "Rating"] as const;
 
 export interface CardNode {
   type: "Card";
@@ -159,6 +167,30 @@ export interface TabItem {
 export interface TabsNode {
   type: "Tabs";
   tabs: TabItem[];
+}
+
+/** Rich text (bold, lists, inline code, links, ...) rendered with the host's Markdown renderer. */
+export interface MarkdownNode {
+  type: "Markdown";
+  text: string;
+}
+
+/** A star rating from 1 to `max` (default 5). Unset until the user taps; tapping the same star again clears it. */
+export interface RatingNode {
+  type: "Rating";
+  id: string;
+  label: string;
+  max?: number;
+  defaultValue?: number;
+  required?: boolean;
+}
+
+/** A tiny bar trend of a series of numbers, with the last value shown beside it. */
+export interface SparklineNode {
+  type: "Sparkline";
+  values: number[];
+  label?: string;
+  tone?: Tone;
 }
 
 export interface StackNode {
@@ -437,6 +469,24 @@ export const PfrNodeSchema: z.ZodType<PfrNode> = z.lazy(() =>
     z.object({
       type: z.literal("KeyValue"),
       pairs: z.array(KeyValuePairSchema).min(1),
+    }),
+    z.object({
+      type: z.literal("Rating"),
+      id: z.string().min(1),
+      label: z.string(),
+      max: z.number().int().min(1).max(10).optional(),
+      defaultValue: z.number().int().min(1).optional(),
+      required: z.boolean().optional(),
+    }),
+    z.object({
+      type: z.literal("Sparkline"),
+      values: z.array(z.number()).min(1),
+      label: z.string().optional(),
+      tone: ToneSchema.optional(),
+    }),
+    z.object({
+      type: z.literal("Markdown"),
+      text: z.string(),
     }),
     z.object({
       type: z.literal("Tabs"),

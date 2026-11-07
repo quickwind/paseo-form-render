@@ -9,7 +9,7 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
   - `Card`: Container with title, description, and child items
   - `Metric`: Key-value statistics display
   - `Input`: Text input with placeholders and required validation
-  - `Select`: Dropdown selection menus with customizable options
+  - `Select`: Dropdown selection menus with customizable options (each option can carry a short description)
   - `Toggle`: Boolean switches
   - `Button`: Submit and action buttons with custom payloads
   - `Code`: Monospace code block that scrolls sideways, with a one-tap copy button (no syntax highlighting)
@@ -17,6 +17,9 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
   - `Details`: Collapsible section; fields inside are still validated and submitted
   - `SegmentedBar`: Shares of one whole as a single bar with a legend
   - `KeyValue`: Compact "property: value" list
+  - `Markdown`: Rich text (bold, lists, inline code, links) via the host's renderer
+  - `Rating`: Star rating input (1-10 stars), submitted as a number
+  - `Sparkline`: Tiny trend bars for a series of numbers
   - `Tabs`: One group at a time; fields in every tab are still validated and submitted
 - **Provider Agnostic**:
   - Fully compatible with **Devin**, **Claude**, **Antigravity**, **Gemini**, and OpenAI providers.

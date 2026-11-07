@@ -33,13 +33,20 @@ const RICH2 = "Rich2:\n\n" + fence(JSON.stringify({ type: "Card", title: "Server
   ] },
   { type: "Button", label: "Apply", variant: "primary", action: "submit", message: "go" },
 ] }, null, 2));
+const RICH3 = "Rich3:\n\n" + fence(JSON.stringify({ type: "Card", title: "Review", children: [
+  { type: "Markdown", text: "Please **review** the `deploy` notes:\n\n- first point\n- second point" },
+  { type: "Sparkline", label: "Latency", values: [4, 6, 5, 9, 7, 12] },
+  { type: "Select", id: "mode", label: "Mode", defaultValue: "fast", options: [{ label: "Fast", value: "fast", description: "Skips the slow checks" }, { label: "Safe", value: "safe" }] },
+  { type: "Rating", id: "score", label: "Overall score", required: true },
+  { type: "Button", label: "Send review", variant: "primary", action: "submit", message: "go" },
+] }, null, 2));
 const PLAIN = "Just plain text, no form here. ```js\nconsole.log(1)\n```";
 const goodHalfA = "Split form:\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Split\",\n";
 const goodHalfB = "  \"children\": [ { \"type\": \"Text\", \"text\": \"hello\" } ]\n}\n```\nDone.";
 const steps = (n) => Array.from({ length: n }, (_, i) => `working step ${i}`);
 
 export const SCRIPTS = {
-  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, RICH, RICH2, TYPO },
+  __macros: { BAD, BAD2, BADJSON, GOOD, PLAIN, RICH, RICH2, RICH3, TYPO },
   s1: [{ text: "@BAD" }, { text: "@GOOD" }],
   s1b: [{ text: "@TYPO" }, { text: "@GOOD" }],
   s2: [{ text: "@BAD" }, { text: "@BAD2" }, { text: "@BADJSON" }, { text: "@BAD" }],
@@ -56,6 +63,7 @@ export const SCRIPTS = {
   s7plain: [{ text: "@PLAIN" }],
   s7rich: [{ text: "@RICH" }],
   s7rich2: [{ text: "@RICH2" }],
+  s7rich3: [{ text: "@RICH3" }],
   s8chunks: [{ chunks: ["Here is ", "your form:\n\n```pfr-", "form\n{\"type\":\"Card\",\"children\":[{\"type\":\"Sli", "der\",\"id\":\"v\"}]}\n```\n", "End."], chunkDelayMs: 30 }, { text: "@GOOD" }],
   s8split: [{ messages: [goodHalfA, goodHalfB] }, { text: "@GOOD" }],
   s8splittool: [{ messages: [goodHalfA, goodHalfB], toolBetween: true }, { text: "@GOOD" }],

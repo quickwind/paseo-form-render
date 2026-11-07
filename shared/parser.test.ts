@@ -443,3 +443,49 @@ describe("SegmentedBar, KeyValue and Tabs components", () => {
     expect(parse(card({ type: "Tabs", tabs: [] })).error).toBeDefined();
   });
 });
+
+describe("Markdown, option descriptions, Rating and Sparkline", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const card = (...children: unknown[]) => ({ type: "Card", children });
+
+  it("accepts Markdown and requires its text", () => {
+    expect(parse(card({ type: "Markdown", text: "**bold** and `code`" })).error).toBeUndefined();
+    expect(parse(card({ type: "Markdown" })).error).toBeDefined();
+  });
+
+  it("accepts an optional description on Select and MultiSelect options", () => {
+    const options = [{ label: "Fast", value: "fast", description: "Skips checks" }, { label: "Safe", value: "safe" }];
+    const block = parse(card({ type: "Select", id: "mode", label: "Mode", options }, { type: "MultiSelect", id: "m", label: "M", options }));
+    expect(block.error).toBeUndefined();
+    expect(JSON.stringify(block.form)).toContain("Skips checks");
+  });
+
+  it("starts a Rating unset, honors defaultValue within max, and submits the stars", () => {
+    const block = parse(card({ type: "Rating", id: "r", label: "Overall" }, { type: "Rating", id: "q", label: "Quality", max: 3, defaultValue: 9 }));
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ r: null, q: 3 });
+    expect(formatSubmissionMessage(undefined, node, { r: null, q: 3 })).toContain("- Overall: \n- Quality: 3");
+  });
+
+  it("validates a required Rating and rejects a bad max", () => {
+    const node = parse(card({ type: "Rating", id: "r", label: "Overall", required: true })).form!;
+    expect(validateForm(node, { r: null })).toEqual({ r: "Please give a rating for Overall." });
+    expect(validateForm(node, { r: 4 })).toEqual({});
+    expect(parse(card({ type: "Rating", id: "r", label: "x", max: 11 })).error).toBeDefined();
+    expect(parse(card({ type: "Rating", id: "r", label: "x", max: 5, defaultValue: 0 })).error).toBeDefined();
+  });
+
+  it("treats Rating as a field for duplicate-id detection", () => {
+    const rating = { type: "Rating", id: "r", label: "R" };
+    expect(parse(card(rating, rating)).error).toContain("duplicate field id");
+    expect(parse(card(rating, { type: "Input", id: "r", label: "R2" })).error).toContain("duplicate field id");
+  });
+
+  it("accepts Sparkline with and without label/tone and rejects an empty series", () => {
+    expect(parse(card({ type: "Sparkline", values: [1, 3, 2.5] })).error).toBeUndefined();
+    expect(parse(card({ type: "Sparkline", label: "Latency", tone: "warning", values: [5] })).error).toBeUndefined();
+    expect(parse(card({ type: "Sparkline", values: [] })).error).toBeDefined();
+    expect(parse(card({ type: "Sparkline", values: ["a"] })).error).toBeDefined();
+  });
+});

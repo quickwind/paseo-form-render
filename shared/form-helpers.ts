@@ -28,6 +28,10 @@ export function extractInitialValues(node: PfrNode, result: Record<string, any> 
     case "Toggle":
       result[node.id] = node.defaultValue ?? false;
       break;
+    case "Rating":
+      // null = not rated yet (shown as an empty answer in the submission).
+      result[node.id] = node.defaultValue === undefined ? null : Math.min(node.defaultValue, node.max ?? 5);
+      break;
     case "FilePicker":
       result[node.id] = node.defaultValue ?? "";
       break;
@@ -156,6 +160,11 @@ export function validateForm(
       }
       break;
     }
+    case "Rating":
+      if (node.required && !values[node.id]) {
+        errors[node.id] = `Please give a rating for ${node.label}.`;
+      }
+      break;
     case "Toggle":
       if (node.required) {
         const val = values[node.id];

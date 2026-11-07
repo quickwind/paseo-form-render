@@ -17,6 +17,7 @@ import {
 } from "../shared/schema";
 import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
 import { copyToClipboard } from "./clipboard";
+import { HostMarkdown } from "./host-markdown";
 import { messages } from "./messages";
 import { ProjectFileModal } from "./project-file-modal";
 
@@ -28,7 +29,7 @@ interface OpenDropdownMenu {
   top: number;
   width: number;
   maxHeight: number;
-  options: Array<{ label: string; value: string }>;
+  options: Array<{ label: string; value: string; description?: string }>;
   isMulti: boolean;
 }
 
@@ -37,7 +38,7 @@ interface DropdownMenuContextValue {
   toggleMenu: (
     id: string,
     buttonRef: React.RefObject<View | null>,
-    options: Array<{ label: string; value: string }>,
+    options: Array<{ label: string; value: string; description?: string }>,
     isMulti: boolean,
   ) => void;
 }
@@ -574,6 +575,13 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
         </Text>
       );
 
+    case "Markdown":
+      return (
+        <View style={styles.markdown}>
+          <HostMarkdown text={node.text} theme={theme} />
+        </View>
+      );
+
     case "Divider":
       return <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />;
 
@@ -742,6 +750,66 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
             />
           </View>
           {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
+        </View>
+      );
+    }
+
+    case "Rating": {
+      const error = errors[node.id];
+      const max = node.max ?? 5;
+      const current = typeof values[node.id] === "number" ? (values[node.id] as number) : 0;
+      return (
+        <View style={styles.fieldContainer}>
+          <Text style={[styles.fieldLabel, { color: theme.colors.foreground }]}>
+            {node.label}
+            {node.required && <Text style={{ color: theme.colors.statusDanger }}> *</Text>}
+          </Text>
+          <View style={styles.ratingRow}>
+            {Array.from({ length: max }, (_, index) => {
+              const star = index + 1;
+              return (
+                <Pressable
+                  key={star}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${star}/${max}`}
+                  accessibilityState={{ selected: star === current }}
+                  disabled={disabled}
+                  hitSlop={{ top: 6, bottom: 6, left: 2, right: 2 }}
+                  onPress={() => onValueChange(node.id, star === current ? null : star)}
+                >
+                  <Text style={[styles.ratingStar, { color: star <= current ? theme.colors.accent : theme.colors.border }]}>★</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          {error ? <Text style={[styles.errorMessage, { color: theme.colors.statusDanger }]}>{error}</Text> : null}
+        </View>
+      );
+    }
+
+    case "Sparkline": {
+      const values = node.values || [];
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const span = max - min;
+      const color = getToneColors(node.tone === undefined || node.tone === "neutral" ? "info" : node.tone, theme).text;
+      return (
+        <View style={styles.sparkRow}>
+          {node.label ? <Text style={[styles.sparkLabel, { color: theme.colors.foregroundMuted }]}>{node.label}</Text> : null}
+          <View style={styles.sparkBars}>
+            {values.map((value, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.sparkBar,
+                  { backgroundColor: color, height: span > 0 ? 3 + Math.round(((value - min) / span) * 21) : 12 },
+                ]}
+              />
+            ))}
+          </View>
+          <Text style={[styles.sparkValue, { color: theme.colors.foregroundMuted }]}>
+            {formatNumber(values[values.length - 1] ?? 0)}
+          </Text>
         </View>
       );
     }
@@ -930,7 +998,7 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
   const toggleMenu = (
     id: string,
     buttonRef: React.RefObject<View | null>,
-    options: Array<{ label: string; value: string }>,
+    options: Array<{ label: string; value: string; description?: string }>,
     isMulti: boolean,
   ) => {
     if (menuPos && menuPos.id === id) {
@@ -1080,15 +1148,22 @@ export const PfrFormView: React.FC<PfrFormViewProps> = ({ form, theme, agentId, 
                         }
                       }}
                     >
-                      <Text
-                        style={[
-                          styles.dropdownMenuItemText,
-                          { color: isSelected ? theme.colors.accent : theme.colors.foreground },
-                          isSelected ? { fontWeight: "600" } : null,
-                        ]}
-                      >
-                        {opt.label}
-                      </Text>
+                      <View style={styles.dropdownMenuItemBody}>
+                        <Text
+                          style={[
+                            styles.dropdownMenuItemText,
+                            { color: isSelected ? theme.colors.accent : theme.colors.foreground },
+                            isSelected ? { fontWeight: "600" } : null,
+                          ]}
+                        >
+                          {opt.label}
+                        </Text>
+                        {opt.description ? (
+                          <Text style={[styles.dropdownMenuItemDescription, { color: theme.colors.foregroundMuted }]}>
+                            {opt.description}
+                          </Text>
+                        ) : null}
+                      </View>
                       {isSelected ? (
                         <Text style={[styles.dropdownCheckmark, { color: theme.colors.accent }]}>✓</Text>
                       ) : null}
@@ -1261,6 +1336,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 12,
     gap: 12,
+  },
+  ratingRow: {
+    flexDirection: "row",
+    gap: 4,
+  },
+  ratingStar: {
+    fontSize: 28,
+    lineHeight: 32,
+  },
+  sparkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  sparkLabel: {
+    fontSize: 13,
+  },
+  sparkBars: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 2,
+    height: 24,
+  },
+  sparkBar: {
+    width: 4,
+    borderRadius: 2,
+  },
+  sparkValue: {
+    fontSize: 12,
+  },
+  markdown: {
+    width: "100%",
+  },
+  dropdownMenuItemBody: {
+    flex: 1,
+    gap: 2,
+  },
+  dropdownMenuItemDescription: {
+    fontSize: 12,
   },
   segBar: {
     gap: 8,

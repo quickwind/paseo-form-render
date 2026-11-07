@@ -173,6 +173,29 @@ export async function uiRich2Components(ctx, run, r) {
   });
 }
 
+/** S7: Markdown, Sparkline, option descriptions and Rating. */
+export async function uiRich3Components(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: Markdown, Sparkline, option descriptions and Rating`, shotName("s7", "rich3", run), async () => {
+    await ui.waitVisible(ui.text("review", false).last());
+    await ui.waitVisible(ui.text("first point", false).last());
+    if (await ui.text("**review**", false).count()) throw new Error("Markdown is shown as raw text");
+    await ui.waitVisible(ui.text("Latency").last());
+    await ui.waitVisible(ui.text("12").last());
+    await ui.text("Fast").last().click();
+    await ui.waitVisible(ui.text("Skips the slow checks").last());
+    await ui.text("Safe").last().click();
+    await ui.text("Send review").last().click();
+    await ui.waitVisible(ui.text("Please give a rating for Overall score.").last());
+    // Rating a star clears the field's error (the value is set).
+    await ui.page.getByLabel("4/5").last().click();
+    await ui.until(async () => (await ui.text("Please give a rating for Overall score.").count()) === 0, { what: "the rating error cleared" });
+    await ui.screenshot(shotName("s7", "rich3", run), ui.text("Review").last());
+    return "rendered, option description shown, rating required and cleared once set";
+  });
+}
+
 /** Waits until the settings RPC reports `value` (the screen saved it through the daemon). */
 async function settingPersisted(ctx, value) {
   const { h, ui } = ctx;
