@@ -7,6 +7,7 @@ import {
   SelectNode,
   MultiSelectNode,
   FilePickerNode,
+  CodeNode,
   DetailsNode,
   SegmentedBarPart,
   StepStatus,
@@ -15,6 +16,7 @@ import {
   normalizeExtensions,
 } from "../shared/schema";
 import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { copyToClipboard } from "./clipboard";
 import { messages } from "./messages";
 import { ProjectFileModal } from "./project-file-modal";
 
@@ -89,6 +91,67 @@ function stepMarker(status: StepStatus | undefined, index: number): string {
   if (status === "done") return "✓";
   if (status === "blocked") return "!";
   return String(index + 1);
+}
+
+const COPY_FEEDBACK_MS = 1500;
+
+// A code block with a header bar (language on the left, copy button on the right). The header sits
+// outside the horizontal ScrollView so the button stays put while long lines scroll.
+function CodeBlock({ node, theme }: { node: CodeNode; theme: PluginHostProps["theme"] }) {
+  const { t } = useTranslation(messages);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+  const onCopy = async () => {
+    const ok = await copyToClipboard(node.code);
+    setState(ok ? "copied" : "failed");
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setState("idle"), COPY_FEEDBACK_MS);
+  };
+  const label = state === "copied" ? t("code.copied") : state === "failed" ? t("code.copyFailed") : t("code.copy");
+  return (
+    <View style={[styles.code, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
+      <View style={[styles.codeHeader, { borderBottomColor: theme.colors.border }]}>
+        <Text style={[styles.codeLanguage, { color: theme.colors.foregroundMuted }]}>{node.language ?? ""}</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("code.copyLabel")}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          onPress={onCopy}
+        >
+          {({ pressed }) => (
+            <Text
+              style={[
+                styles.codeCopy,
+                {
+                  color:
+                    state === "failed"
+                      ? theme.colors.statusDanger
+                      : pressed || state === "copied"
+                        ? theme.colors.accent
+                        : theme.colors.foregroundMuted,
+                },
+              ]}
+            >
+              {label}
+            </Text>
+          )}
+        </Pressable>
+      </View>
+      <ScrollView horizontal>
+        <View style={styles.codeBody}>
+          <Text selectable style={[styles.codeText, { color: theme.colors.foreground, fontFamily: MONO_FONT }]}>
+            {node.code}
+          </Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
 }
 
 /** Segment color: the part's tone, or (no tone / neutral) the next color of a fixed palette. */
@@ -723,22 +786,7 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
     }
 
     case "Code":
-      return (
-        <View style={[styles.code, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
-          {node.language ? (
-            <View style={[styles.codeHeader, { borderBottomColor: theme.colors.border }]}>
-              <Text style={[styles.codeLanguage, { color: theme.colors.foregroundMuted }]}>{node.language}</Text>
-            </View>
-          ) : null}
-          <ScrollView horizontal>
-            <View style={styles.codeBody}>
-              <Text selectable style={[styles.codeText, { color: theme.colors.foreground, fontFamily: MONO_FONT }]}>
-                {node.code}
-              </Text>
-            </View>
-          </ScrollView>
-        </View>
-      );
+      return <CodeBlock node={node} theme={theme} />;
 
     case "Steps":
       return (
@@ -1133,12 +1181,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   codeHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 26,
     paddingHorizontal: 10,
-    paddingVertical: 4,
     borderBottomWidth: 1,
   },
   codeLanguage: {
     fontSize: 11,
+  },
+  codeCopy: {
+    fontSize: 11,
+    fontWeight: "500",
   },
   codeBody: {
     padding: 10,

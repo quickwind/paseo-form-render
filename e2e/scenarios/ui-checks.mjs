@@ -132,6 +132,10 @@ export async function uiRichComponents(ctx, run, r) {
     for (const t of ["Run the tests", "needs 2FA", "git tag v1.2.3 && git push --tags", "Advanced options"]) {
       await ui.waitVisible(ui.text(t).last());
     }
+    // The Code header has a copy button. It is only checked for being there: clicking it needs the
+    // clipboard permission, which headless browsers on the three CI platforms do not grant alike.
+    await ui.waitVisible(ui.page.getByLabel("Copy code").last());
+    await ui.waitVisible(ui.text("bash").last());
     const boxes = await ui.errorBoxes().count();
     if (boxes) throw new Error(`error boxes=${boxes}`);
     const hiddenBefore = await ui.text("Hidden until expanded").count();
