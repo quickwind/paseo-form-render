@@ -33,18 +33,30 @@ Prompt size: old 4,582 chars (~1,270 tokens), new 6,630 chars (~1,840 tokens): +
 - No over-use in group A: the only new components the new prompt produced were Rating (the survey task,
   3/3, a better fit than a number input) and KeyValue (one reply on a summary task).
 
+## Group C: neutral wording (new prompt only, 30 replies, `results-C.json`)
+Group B names the component almost literally, so group C asks the same kinds of questions without naming
+anything ("How did our sales change this week? ...", "Where does my disk space go? ..."). Several
+components count as a good answer per task (listed in `run.mjs`), fixed before the run.
+
+- 30/30 valid, no failure of any kind. Used a listed component: 23/30 (77%).
+- 3/3: sales trend (Chart), release status (Steps), rating (Rating), docker command (Code), disk usage
+  (SegmentedBar), meeting notes (Markdown), error-rate trend (Sparkline and/or Chart).
+- Misses, all reasonable alternatives rather than errors: a two-part settings page was built flat with
+  Headings in 2 of 3 replies (Tabs once); server info used four Metric cards in 2 of 3 (KeyValue once);
+  a changelog was shown inline in 3 of 3 (Details never, which is fine: nothing asked to hide it).
+- Content spot check: sales values and the four disk parts exactly as given in 3/3; the trend series
+  exactly as given in 3/3; the docker command intact in 3/3.
+
 ## Limits (read before trusting this)
-- Group B wording names the thing almost literally ("bar chart", "steps", "tabs", "stars", "collapsible").
-  30/30 therefore shows that the model knows how to write the components, not that it would choose them
-  unprompted. A neutral-wording run ("show how sales changed this week") is still missing.
-- One model, first replies only (no repair rounds), 3 repetitions per task.
+- One model, first replies only (no repair rounds), 3 repetitions per task. Group C has 10 tasks.
 - Not measured: how this prompt behaves in the Devin setup with its own instruction injection, and
   weaker models.
 
 ## Conclusion
-No evidence that the larger prompt hurts validity for SWE-1.6, and clear evidence that the new components
-are written correctly when they fit. The cost is +45% prompt size. Prompt tiering is therefore not urgent
-for this model; a neutral-wording run and a weaker model are the remaining checks.
+No evidence that the larger prompt hurts validity for SWE-1.6. The new components are written correctly
+when asked for (30/30) and chosen on their own most of the time when they fit (23/30), with sensible
+fallbacks otherwise and no over-use on ordinary forms. The cost is +45% prompt size. Prompt tiering is
+not urgent for this model; a weaker model is the remaining check.
 
 Re-run: `node e2e/experiments/prompt-compare/run.mjs [--model P/M] [--reps N] [--limit N] [--concurrency N]`
 (needs the local daemon at 127.0.0.1:6767; overwrites `results.json`).

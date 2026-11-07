@@ -24,6 +24,8 @@ const MODEL = arg("model", "devin/swe-1-6-slow");
 const REPS = Number(arg("reps", 3));
 const LIMIT = Number(arg("limit", 99));
 const CONCURRENCY = Number(arg("concurrency", 4));
+const ONLY = arg("only", null); // e.g. "C": run just that task group
+const ARM_NAMES = (arg("arms", "old,new")).split(",");
 const HOST = "127.0.0.1:6767";
 const PASEO_HOME = path.join(os.homedir(), ".paseo");
 
@@ -49,17 +51,29 @@ const TASKS = [
   { g: "B", expect: ["KeyValue"], t: "Show server info as a compact list of properties: hostname web-01, region eu-west, uptime 41 days, version 2.4.1." },
   { g: "B", expect: ["Details"], t: "Show a short deployment summary, with the full changelog (five lines) tucked into a collapsible section." },
   { g: "B", expect: ["Sparkline", "Chart"], t: "Show the current error rate 0.8% together with a tiny trend of the last 10 hours: 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8." },
-].slice(0, LIMIT);
+  // Group C: neutral wording, no component named. Any listed component counts as a good choice.
+  { g: "C", expect: ["Chart", "Sparkline"], t: "How did our sales change this week? Monday 120, Tuesday 150, Wednesday 90, Thursday 170, Friday 200." },
+  { g: "C", expect: ["Steps"], t: "Walk me through where the deployment stands: tests passed, the build is running, the production deploy is waiting for approval, and the announcement is not sent yet." },
+  { g: "C", expect: ["Tabs", "Details"], t: "Make a settings page for a blog with an Appearance part (theme, font size) and a Privacy part (analytics toggle, cookie banner toggle)." },
+  { g: "C", expect: ["Rating"], t: "How was your experience with our support team? We would like a score and optional comments." },
+  { g: "C", expect: ["Code", "Markdown"], t: "Tell me how to rebuild the docker image: the command is docker build -t app:latest ." },
+  { g: "C", expect: ["SegmentedBar", "Chart"], t: "Where does my disk space go? System 40 GB, apps 120 GB, media 85 GB, free 255 GB." },
+  { g: "C", expect: ["Markdown"], t: "Give me the meeting notes. Decisions: ship on Friday, hire a designer, drop feature X. Full notes are at https://example.com/notes." },
+  { g: "C", expect: ["KeyValue", "Table"], t: "Which server am I on? Hostname web-01, region eu-west, uptime 41 days, version 2.4.1." },
+  { g: "C", expect: ["Details"], t: "The deployment finished successfully. Changelog: fixed login timeout; faster dashboard; export preferences; updated dependencies; resolved rate limiting." },
+  { g: "C", expect: ["Sparkline", "Chart"], t: "The error rate is 0.8% right now. Over the last ten hours it was 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8." },
+].filter((task) => !ONLY || task.g === ONLY).slice(0, LIMIT);
 
 const vite = await createServer({ root, appType: "custom", server: { middlewareMode: true }, logLevel: "silent" });
 const { buildPromptInstruction } = await vite.ssrLoadModule(path.join(root, "shared/prompt.ts"));
 const { parseFormBlock } = await vite.ssrLoadModule(path.join(root, "shared/parser.ts"));
 const oldPrompt = await vite.ssrLoadModule(path.join(here, "old-prompt.ts"));
 
-const ARMS = {
+const ALL_ARMS = {
   old: oldPrompt.buildPromptInstruction({ preferForms: false }),
   new: buildPromptInstruction({ preferForms: false }),
 };
+const ARMS = Object.fromEntries(Object.entries(ALL_ARMS).filter(([name]) => ARM_NAMES.includes(name)));
 
 function categorize(errorText) {
   if (!errorText) return null;
@@ -109,7 +123,7 @@ function evaluate(task, reply) {
     error: valid ? null : String(block.error ?? "").slice(0, 300),
     category: valid ? null : categorize(block.error),
     components,
-    fit: task.g === "B" ? task.expect.some((c) => components.includes(c)) : null,
+    fit: task.g !== "A" ? task.expect.some((c) => components.includes(c)) : null,
   };
 }
 
@@ -164,26 +178,28 @@ await Promise.all(
   }),
 );
 
-fs.writeFileSync(path.join(here, "results.json"), JSON.stringify({ model: MODEL, reps: REPS, tasks: TASKS, promptChars: { old: ARMS.old.length, new: ARMS.new.length }, results }, null, 2));
+fs.writeFileSync(path.join(here, ONLY ? `results-${ONLY}.json` : "results.json"), JSON.stringify({ model: MODEL, reps: REPS, tasks: TASKS, promptChars: { old: ALL_ARMS.old.length, new: ALL_ARMS.new.length }, results }, null, 2));
 
 const pct = (n, d) => (d ? `${n}/${d} (${Math.round((100 * n) / d)}%)` : "-");
-for (const group of ["A", "B"]) {
+for (const group of ["A", "B", "C"]) {
   for (const arm of Object.keys(ARMS)) {
     const rs = results.filter((r) => r.arm === arm && r.group === group);
     const cats = {};
     rs.filter((r) => !r.valid).forEach((r) => (cats[r.category] = (cats[r.category] ?? 0) + 1));
     const withChars = rs.filter((r) => r.chars);
     const avg = Math.round(withChars.reduce((s, r) => s + r.chars, 0) / Math.max(1, withChars.length));
-    const fit = group === "B" ? ` fit=${pct(rs.filter((r) => r.fit).length, rs.length)}` : "";
+    const fit = group !== "A" ? ` fit=${pct(rs.filter((r) => r.fit).length, rs.length)}` : "";
     console.log(`group ${group} ${arm}: valid=${pct(rs.filter((r) => r.valid).length, rs.length)} strictJson=${pct(rs.filter((r) => r.strictJson).length, rs.length)}${fit} avgChars=${avg} failures=${JSON.stringify(cats)}`);
   }
 }
-console.log("\nGroup B per task (fit counts, old/new):");
+console.log("\nPer task (fit counts per arm):");
 TASKS.forEach((task, i) => {
-  if (task.g !== "B") return;
-  const f = (arm) => results.filter((r) => r.arm === arm && r.task === i && r.fit).length;
-  const total = results.filter((r) => r.arm === "new" && r.task === i).length;
-  console.log(`  ${task.expect.join("/")}: old ${f("old")}/${total}, new ${f("new")}/${total}`);
+  if (task.g === "A") return;
+  const parts = Object.keys(ARMS).map((arm) => {
+    const rs = results.filter((r) => r.arm === arm && r.task === i);
+    return `${arm} ${rs.filter((r) => r.fit).length}/${rs.length} [${[...new Set(rs.flatMap((r) => r.components))].filter((c) => !["Card", "Button", "Divider", "Stack", "Heading"].includes(c)).join("+")}]`;
+  });
+  console.log(`  ${task.g} ${task.expect.join("/")}: ${parts.join(", ")}`);
 });
 await vite.close();
 fs.rmSync(cwd, { recursive: true, force: true }); // the empty temp working directory
