@@ -1,5 +1,6 @@
 import type { PluginServerContext } from "@getpaseo/plugin/server";
 import { registerAutoFix } from "./server/auto-fix";
+import { beforeAgentCreate } from "./server/hooks";
 import { appendDemoForm } from "./server/demo";
 import { readPfrSettings, registerPfrSettings } from "./server/settings";
 import { handleListProjectFiles, handleCreateDirectory } from "./server/file-picker";
@@ -11,7 +12,7 @@ export default function contribute(server: PluginServerContext) {
   const settings = registerPfrSettings(server);
 
   // Inject instructions when a new agent is created
-  server.before("agent.create", async ({ request }) => {
+  beforeAgentCreate(server, async ({ request }) => {
     const previous = request.config.systemPrompt ?? "";
     if (previous.includes("[paseo-form-render]")) {
       return;
