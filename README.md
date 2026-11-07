@@ -20,6 +20,7 @@ Interactive forms, dashboards, and metrics rendering plugin for Paseo conversati
   - `Markdown`: Rich text (bold, lists, inline code, links) via the host's renderer
   - `Rating`: Star rating input (1-10 stars), submitted as a number
   - `Sparkline`: Tiny trend bars for a series of numbers
+  - `Chart`: Vertical bar chart with a value axis, several series and tap-to-read values (no SVG needed)
   - `Tabs`: One group at a time; fields in every tab are still validated and submitted
 - **Provider Agnostic**:
   - Fully compatible with **Devin**, **Claude**, **Antigravity**, **Gemini**, and OpenAI providers.

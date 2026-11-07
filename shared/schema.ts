@@ -63,7 +63,8 @@ export type PfrNode =
   | TabsNode
   | MarkdownNode
   | RatingNode
-  | SparklineNode;
+  | SparklineNode
+  | ChartNode;
 
 /** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
 export const PFR_NODE_TYPES = [
@@ -92,6 +93,7 @@ export const PFR_NODE_TYPES = [
   "Sparkline",
   "Markdown",
   "Tabs",
+  "Chart",
 ] as const satisfies readonly PfrNode["type"][];
 type MissingNodeTypes = Exclude<PfrNode["type"], (typeof PFR_NODE_TYPES)[number]>;
 const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = true;
@@ -191,6 +193,25 @@ export interface SparklineNode {
   values: number[];
   label?: string;
   tone?: Tone;
+}
+
+export interface ChartSeries {
+  name: string;
+  values: number[];
+  tone?: Tone;
+}
+
+/**
+ * A vertical bar chart with a value axis. Every series needs exactly one value per label (checked
+ * by `findChartIssues`), with at most 24 labels and 4 series.
+ */
+export interface ChartNode {
+  type: "Chart";
+  kind?: "bar";
+  title?: string;
+  labels: string[];
+  series: ChartSeries[];
+  unit?: string;
 }
 
 export interface StackNode {
@@ -491,6 +512,14 @@ export const PfrNodeSchema: z.ZodType<PfrNode> = z.lazy(() =>
     z.object({
       type: z.literal("Tabs"),
       tabs: z.array(z.object({ label: z.string(), children: z.array(PfrNodeSchema) })).min(1),
+    }),
+    z.object({
+      type: z.literal("Chart"),
+      kind: z.enum(["bar"]).optional(),
+      title: z.string().optional(),
+      labels: z.array(z.string()).min(1),
+      series: z.array(z.object({ name: z.string(), values: z.array(z.number()), tone: ToneSchema.optional() })).min(1),
+      unit: z.string().optional(),
     }),
   ]),
 );

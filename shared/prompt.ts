@@ -32,6 +32,7 @@ Available component types:
 - **Button**: { "type": "Button", "label": string, "variant"?: "primary"|"secondary"|"danger", "action": "submit"|"reset", "message"?: string }
 - **Rating**: { "type": "Rating", "id": string, "label": string, "max"?: integer 1-10 (default 5), "defaultValue"?: integer, "required"?: boolean }  (star rating; the submission carries the number of stars)
 - **Sparkline**: { "type": "Sparkline", "values": [number, ...], "label"?: string, "tone"?: "neutral"|"info"|"success"|"warning"|"danger" }  (tiny trend bars; the last value is shown beside it)
+- **Chart**: { "type": "Chart", "kind"?: "bar", "title"?: string, "labels": [string, ...], "series": [{ "name": string, "values": [number, ...], "tone"?: "neutral"|"info"|"success"|"warning"|"danger" }], "unit"?: string }  (vertical bar chart with a value axis; every series needs exactly one value per label, at most 24 labels and 4 series; tap a column to read its values)
 - **Code**: { "type": "Code", "code": string, "language"?: string }  (monospace block, scrolls sideways, no syntax highlighting; "language" is only a label)
 - **Steps**: { "type": "Steps", "items": [{ "title": string, "detail"?: string, "status"?: "pending"|"current"|"done"|"blocked" }] }  (numbered steps with progress state)
 - **Details**: { "type": "Details", "title": string, "open"?: boolean, "children": [...] }  (collapsible section, closed by default; fields inside it are still collected on submit)

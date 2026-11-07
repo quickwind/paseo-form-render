@@ -1,5 +1,6 @@
 import {
   capIssues,
+  findChartIssues,
   findDuplicateIdIssues,
   formatIssues,
   formatJsonParseError,
@@ -89,6 +90,7 @@ export function parseFormBlock(jsonStr: string): ParsedBlock {
   const issues = [
     ...(validation.success ? [] : formatZodIssues(validation.error.issues, parsedJson)),
     ...findDuplicateIdIssues(parsedJson),
+    ...findChartIssues(parsedJson),
   ];
   if (issues.length > 0) {
     return failedBlock(trimmed, issues);

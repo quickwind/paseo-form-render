@@ -173,16 +173,23 @@ export async function uiRich2Components(ctx, run, r) {
   });
 }
 
-/** S7: Markdown, Sparkline, option descriptions and Rating. */
+/** S7: Markdown, Sparkline, Chart, option descriptions and Rating. */
 export async function uiRich3Components(ctx, run, r) {
   const { ui, results } = ctx;
   await ui.openAgent(r.agent.id, r.first);
-  await ui.check(results, "S7", `run${run}: Markdown, Sparkline, option descriptions and Rating`, shotName("s7", "rich3", run), async () => {
+  await ui.check(results, "S7", `run${run}: Markdown, Sparkline, Chart, option descriptions and Rating`, shotName("s7", "rich3", run), async () => {
     await ui.waitVisible(ui.text("review", false).last());
     await ui.waitVisible(ui.text("first point", false).last());
     if (await ui.text("**review**", false).count()) throw new Error("Markdown is shown as raw text");
     await ui.waitVisible(ui.text("Latency").last());
     await ui.waitVisible(ui.text("12").last());
+    // Charts: title, legend, axis ticks and labels render; tapping a column group prints its values.
+    await ui.waitVisible(ui.text("Requests").last());
+    await ui.waitVisible(ui.text("Daily load").last());
+    await ui.waitVisible(ui.text("Tue", false).last());
+    await ui.waitVisible(ui.text("20", true).last());
+    await ui.page.getByLabel("Tue: api 18 k, web 5 k").last().click();
+    await ui.waitVisible(ui.text("Tue: api 18 k · web 5 k", false).last());
     await ui.text("Fast").last().click();
     await ui.waitVisible(ui.text("Skips the slow checks").last());
     await ui.text("Safe").last().click();

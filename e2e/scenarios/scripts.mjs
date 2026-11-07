@@ -36,6 +36,8 @@ const RICH2 = "Rich2:\n\n" + fence(JSON.stringify({ type: "Card", title: "Server
 const RICH3 = "Rich3:\n\n" + fence(JSON.stringify({ type: "Card", title: "Review", children: [
   { type: "Markdown", text: "Please **review** the `deploy` notes:\n\n- first point\n- second point" },
   { type: "Sparkline", label: "Latency", values: [4, 6, 5, 9, 7, 12] },
+  { type: "Chart", title: "Requests", unit: "k", labels: ["Mon", "Tue", "Wed"], series: [{ name: "api", values: [12, 18, 9] }, { name: "web", values: [7, 5, 11], tone: "warning" }] },
+  { type: "Chart", title: "Daily load", labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"], series: [{ name: "load", values: [3, -2, 5, 8, 1, 0, 4, 6, -1, 7, 2, 9] }] },
   { type: "Select", id: "mode", label: "Mode", defaultValue: "fast", options: [{ label: "Fast", value: "fast", description: "Skips the slow checks" }, { label: "Safe", value: "safe" }] },
   { type: "Rating", id: "score", label: "Overall score", required: true },
   { type: "Button", label: "Send review", variant: "primary", action: "submit", message: "go" },

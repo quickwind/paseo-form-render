@@ -489,3 +489,46 @@ describe("Markdown, option descriptions, Rating and Sparkline", () => {
     expect(parse(card({ type: "Sparkline", values: ["a"] })).error).toBeDefined();
   });
 });
+
+describe("Chart component", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const chart = (extra: Record<string, unknown> = {}) => ({
+    type: "Chart",
+    title: "Requests",
+    unit: "k",
+    labels: ["Mon", "Tue", "Wed"],
+    series: [{ name: "api", values: [12, 18, 9] }, { name: "web", values: [7, 5, 11], tone: "warning" }],
+    ...extra,
+  });
+  const inCard = (node: unknown) => ({ type: "Card", children: [node] });
+
+  it("accepts a valid bar chart, with kind and negative values", () => {
+    expect(parse(inCard(chart())).error).toBeUndefined();
+    expect(parse(inCard(chart({ kind: "bar", series: [{ name: "x", values: [-1, 0, 2.5] }] }))).error).toBeUndefined();
+  });
+
+  it("explains a series whose length differs from the labels", () => {
+    const block = parse(inCard(chart({ series: [{ name: "api", values: [1, 2] }] })));
+    expect(block.error).toContain('series "api" has 2 values but the Chart has 3 labels');
+    expect(block.error).toContain("exactly one value per label");
+  });
+
+  it("limits labels and series", () => {
+    const labels = Array.from({ length: 25 }, (_, i) => `L${i}`);
+    expect(parse(inCard(chart({ labels, series: [{ name: "a", values: labels.map(() => 1) }] }))).error).toContain("at most 24");
+    const series = Array.from({ length: 5 }, (_, i) => ({ name: `s${i}`, values: [1, 2, 3] }));
+    expect(parse(inCard(chart({ series }))).error).toContain("at most 4");
+  });
+
+  it("rejects empty labels or series and unknown kinds", () => {
+    expect(parse(inCard(chart({ labels: [], series: [{ name: "a", values: [] }] }))).error).toBeDefined();
+    expect(parse(inCard(chart({ series: [] }))).error).toBeDefined();
+    expect(parse(inCard(chart({ kind: "pie" }))).error).toBeDefined();
+  });
+
+  it("checks charts inside Tabs and Details too", () => {
+    const bad = chart({ series: [{ name: "api", values: [1] }] });
+    expect(parse(inCard({ type: "Tabs", tabs: [{ label: "t", children: [bad] }] })).error).toContain("exactly one value per label");
+    expect(parse(inCard({ type: "Details", title: "d", children: [bad] })).error).toContain("exactly one value per label");
+  });
+});

@@ -7,6 +7,7 @@ import {
   SelectNode,
   MultiSelectNode,
   FilePickerNode,
+  ChartNode,
   CodeNode,
   DetailsNode,
   SegmentedBarPart,
@@ -16,6 +17,7 @@ import {
   normalizeExtensions,
 } from "../shared/schema";
 import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "../shared/form-helpers";
+import { barAxis, barRect, formatCompact, labelStride, yPosition } from "../shared/chart-math";
 import { copyToClipboard } from "./clipboard";
 import { HostMarkdown } from "./host-markdown";
 import { messages } from "./messages";
@@ -92,6 +94,124 @@ function stepMarker(status: StepStatus | undefined, index: number): string {
   if (status === "done") return "✓";
   if (status === "blocked") return "!";
   return String(index + 1);
+}
+
+const CHART_PLOT_HEIGHT = 160;
+const CHART_AXIS_WIDTH = 40;
+const CHART_COLUMN_WIDTH = 36; // per category once a chart has too many to fit: it scrolls sideways
+const CHART_SCROLL_FROM = 10;
+
+// A vertical bar chart built from Views (no SVG is available to plugins): a value axis with grid
+// lines on the left, one column group per label, series side by side, labels underneath. Tapping a
+// column group prints its values above the plot.
+function ChartBlock({ node, theme }: { node: ChartNode; theme: PluginHostProps["theme"] }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const labels = node.labels || [];
+  const series = node.series || [];
+  const unit = node.unit ? ` ${node.unit}` : "";
+  const axis = barAxis(series.flatMap((one) => one.values));
+  const stride = labelStride(labels.length);
+  const scrollable = labels.length > CHART_SCROLL_FROM;
+  const colorOf = (index: number) => segmentColor({ label: "", value: 0, tone: series[index]?.tone }, index, theme);
+  const zeroY = yPosition(0, axis, CHART_PLOT_HEIGHT);
+
+  const plot = (
+    <View style={scrollable ? { width: labels.length * CHART_COLUMN_WIDTH } : styles.chartFill}>
+      <View style={styles.chartPlot}>
+        {axis.ticks.map((tick) => (
+          <View
+            key={tick}
+            style={[
+              styles.chartGridLine,
+              { top: yPosition(tick, axis, CHART_PLOT_HEIGHT), backgroundColor: theme.colors.border },
+            ]}
+          />
+        ))}
+        <View style={[styles.chartGridLine, { top: zeroY, backgroundColor: theme.colors.foregroundMuted }]} />
+        <View style={styles.chartColumns}>
+          {labels.map((label, labelIndex) => (
+            <Pressable
+              key={labelIndex}
+              accessibilityRole="button"
+              accessibilityLabel={`${label}: ${series.map((one) => `${one.name} ${formatCompact(one.values[labelIndex] ?? 0)}${unit}`).join(", ")}`}
+              onPress={() => setSelected(selected === labelIndex ? null : labelIndex)}
+              style={[
+                styles.chartColumn,
+                selected === labelIndex ? { backgroundColor: theme.colors.surface2 } : null,
+              ]}
+            >
+              {series.map((one, seriesIndex) => {
+                const rect = barRect(one.values[labelIndex] ?? 0, axis, CHART_PLOT_HEIGHT);
+                return (
+                  <View key={seriesIndex} style={styles.chartBarSlot}>
+                    <View
+                      style={[
+                        styles.chartBar,
+                        { top: rect.top, height: rect.height, backgroundColor: colorOf(seriesIndex) },
+                      ]}
+                    />
+                  </View>
+                );
+              })}
+            </Pressable>
+          ))}
+        </View>
+      </View>
+      <View style={styles.chartLabels}>
+        {labels.map((label, labelIndex) => (
+          <View key={labelIndex} style={styles.chartLabelBox}>
+            <Text numberOfLines={1} style={[styles.chartLabel, { color: theme.colors.foregroundMuted }]}>
+              {labelIndex % stride === 0 ? label : ""}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={styles.chart}>
+      {node.title ? <Text style={[styles.chartTitle, { color: theme.colors.foreground }]}>{node.title}</Text> : null}
+      {series.length > 1 ? (
+        <View style={styles.segLegend}>
+          {series.map((one, index) => (
+            <View key={index} style={styles.segLegendItem}>
+              <View style={[styles.segDot, { backgroundColor: colorOf(index) }]} />
+              <Text style={[styles.segLegendText, { color: theme.colors.foreground }]}>{one.name}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+      {selected !== null ? (
+        <Text style={[styles.chartReadout, { color: theme.colors.foreground }]}>
+          {labels[selected]}:{" "}
+          {series.map((one) => `${series.length > 1 ? `${one.name} ` : ""}${formatCompact(one.values[selected] ?? 0)}${unit}`).join(" · ")}
+        </Text>
+      ) : null}
+      <View style={styles.chartBody}>
+        <View style={styles.chartAxis}>
+          {axis.ticks.map((tick) => (
+            <Text
+              key={tick}
+              style={[
+                styles.chartTick,
+                { color: theme.colors.foregroundMuted, top: yPosition(tick, axis, CHART_PLOT_HEIGHT) - 7 },
+              ]}
+            >
+              {formatCompact(tick)}
+            </Text>
+          ))}
+        </View>
+        {scrollable ? (
+          <ScrollView horizontal style={styles.chartFill}>
+            {plot}
+          </ScrollView>
+        ) : (
+          plot
+        )}
+      </View>
+    </View>
+  );
 }
 
 const COPY_FEEDBACK_MS = 1500;
@@ -574,6 +694,9 @@ export const NodeRenderer: React.FC<NodeRendererProps> = ({
           {node.text}
         </Text>
       );
+
+    case "Chart":
+      return <ChartBlock node={node} theme={theme} />;
 
     case "Markdown":
       return (
@@ -1336,6 +1459,77 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 12,
     gap: 12,
+  },
+  chart: {
+    gap: 8,
+  },
+  chartTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  chartReadout: {
+    fontSize: 12,
+  },
+  chartBody: {
+    flexDirection: "row",
+  },
+  chartAxis: {
+    width: CHART_AXIS_WIDTH,
+    height: CHART_PLOT_HEIGHT,
+    marginRight: 6,
+  },
+  chartTick: {
+    position: "absolute",
+    right: 0,
+    fontSize: 10,
+    lineHeight: 14,
+    textAlign: "right",
+  },
+  chartFill: {
+    flex: 1,
+  },
+  chartPlot: {
+    height: CHART_PLOT_HEIGHT,
+  },
+  chartGridLine: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 1,
+  },
+  chartColumns: {
+    flexDirection: "row",
+    height: CHART_PLOT_HEIGHT,
+  },
+  chartColumn: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 2,
+    paddingHorizontal: 3,
+    height: CHART_PLOT_HEIGHT,
+  },
+  chartBarSlot: {
+    flex: 1,
+    maxWidth: 26,
+    height: CHART_PLOT_HEIGHT,
+  },
+  chartBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    borderRadius: 2,
+  },
+  chartLabels: {
+    flexDirection: "row",
+    marginTop: 4,
+  },
+  chartLabelBox: {
+    flex: 1,
+    alignItems: "center",
+  },
+  chartLabel: {
+    fontSize: 11,
   },
   ratingRow: {
     flexDirection: "row",
