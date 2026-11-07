@@ -124,11 +124,11 @@ export async function uiS7(ctx, run, r, plain) {
   });
 }
 
-/** S7: Code, Steps and Details render; Details starts collapsed and opens on a click. */
+/** S7: Code, Steps and Details render; Details starts collapsed, toggles, and opens itself when a field inside is invalid. */
 export async function uiRichComponents(ctx, run, r) {
   const { ui, results } = ctx;
   await ui.openAgent(r.agent.id, r.first);
-  await ui.check(results, "S7", `run${run}: Code, Steps and Details render, Details toggles`, shotName("s7", "rich", run), async () => {
+  await ui.check(results, "S7", `run${run}: Code, Steps and Details render; Details toggles and opens on an invalid field`, shotName("s7", "rich", run), async () => {
     for (const t of ["Run the tests", "needs 2FA", "git tag v1.2.3 && git push --tags", "Advanced options"]) {
       await ui.waitVisible(ui.text(t).last());
     }
@@ -139,8 +139,14 @@ export async function uiRichComponents(ctx, run, r) {
     await ui.text("Advanced options").last().click();
     await ui.waitVisible(ui.text("Hidden until expanded").last());
     await ui.waitVisible(ui.text("One-time code", false).last());
+    await ui.text("Advanced options").last().click();
+    await ui.until(async () => (await ui.text("Hidden until expanded").count()) === 0, { what: "Details collapsed again" });
+    // Submitting with the required field inside the collapsed section empty opens the section.
+    await ui.text("Publish now").last().click();
+    await ui.waitVisible(ui.text("One-time code is required.").last());
+    await ui.waitVisible(ui.text("Hidden until expanded").last());
     await ui.screenshot(shotName("s7", "rich", run), ui.text("Release plan").last());
-    return "rendered, expanded on click";
+    return "rendered, toggles, opens itself on an invalid field";
   });
 }
 

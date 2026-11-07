@@ -22,6 +22,7 @@ const RICH = "Rich:\n\n" + fence(JSON.stringify({ type: "Card", title: "Release 
   { type: "Steps", items: [{ title: "Run the tests", detail: "npm test", status: "done" }, { title: "Tag the release", status: "current" }, { title: "Publish", detail: "needs 2FA", status: "blocked" }] },
   { type: "Code", language: "bash", code: "git tag v1.2.3 && git push --tags" },
   { type: "Details", title: "Advanced options", children: [{ type: "Text", text: "Hidden until expanded" }, { type: "Input", id: "otp", label: "One-time code", required: true }] },
+  { type: "Button", label: "Publish now", variant: "primary", action: "submit", message: "go" },
 ] }, null, 2));
 const PLAIN = "Just plain text, no form here. ```js\nconsole.log(1)\n```";
 const goodHalfA = "Split form:\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Split\",\n";
