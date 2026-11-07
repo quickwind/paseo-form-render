@@ -25,7 +25,8 @@ async function fontSizesOf(ui, needle, { exact = true } = {}) {
   return ui.page.evaluate(
     ({ needle, exact }) => {
       const nodes = Array.from(document.querySelectorAll("div,span,p")).filter((node) => {
-        if (node.children.length !== 0) return false;
+        // Text blocks may hold <br> line breaks (the host renders a reply as one <p>).
+        if (Array.from(node.children).some((child) => child.tagName !== "BR")) return false;
         const text = (node.textContent || "").trim();
         return exact ? text === needle : text.startsWith(needle);
       });
