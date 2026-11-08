@@ -95,5 +95,9 @@ when asked for (30/30) and chosen on their own most of the time when they fit (2
 fallbacks otherwise and no over-use on ordinary forms. The cost is +45% prompt size. Prompt tiering is
 not urgent for this model; a weaker model is the remaining check.
 
-Re-run: `node e2e/experiments/prompt-compare/run.mjs [--model P/M] [--reps N] [--limit N] [--concurrency N]`
+Re-run: `node e2e/experiments/prompt-compare/run.mjs [--model P/M] [--reps N] [--limit N] [--concurrency N, default 2, at most 3] [--max-calls 160]`
 (needs the local daemon at 127.0.0.1:6767; overwrites `results.json`).
+
+Limits and cleanup: at most 3 agents at a time (default 2); a run that would make more than 160 model calls is refused
+unless `--max-calls` raises it. At the end (and on Ctrl-C) the script deletes its agents and the project Paseo
+registered for its temp directory, which removes the per-agent workspaces too.

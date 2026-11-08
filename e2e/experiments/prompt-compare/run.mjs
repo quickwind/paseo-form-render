@@ -1,11 +1,10 @@
 // Experiment: does the grown prompt (26 component lines) make a model write worse forms than the
 // 0.3.1 prompt (16), and does it pick the new components when they fit? Both prompts go in the USER
 // message (Devin ignores config.systemPrompt). Runs against the local Paseo daemon; no files change.
-//   node e2e/experiments/prompt-compare/run.mjs [--model devin/swe-1-6-slow] [--thinking low] [--out file.json] [--only C] [--arms old,new] [--reps 3] [--limit N] [--concurrency 4]
+//   node e2e/experiments/prompt-compare/run.mjs [--model devin/swe-1-6-slow] [--thinking low] [--out file.json] [--only C] [--arms old,new] [--reps 3] [--limit N] [--concurrency 2] [--max-calls 160]
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
@@ -13,6 +12,7 @@ import { DaemonClient } from "@getpaseo/client/internal/daemon-client";
 import { createPaseoApi } from "@getpaseo/client";
 import { readLocalCredentialForTarget } from "@getpaseo/server/daemon-control";
 import { WebSocket } from "ws";
+import { DEFAULT_MAX_CALLS, assertCallBudget, cleanupOnSignal, clampConcurrency, deleteAgent, removeTestProject, trackAgent } from "../lib.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..", "..", "..");
@@ -23,7 +23,8 @@ const arg = (name, dflt) => {
 const MODEL = arg("model", "devin/swe-1-6-slow");
 const REPS = Number(arg("reps", 3));
 const LIMIT = Number(arg("limit", 99));
-const CONCURRENCY = Number(arg("concurrency", 4));
+const CONCURRENCY = clampConcurrency(Number(arg("concurrency", NaN))); // default 2, at most 3
+const MAX_CALLS = Number(arg("max-calls", DEFAULT_MAX_CALLS));
 const THINKING = arg("thinking", null); // thinking option id, e.g. "low"
 const OUT = arg("out", null); // results file name, default results.json (results-<group>.json with --only)
 const ONLY = arg("only", null); // e.g. "C": run just that task group
@@ -143,12 +144,14 @@ const api = createPaseoApi(client);
 // (Codex, OpenCode; Devin ignores it). It skips agents whose system prompt already holds this marker.
 const SKIP_INJECTION = "[paseo-form-render] Experiment: the form format is described in the user message.";
 const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "pfr-exp-"));
+cleanupOnSignal(() => removeTestProject(cwd));
 
 async function runOne(arm, taskIdx, rep) {
   const task = TASKS[taskIdx];
   const prompt = `${ARMS[arm]}\n\n---\nTask: ${task.t}\nReply with the form in a fenced code block exactly as specified above, plus at most one short sentence. Do not use any tools and do not read or write files.`;
   const started = Date.now();
   const agent = await api.agents.create({ config: { provider: MODEL, systemPrompt: SKIP_INJECTION, ...(THINKING ? { thinkingOptionId: THINKING } : {}) }, cwd, title: `pfr-exp ${arm} t${taskIdx} r${rep}`, prompt });
+  trackAgent(agent.id);
   const ref = api.agents.ref(agent.id);
   try {
     for (let i = 0; i < 90; i++) {
@@ -160,7 +163,7 @@ async function runOne(arm, taskIdx, rep) {
     const reply = (page.entries ?? []).filter((e) => e.item?.type === "assistant_message").map((e) => e.item.text).join("\n");
     return { arm, group: task.g, task: taskIdx, rep, ms: Date.now() - started, ...evaluate(task, reply), reply };
   } finally {
-    spawnSync("paseo", ["delete", agent.id], { stdio: "ignore" }); // keep the user's agent list clean
+    deleteAgent(agent.id); // keep the user's agent list clean
   }
 }
 
@@ -169,6 +172,8 @@ for (let rep = 0; rep < REPS; rep++) for (let t = 0; t < TASKS.length; t++) for 
   if (TASKS[t].g === "C" && arm === "old") continue; // the old prompt cannot name the new components
   jobs.push([arm, t, rep]);
 }
+assertCallBudget(jobs.length, MAX_CALLS);
+console.log(`${jobs.length} model calls, ${CONCURRENCY} at a time`);
 const results = [];
 let next = 0;
 await Promise.all(
@@ -211,5 +216,5 @@ TASKS.forEach((task, i) => {
   console.log(`  ${task.g} ${task.expect.join("/")}: ${parts.join(", ")}`);
 });
 await vite.close();
-fs.rmSync(cwd, { recursive: true, force: true }); // the empty temp working directory
+removeTestProject(cwd); // the project (and workspaces) Paseo registered for it, and the temp directory
 process.exit(0);
