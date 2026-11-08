@@ -47,10 +47,47 @@ components count as a good answer per task (listed in `run.mjs`), fixed before t
 - Content spot check: sales values and the four disk parts exactly as given in 3/3; the trend series
   exactly as given in 3/3; the docker command intact in 3/3.
 
+## Other models (low thinking): Codex GPT-6 Luna and OpenCode DeepSeek V4.1 Flash
+
+Same tasks and scoring, 150 replies each (A and B with both prompts, C with the new prompt only),
+`results-codex-gpt-6-luna-low.json` and `results-opencode-deepseek-v4.1-flash-low.json`.
+Providers `codex/gpt-6-luna` and `opencode/opencode-go/deepseek-v4.1-flash`, thinking `low`.
+
+**Method fix.** The first run of these two was invalid: the installed plugin injects the *current*
+instructions into the system prompt of every new agent, and Codex and OpenCode honor the system prompt,
+so the "old prompt" arm also saw the new component list (it used Chart/Steps/Rating 30/30). Devin ignores
+the system prompt, so the SWE runs above were not affected. The script now passes a system prompt that
+already contains the `[paseo-form-render]` marker, which makes the plugin skip its injection. The numbers
+below are from the corrected run (old prompt, group B: 0/30 expected components for both models).
+
+| | SWE-1.6 | GPT-6 Luna low | DeepSeek V4.1 Flash low |
+| --- | --- | --- | --- |
+| A old, valid | 30/30 | 30/30 | 29/30 |
+| A new, valid | 30/30 | 29/30 | 29/30 |
+| B old, expected component | 0/30 | 0/30 | 0/30 |
+| B new, valid / expected component | 30/30 / 30/30 | 30/30 / 30/30 | 30/30 / 30/30 |
+| C (neutral) new, valid | 30/30 | 29/30 | 30/30 |
+| C (neutral) new, chose a fitting component | 23/30 | 21/30 | 27/30 |
+| average block, group C (chars) | 696 | 501 | 1,177 |
+
+Failures (6 in 450 replies, none systematic): Codex A new: replied "please fill in the report" with no
+block; Codex C: answered the docker question with a plain code block, which is a fair answer; DeepSeek A
+new: one JSON syntax error (a missing quote before a key); DeepSeek A old: an empty reply; DeepSeek B old:
+declined, saying the old component list has no bold, bullets or links (true, and exactly what Markdown fixes).
+The old prompt had as many failures as the new one.
+
+Choices without being asked: all three models picked Chart/Sparkline, Steps, Rating, SegmentedBar and
+KeyValue on their own; Details was never chosen unprompted by any of them; Tabs was chosen by DeepSeek
+3/3, SWE 1/3, Codex 0/3 (flat layout with headings instead). DeepSeek builds much busier cards (up to
+eight component types for a one-line question); Codex is the most compact.
+
+Overall: across three models the larger prompt did not cost validity, and the new components are written
+correctly and chosen when they fit. Prompt tiering stays unnecessary for these models.
+
 ## Limits (read before trusting this)
 - One model, first replies only (no repair rounds), 3 repetitions per task. Group C has 10 tasks.
 - Not measured: how this prompt behaves in the Devin setup with its own instruction injection, and
-  weaker models.
+  models weaker than these.
 
 ## Conclusion
 No evidence that the larger prompt hurts validity for SWE-1.6. The new components are written correctly

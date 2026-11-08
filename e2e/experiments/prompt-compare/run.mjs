@@ -1,7 +1,7 @@
 // Experiment: does the grown prompt (26 component lines) make a model write worse forms than the
 // 0.3.1 prompt (16), and does it pick the new components when they fit? Both prompts go in the USER
 // message (Devin ignores config.systemPrompt). Runs against the local Paseo daemon; no files change.
-//   node e2e/experiments/prompt-compare/run.mjs [--model devin/swe-1-6-slow] [--reps 3] [--limit N] [--concurrency 4]
+//   node e2e/experiments/prompt-compare/run.mjs [--model devin/swe-1-6-slow] [--thinking low] [--out file.json] [--only C] [--arms old,new] [--reps 3] [--limit N] [--concurrency 4]
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -24,6 +24,8 @@ const MODEL = arg("model", "devin/swe-1-6-slow");
 const REPS = Number(arg("reps", 3));
 const LIMIT = Number(arg("limit", 99));
 const CONCURRENCY = Number(arg("concurrency", 4));
+const THINKING = arg("thinking", null); // thinking option id, e.g. "low"
+const OUT = arg("out", null); // results file name, default results.json (results-<group>.json with --only)
 const ONLY = arg("only", null); // e.g. "C": run just that task group
 const ARM_NAMES = (arg("arms", "old,new")).split(",");
 const HOST = "127.0.0.1:6767";
@@ -136,13 +138,17 @@ const client = new DaemonClient({
 });
 await client.connect();
 const api = createPaseoApi(client);
+// The installed plugin adds its own (current) instructions to the system prompt of every new agent, which
+// would leak the new component list into the "old prompt" arm for providers that honor systemPrompt
+// (Codex, OpenCode; Devin ignores it). It skips agents whose system prompt already holds this marker.
+const SKIP_INJECTION = "[paseo-form-render] Experiment: the form format is described in the user message.";
 const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "pfr-exp-"));
 
 async function runOne(arm, taskIdx, rep) {
   const task = TASKS[taskIdx];
   const prompt = `${ARMS[arm]}\n\n---\nTask: ${task.t}\nReply with the form in a fenced code block exactly as specified above, plus at most one short sentence. Do not use any tools and do not read or write files.`;
   const started = Date.now();
-  const agent = await api.agents.create({ config: { provider: MODEL }, cwd, title: `pfr-exp ${arm} t${taskIdx} r${rep}`, prompt });
+  const agent = await api.agents.create({ config: { provider: MODEL, systemPrompt: SKIP_INJECTION, ...(THINKING ? { thinkingOptionId: THINKING } : {}) }, cwd, title: `pfr-exp ${arm} t${taskIdx} r${rep}`, prompt });
   const ref = api.agents.ref(agent.id);
   try {
     for (let i = 0; i < 90; i++) {
@@ -159,7 +165,10 @@ async function runOne(arm, taskIdx, rep) {
 }
 
 const jobs = [];
-for (let rep = 0; rep < REPS; rep++) for (let t = 0; t < TASKS.length; t++) for (const arm of Object.keys(ARMS)) jobs.push([arm, t, rep]);
+for (let rep = 0; rep < REPS; rep++) for (let t = 0; t < TASKS.length; t++) for (const arm of Object.keys(ARMS)) {
+  if (TASKS[t].g === "C" && arm === "old") continue; // the old prompt cannot name the new components
+  jobs.push([arm, t, rep]);
+}
 const results = [];
 let next = 0;
 await Promise.all(
@@ -178,7 +187,7 @@ await Promise.all(
   }),
 );
 
-fs.writeFileSync(path.join(here, ONLY ? `results-${ONLY}.json` : "results.json"), JSON.stringify({ model: MODEL, reps: REPS, tasks: TASKS, promptChars: { old: ALL_ARMS.old.length, new: ALL_ARMS.new.length }, results }, null, 2));
+fs.writeFileSync(path.join(here, OUT ?? (ONLY ? `results-${ONLY}.json` : "results.json")), JSON.stringify({ model: MODEL, thinking: THINKING, reps: REPS, tasks: TASKS, promptChars: { old: ALL_ARMS.old.length, new: ALL_ARMS.new.length }, results }, null, 2));
 
 const pct = (n, d) => (d ? `${n}/${d} (${Math.round((100 * n) / d)}%)` : "-");
 for (const group of ["A", "B", "C"]) {
