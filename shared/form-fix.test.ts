@@ -80,8 +80,13 @@ describe("collectTurnFormFailures", () => {
   });
 
   it("finds JSON syntax failures", () => {
-    const failures = collectTurnFormFailures([user("x"), assistant(fence("{'a':1}"))]);
+    const failures = collectTurnFormFailures([user("x"), assistant(fence("{ a b c }"))]);
     expect(failures).toHaveLength(1);
     expect(failures[0].issues[0].path).toBe("JSON");
+  });
+
+  it("ignores JSON slips the lenient parser repairs", () => {
+    const failures = collectTurnFormFailures([user("x"), assistant(fence('{"type":"Card","children":[],}'))]);
+    expect(failures).toHaveLength(0);
   });
 });

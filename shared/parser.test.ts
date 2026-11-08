@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { parseMessageContent, hasFormBlock } from "./parser";
 import { PfrFormSchema } from "./schema";
-import { extractInitialValues, validateForm, formatSubmissionMessage } from "./form-helpers";
+import { collectFieldIds, extractInitialValues, validateForm, formatSubmissionMessage } from "./form-helpers";
 
 describe("pfr-form Parser & Validation", () => {
   it("detects pfr-form fence blocks", () => {
@@ -318,3 +318,217 @@ describe("pfr-form Parser & Validation", () => {
   });
 });
 
+
+describe("lenient JSON repair", () => {
+  const wrap = (json: string) => "```pfr-form\n" + json + "\n```";
+
+  it("renders a form whose JSON has trailing commas, comments and single quotes", () => {
+    const [block] = parseMessageContent(
+      wrap(`{ // note\n 'type': "Card", children: [ { "type": "Text", "text": "hi", }, ], }`),
+    );
+    expect(block.error).toBeUndefined();
+    expect(block.form?.type).toBe("Card");
+  });
+
+  it("still validates the repaired result against the schema", () => {
+    const [block] = parseMessageContent(wrap(`{ "type": "Card", "children": [ { "type": "Slider", }, ], }`));
+    expect(block.form).toBeUndefined();
+    expect(block.errors?.[0].message).toContain("Slider");
+  });
+
+  it("reports unrepairable JSON against the original text", () => {
+    const [block] = parseMessageContent(wrap(`{ "type": "Card" "children": [] }`));
+    expect(block.form).toBeUndefined();
+    expect(block.errors?.[0].path).toBe("JSON");
+  });
+});
+
+describe("Code, Steps and Details components", () => {
+  const wrap = (node: unknown) => "```pfr-form\n" + JSON.stringify(node) + "\n```";
+  const parse = (node: unknown) => parseMessageContent(wrap(node))[0];
+
+  it("accepts a Code block with and without a language", () => {
+    for (const code of [{ type: "Code", code: "npm test" }, { type: "Code", code: "{}", language: "json" }]) {
+      expect(parse({ type: "Card", children: [code] }).error).toBeUndefined();
+    }
+  });
+
+  it("accepts Steps with every status and rejects an unknown one or an empty list", () => {
+    const items = ["pending", "current", "done", "blocked"].map((status) => ({ title: status, detail: "d", status }));
+    expect(parse({ type: "Card", children: [{ type: "Steps", items }] }).error).toBeUndefined();
+    expect(parse({ type: "Card", children: [{ type: "Steps", items: [{ title: "x", status: "late" }] }] }).error).toBeDefined();
+    expect(parse({ type: "Card", children: [{ type: "Steps", items: [] }] }).error).toBeDefined();
+  });
+
+  it("collects and validates fields inside a Details section", () => {
+    const form = {
+      type: "Card",
+      children: [
+        {
+          type: "Details",
+          title: "Advanced",
+          children: [{ type: "Input", id: "token", label: "Token", required: true, defaultValue: "abc" }],
+        },
+      ],
+    };
+    const block = parse(form);
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ token: "abc" });
+    expect(validateForm(node, { token: "" })).toEqual({ token: "Token is required." });
+    expect(collectFieldIds(node)).toEqual(["token"]);
+    expect(formatSubmissionMessage(undefined, node, { token: "abc" })).toContain("Token");
+  });
+
+  it("flags duplicate ids across a Details boundary", () => {
+    const input = { type: "Input", id: "a", label: "A" };
+    const block = parse({ type: "Card", children: [input, { type: "Details", title: "d", children: [input] }] });
+    expect(block.error).toContain("duplicate field id");
+  });
+
+  it("requires a title on Details", () => {
+    expect(parse({ type: "Card", children: [{ type: "Details", children: [] }] }).error).toBeDefined();
+  });
+});
+
+describe("SegmentedBar, KeyValue and Tabs components", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const card = (child: unknown) => ({ type: "Card", children: [child] });
+
+  it("accepts SegmentedBar parts with and without tone/unit and rejects bad ones", () => {
+    const ok = { type: "SegmentedBar", unit: "GB", parts: [{ label: "Code", value: 40 }, { label: "Cache", value: 0, tone: "warning" }] };
+    expect(parse(card(ok)).error).toBeUndefined();
+    expect(parse(card({ type: "SegmentedBar", parts: [{ label: "x", value: -1 }] })).error).toBeDefined();
+    expect(parse(card({ type: "SegmentedBar", parts: [] })).error).toBeDefined();
+  });
+
+  it("accepts KeyValue pairs with string or number values", () => {
+    expect(parse(card({ type: "KeyValue", pairs: [{ label: "Region", value: "eu" }, { label: "Nodes", value: 3 }] })).error).toBeUndefined();
+    expect(parse(card({ type: "KeyValue", pairs: [] })).error).toBeDefined();
+    expect(parse(card({ type: "KeyValue", pairs: [{ label: "a", value: true }] })).error).toBeDefined();
+  });
+
+  const tabsForm = {
+    type: "Card",
+    children: [
+      {
+        type: "Tabs",
+        tabs: [
+          { label: "General", children: [{ type: "Input", id: "name", label: "Name", defaultValue: "x" }] },
+          { label: "Advanced", children: [{ type: "Toggle", id: "debug", label: "Debug", defaultValue: true }, { type: "Input", id: "token", label: "Token", required: true }] },
+        ],
+      },
+    ],
+  };
+
+  it("collects, validates and labels fields in every tab", () => {
+    const block = parse(tabsForm);
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ name: "x", debug: true, token: "" });
+    expect(validateForm(node, { name: "x", debug: true, token: "" })).toEqual({ token: "Token is required." });
+    expect(collectFieldIds(node)).toEqual(["name", "debug", "token"]);
+    const message = formatSubmissionMessage(undefined, node, { name: "x", debug: true, token: "t" });
+    expect(message).toContain("- Debug: Yes");
+    expect(message).toContain("- Token: t");
+  });
+
+  it("flags a duplicate id across tabs with the tab in the path", () => {
+    const input = { type: "Input", id: "a", label: "A" };
+    const block = parse(card({ type: "Tabs", tabs: [{ label: "1", children: [input] }, { label: "2", children: [input] }] }));
+    expect(block.error).toContain("duplicate field id");
+  });
+
+  it("requires at least one tab", () => {
+    expect(parse(card({ type: "Tabs", tabs: [] })).error).toBeDefined();
+  });
+});
+
+describe("Markdown, option descriptions, Rating and Sparkline", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const card = (...children: unknown[]) => ({ type: "Card", children });
+
+  it("accepts Markdown and requires its text", () => {
+    expect(parse(card({ type: "Markdown", text: "**bold** and `code`" })).error).toBeUndefined();
+    expect(parse(card({ type: "Markdown" })).error).toBeDefined();
+  });
+
+  it("accepts an optional description on Select and MultiSelect options", () => {
+    const options = [{ label: "Fast", value: "fast", description: "Skips checks" }, { label: "Safe", value: "safe" }];
+    const block = parse(card({ type: "Select", id: "mode", label: "Mode", options }, { type: "MultiSelect", id: "m", label: "M", options }));
+    expect(block.error).toBeUndefined();
+    expect(JSON.stringify(block.form)).toContain("Skips checks");
+  });
+
+  it("starts a Rating unset, honors defaultValue within max, and submits the stars", () => {
+    const block = parse(card({ type: "Rating", id: "r", label: "Overall" }, { type: "Rating", id: "q", label: "Quality", max: 3, defaultValue: 9 }));
+    expect(block.error).toBeUndefined();
+    const node = block.form!;
+    expect(extractInitialValues(node)).toEqual({ r: null, q: 3 });
+    expect(formatSubmissionMessage(undefined, node, { r: null, q: 3 })).toContain("- Overall: \n- Quality: 3");
+  });
+
+  it("validates a required Rating and rejects a bad max", () => {
+    const node = parse(card({ type: "Rating", id: "r", label: "Overall", required: true })).form!;
+    expect(validateForm(node, { r: null })).toEqual({ r: "Please give a rating for Overall." });
+    expect(validateForm(node, { r: 4 })).toEqual({});
+    expect(parse(card({ type: "Rating", id: "r", label: "x", max: 11 })).error).toBeDefined();
+    expect(parse(card({ type: "Rating", id: "r", label: "x", max: 5, defaultValue: 0 })).error).toBeDefined();
+  });
+
+  it("treats Rating as a field for duplicate-id detection", () => {
+    const rating = { type: "Rating", id: "r", label: "R" };
+    expect(parse(card(rating, rating)).error).toContain("duplicate field id");
+    expect(parse(card(rating, { type: "Input", id: "r", label: "R2" })).error).toContain("duplicate field id");
+  });
+
+  it("accepts Sparkline with and without label/tone and rejects an empty series", () => {
+    expect(parse(card({ type: "Sparkline", values: [1, 3, 2.5] })).error).toBeUndefined();
+    expect(parse(card({ type: "Sparkline", label: "Latency", tone: "warning", values: [5] })).error).toBeUndefined();
+    expect(parse(card({ type: "Sparkline", values: [] })).error).toBeDefined();
+    expect(parse(card({ type: "Sparkline", values: ["a"] })).error).toBeDefined();
+  });
+});
+
+describe("Chart component", () => {
+  const parse = (node: unknown) => parseMessageContent("```pfr-form\n" + JSON.stringify(node) + "\n```")[0];
+  const chart = (extra: Record<string, unknown> = {}) => ({
+    type: "Chart",
+    title: "Requests",
+    unit: "k",
+    labels: ["Mon", "Tue", "Wed"],
+    series: [{ name: "api", values: [12, 18, 9] }, { name: "web", values: [7, 5, 11], tone: "warning" }],
+    ...extra,
+  });
+  const inCard = (node: unknown) => ({ type: "Card", children: [node] });
+
+  it("accepts a valid bar chart, with kind and negative values", () => {
+    expect(parse(inCard(chart())).error).toBeUndefined();
+    expect(parse(inCard(chart({ kind: "bar", series: [{ name: "x", values: [-1, 0, 2.5] }] }))).error).toBeUndefined();
+  });
+
+  it("explains a series whose length differs from the labels", () => {
+    const block = parse(inCard(chart({ series: [{ name: "api", values: [1, 2] }] })));
+    expect(block.error).toContain('series "api" has 2 values but the Chart has 3 labels');
+    expect(block.error).toContain("exactly one value per label");
+  });
+
+  it("limits labels and series", () => {
+    const labels = Array.from({ length: 25 }, (_, i) => `L${i}`);
+    expect(parse(inCard(chart({ labels, series: [{ name: "a", values: labels.map(() => 1) }] }))).error).toContain("at most 24");
+    const series = Array.from({ length: 5 }, (_, i) => ({ name: `s${i}`, values: [1, 2, 3] }));
+    expect(parse(inCard(chart({ series }))).error).toContain("at most 4");
+  });
+
+  it("rejects empty labels or series and unknown kinds", () => {
+    expect(parse(inCard(chart({ labels: [], series: [{ name: "a", values: [] }] }))).error).toBeDefined();
+    expect(parse(inCard(chart({ series: [] }))).error).toBeDefined();
+    expect(parse(inCard(chart({ kind: "pie" }))).error).toBeDefined();
+  });
+
+  it("checks charts inside Tabs and Details too", () => {
+    const bad = chart({ series: [{ name: "api", values: [1] }] });
+    expect(parse(inCard({ type: "Tabs", tabs: [{ label: "t", children: [bad] }] })).error).toContain("exactly one value per label");
+    expect(parse(inCard({ type: "Details", title: "d", children: [bad] })).error).toContain("exactly one value per label");
+  });
+});

@@ -2,7 +2,7 @@
 // `h` is the Harness (e2e/lib/client.mjs); scripts for the fake provider are in ./scripts.mjs.
 import { MARKER, fixTexts, readSettings, resetSettings, short, writeSettings } from "../lib/client.mjs";
 import { sleep } from "../lib/daemon.mjs";
-import { uiManualFix, uiPluginLoaded, uiS1, uiS2, uiS7, uiSettings } from "./ui-checks.mjs";
+import { uiManualFix, uiPluginLoaded, uiS1, uiS2, uiRich2Components, uiRich3Components, uiRichComponents, uiS7, uiSettings } from "./ui-checks.mjs";
 
 function uniq(name) {
   return `SCENARIO:${name} run=${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -208,12 +208,17 @@ export const SCENARIOS = {
   /** Valid forms and plain text never trigger a fix. */
   async s7(ctx, run) {
     const agents = {};
-    for (const name of ["s7good", "s7plain"]) {
+    for (const name of ["s7good", "s7plain", "s7rich", "s7rich2", "s7rich3"]) {
       const r = await simple(ctx, name, `S7-${name}`, { quietMs: 4000 });
       agents[name] = r;
       ctx.results.check("S7", `run${run}: ${name}: no fix`, r.fixes.length === 0 && r.prompts.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
     }
-    if (ctx.ui) await uiS7(ctx, run, agents.s7good, agents.s7plain);
+    if (ctx.ui) {
+      await uiS7(ctx, run, agents.s7good, agents.s7plain);
+      await uiRichComponents(ctx, run, agents.s7rich);
+      await uiRich2Components(ctx, run, agents.s7rich2);
+      await uiRich3Components(ctx, run, agents.s7rich3);
+    }
   },
 
   /** Message shapes: streamed chunks, split fences, several messages, long turns, long history. */
@@ -230,10 +235,13 @@ export const SCENARIOS = {
       // messages gets a (misleading) fix request.
       results.check("S8", `run${run}: ${name}: valid form split across messages gets no fix`, r.fixes.length === 0, `fixes=${r.fixes.length}`, { known: true });
     }
-    for (const name of ["s8big", "s8huge"]) {
+    // s8big (~284 entries) fits the 300-entry window used to find the user's message, so it is
+    // fixed. s8huge (~400) does not: auto-fix fails closed ("history-truncated") and sends nothing.
+    for (const [name, expected] of [["s8big", 1], ["s8huge", 0]]) {
       const r = await simple(ctx, name, `S8-${name}`, { quietMs: 6000 });
       const probe = h.probesFor(r.agent.id).find((p) => p.kind === "turn_ended");
-      results.check("S8", `run${run}: ${name} (long turn, ${probe?.eventTimelineLength} timeline entries): exactly one fix`, r.fixes.length === 1, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
+      const what = expected === 1 ? "exactly one fix" : "no fix (history beyond the window, fails closed)";
+      results.check("S8", `run${run}: ${name} (long turn, ${probe?.eventTimelineLength} timeline entries): ${what}`, r.fixes.length === expected, `fixes=${r.fixes.length} prompts=${r.prompts.length}`);
     }
     // Long history: every real user message restarts the count, so each one gets 2 more fixes.
     const r = await simple(ctx, "s2", "S8-long", { quietMs: 5000 });

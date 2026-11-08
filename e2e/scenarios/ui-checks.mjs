@@ -25,7 +25,8 @@ async function fontSizesOf(ui, needle, { exact = true } = {}) {
   return ui.page.evaluate(
     ({ needle, exact }) => {
       const nodes = Array.from(document.querySelectorAll("div,span,p")).filter((node) => {
-        if (node.children.length !== 0) return false;
+        // Text blocks may hold <br> line breaks (the host renders a reply as one <p>).
+        if (Array.from(node.children).some((child) => child.tagName !== "BR")) return false;
         const text = (node.textContent || "").trim();
         return exact ? text === needle : text.startsWith(needle);
       });
@@ -82,8 +83,8 @@ export async function uiS2(ctx, run, r) {
     await last.scrollIntoViewIfNeeded();
     await ui.waitVisible(last);
     await ui.waitVisible(ui.text("Ask agent to fix").last());
-    // The last reply (BADJSON) is invalid JSON; its box explains the trailing comma.
-    await ui.waitVisible(ui.page.getByText(/is not valid JSON\. Hint: trailing comma/).last());
+    // The last reply (BADJSON) is invalid JSON that the lenient parser cannot repair (missing comma).
+    await ui.waitVisible(ui.page.getByText(/syntax error at line/).last());
     await ui.screenshot(shotName("s2", "last-error", run), last);
     // The run is quiet already (waitQuiet); the UI must not show a further fix request.
     const fixes = await ui.fixMessages().count();
@@ -120,6 +121,85 @@ export async function uiS7(ctx, run, r, plain) {
       throw new Error(`the plugin renders the reply text at ${pluginSize}px but the host uses ${hostSize}px`);
     }
     return `${pluginSize}px`;
+  });
+}
+
+/** S7: Code, Steps and Details render; Details starts collapsed, toggles, and opens itself when a field inside is invalid. */
+export async function uiRichComponents(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: Code, Steps and Details render; Details toggles and opens on an invalid field`, shotName("s7", "rich", run), async () => {
+    for (const t of ["Run the tests", "needs 2FA", "git tag v1.2.3 && git push --tags", "Advanced options"]) {
+      await ui.waitVisible(ui.text(t).last());
+    }
+    // The Code header has a copy button. It is only checked for being there: clicking it needs the
+    // clipboard permission, which headless browsers on the three CI platforms do not grant alike.
+    await ui.waitVisible(ui.page.getByLabel("Copy code").last());
+    await ui.waitVisible(ui.text("bash").last());
+    const boxes = await ui.errorBoxes().count();
+    if (boxes) throw new Error(`error boxes=${boxes}`);
+    const hiddenBefore = await ui.text("Hidden until expanded").count();
+    if (hiddenBefore) throw new Error("Details content is visible while collapsed");
+    await ui.text("Advanced options").last().click();
+    await ui.waitVisible(ui.text("Hidden until expanded").last());
+    await ui.waitVisible(ui.text("One-time code", false).last());
+    await ui.text("Advanced options").last().click();
+    await ui.until(async () => (await ui.text("Hidden until expanded").count()) === 0, { what: "Details collapsed again" });
+    // Submitting with the required field inside the collapsed section empty opens the section.
+    await ui.text("Publish now").last().click();
+    await ui.waitVisible(ui.text("One-time code is required.").last());
+    await ui.waitVisible(ui.text("Hidden until expanded").last());
+    await ui.screenshot(shotName("s7", "rich", run), ui.text("Release plan").last());
+    return "rendered, toggles, opens itself on an invalid field";
+  });
+}
+
+/** S7: SegmentedBar, KeyValue and Tabs render; a failed submit shows the tab that holds the invalid field. */
+export async function uiRich2Components(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: SegmentedBar, KeyValue and Tabs render; Tabs shows the tab with an invalid field`, shotName("s7", "rich2", run), async () => {
+    for (const t of ["40 GB (50%)", "10 GB (13%)", "eu-west", "Hostname"]) {
+      await ui.waitVisible(ui.text(t, false).last());
+    }
+    const boxes = await ui.errorBoxes().count();
+    if (boxes) throw new Error(`error boxes=${boxes}`);
+    if (await ui.text("Access token", false).count()) throw new Error("the second tab is visible while the first is selected");
+    await ui.text("Apply").last().click();
+    await ui.waitVisible(ui.text("Access token is required.").last());
+    if (await ui.text("Hostname", false).count()) throw new Error("the first tab is still visible after the failed submit");
+    await ui.screenshot(shotName("s7", "rich2", run), ui.text("Server report").last());
+    return "rendered, switched to the invalid tab";
+  });
+}
+
+/** S7: Markdown, Sparkline, Chart, option descriptions and Rating. */
+export async function uiRich3Components(ctx, run, r) {
+  const { ui, results } = ctx;
+  await ui.openAgent(r.agent.id, r.first);
+  await ui.check(results, "S7", `run${run}: Markdown, Sparkline, Chart, option descriptions and Rating`, shotName("s7", "rich3", run), async () => {
+    await ui.waitVisible(ui.text("review", false).last());
+    await ui.waitVisible(ui.text("first point", false).last());
+    if (await ui.text("**review**", false).count()) throw new Error("Markdown is shown as raw text");
+    await ui.waitVisible(ui.text("Latency").last());
+    await ui.waitVisible(ui.text("12").last());
+    // Charts: title, legend, axis ticks and labels render; tapping a column group prints its values.
+    await ui.waitVisible(ui.text("Requests").last());
+    await ui.waitVisible(ui.text("Daily load").last());
+    await ui.waitVisible(ui.text("Tue", false).last());
+    await ui.waitVisible(ui.text("20", true).last());
+    await ui.page.getByLabel("Tue: api 18 k, web 5 k").last().click();
+    await ui.waitVisible(ui.text("Tue: api 18 k · web 5 k", false).last());
+    await ui.text("Fast").last().click();
+    await ui.waitVisible(ui.text("Skips the slow checks").last());
+    await ui.text("Safe").last().click();
+    await ui.text("Send review").last().click();
+    await ui.waitVisible(ui.text("Please give a rating for Overall score.").last());
+    // Rating a star clears the field's error (the value is set).
+    await ui.page.getByLabel("4/5").last().click();
+    await ui.until(async () => (await ui.text("Please give a rating for Overall score.").count()) === 0, { what: "the rating error cleared" });
+    await ui.screenshot(shotName("s7", "rich3", run), ui.text("Review").last());
+    return "rendered, option description shown, rating required and cleared once set";
   });
 }
 

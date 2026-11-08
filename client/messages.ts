@@ -19,6 +19,12 @@ const en = {
   form: {
     submitted: "✓ Form Submitted",
   },
+  code: {
+    copy: "Copy",
+    copied: "Copied",
+    copyFailed: "Copy failed",
+    copyLabel: "Copy code",
+  },
   dropdown: {
     placeholder: "Select an option...",
     multiPlaceholder: "Select options...",
@@ -85,6 +91,12 @@ const zhCN = {
   },
   form: {
     submitted: "✓ 表单已提交",
+  },
+  code: {
+    copy: "复制",
+    copied: "已复制",
+    copyFailed: "复制失败",
+    copyLabel: "复制代码",
   },
   dropdown: {
     placeholder: "请选择...",

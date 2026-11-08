@@ -1,0 +1,3266 @@
+{
+  "model": "codex/gpt-6-luna",
+  "thinking": "low",
+  "reps": 3,
+  "tasks": [
+    {
+      "g": "A",
+      "t": "I need a form to collect a new user's name, email and role (admin, editor, viewer)."
+    },
+    {
+      "g": "A",
+      "t": "Ask me to confirm deleting the 'staging-db' database; show the database name and size (12 GB) and require typing the name to confirm."
+    },
+    {
+      "g": "A",
+      "t": "Show a status dashboard with three metrics (uptime 99.9%, requests 12.4k, errors 17), a progress bar for the migration at 65%, and a table of three services with their status."
+    },
+    {
+      "g": "A",
+      "t": "Build a form to configure a nightly backup: time (HH:MM), retention days (1-365), which folders to include (pick a folder), and a toggle for compression."
+    },
+    {
+      "g": "A",
+      "t": "I want to choose which of these test suites to run: unit, integration, e2e, lint, types. Let me pick several and set a timeout in minutes."
+    },
+    {
+      "g": "A",
+      "t": "Collect a bug report: title, severity (low/medium/high/critical), steps to reproduce (multi-line), and an optional log file (.log or .txt)."
+    },
+    {
+      "g": "A",
+      "t": "Present a deployment summary: environment Production, version 2.4.1, an alert warning that the rollout touches billing, and Approve / Reject buttons."
+    },
+    {
+      "g": "A",
+      "t": "Ask for an API key (password field), a base URL (url), and a request timeout in seconds between 1 and 60."
+    },
+    {
+      "g": "A",
+      "t": "Show a table comparing three database options (Postgres, MySQL, SQLite) with columns name, speed, cost, and let me select one as my choice."
+    },
+    {
+      "g": "A",
+      "t": "A feedback survey: overall rating 1-5 (integer), what went well (multi-line), would you recommend (toggle), and a submit button."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Chart"
+      ],
+      "t": "Show weekly sales Monday to Friday as a bar chart with two series: online [120, 150, 90, 170, 200] and store [80, 60, 110, 95, 130]."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Steps"
+      ],
+      "t": "Show the release plan as steps with their status: run tests (done), build (in progress), deploy to staging (blocked, waiting for approval), announce (not started)."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Tabs"
+      ],
+      "t": "A settings page with two sections: General (site name, language) and Notifications (email toggle, frequency daily or weekly). Show one section at a time."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Rating"
+      ],
+      "t": "Ask me to rate the support I received from 1 to 5 stars and leave an optional comment."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Code"
+      ],
+      "t": "Show the shell command to rebuild the docker image, `docker build -t app:latest .`, so I can copy it."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "SegmentedBar",
+        "Chart"
+      ],
+      "t": "Show the disk usage breakdown as proportions of the whole: system 40 GB, apps 120 GB, media 85 GB, free 255 GB."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Markdown"
+      ],
+      "t": "Summarize the meeting: a bold heading 'Decisions', a bulleted list of three decisions, and a link to https://example.com/notes."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "KeyValue"
+      ],
+      "t": "Show server info as a compact list of properties: hostname web-01, region eu-west, uptime 41 days, version 2.4.1."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Details"
+      ],
+      "t": "Show a short deployment summary, with the full changelog (five lines) tucked into a collapsible section."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Sparkline",
+        "Chart"
+      ],
+      "t": "Show the current error rate 0.8% together with a tiny trend of the last 10 hours: 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Chart",
+        "Sparkline"
+      ],
+      "t": "How did our sales change this week? Monday 120, Tuesday 150, Wednesday 90, Thursday 170, Friday 200."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Steps"
+      ],
+      "t": "Walk me through where the deployment stands: tests passed, the build is running, the production deploy is waiting for approval, and the announcement is not sent yet."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Tabs",
+        "Details"
+      ],
+      "t": "Make a settings page for a blog with an Appearance part (theme, font size) and a Privacy part (analytics toggle, cookie banner toggle)."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Rating"
+      ],
+      "t": "How was your experience with our support team? We would like a score and optional comments."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Code",
+        "Markdown"
+      ],
+      "t": "Tell me how to rebuild the docker image: the command is docker build -t app:latest ."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "SegmentedBar",
+        "Chart"
+      ],
+      "t": "Where does my disk space go? System 40 GB, apps 120 GB, media 85 GB, free 255 GB."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Markdown"
+      ],
+      "t": "Give me the meeting notes. Decisions: ship on Friday, hire a designer, drop feature X. Full notes are at https://example.com/notes."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "KeyValue",
+        "Table"
+      ],
+      "t": "Which server am I on? Hostname web-01, region eu-west, uptime 41 days, version 2.4.1."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Details"
+      ],
+      "t": "The deployment finished successfully. Changelog: fixed login timeout; faster dashboard; export preferences; updated dependencies; resolved rate limiting."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Sparkline",
+        "Chart"
+      ],
+      "t": "The error rate is 0.8% right now. Over the last ten hours it was 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8."
+    }
+  ],
+  "promptChars": {
+    "old": 4582,
+    "new": 6630
+  },
+  "results": [
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 0,
+      "ms": 9996,
+      "fence": true,
+      "chars": 623,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请确认删除该数据库；输入数据库名称后提交。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"此操作将删除数据库。\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库名称\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库大小\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"database_name_confirmation\",\n      \"label\": \"输入 staging-db 以确认\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"pattern\": \"^staging-db$\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认删除\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除数据库 staging-db。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 0,
+      "ms": 10333,
+      "fence": true,
+      "chars": 628,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请确认删除该数据库。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"删除操作需要输入数据库名称确认。\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"数据库名称\", \"value\": \"staging-db\" },\n        { \"label\": \"大小\", \"value\": \"12 GB\" }\n      ]\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"database_name_confirmation\",\n      \"label\": \"输入 staging-db 以确认删除\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"pattern\": \"^staging-db$\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"删除数据库\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除 staging-db 数据库（12 GB）。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 0,
+      "ms": 10621,
+      "fence": true,
+      "chars": 752,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新增用户\",\n  \"description\": \"请填写用户信息。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"姓名\",\n      \"inputType\": \"text\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交新用户信息。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 0,
+      "ms": 12005,
+      "fence": true,
+      "chars": 749,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新用户\",\n  \"description\": \"填写新用户信息。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"姓名\",\n      \"inputType\": \"text\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"创建新用户。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 0,
+      "ms": 8681,
+      "fence": true,
+      "chars": 718,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务状态仪表板\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"正常运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"正常\" },\n        { \"service\": \"数据库\", \"status\": \"正常\" },\n        { \"service\": \"队列\", \"status\": \"告警\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 0,
+      "ms": 8539,
+      "fence": true,
+      "chars": 716,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"系统状态仪表盘\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"正常\" },\n        { \"service\": \"数据库\", \"status\": \"正常\" },\n        { \"service\": \"缓存\", \"status\": \"正常\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 0,
+      "ms": 10542,
+      "fence": true,
+      "chars": 902,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份配置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:30\",\n      \"defaultValue\": \"23:00\",\n      \"pattern\": \"^([01]\\\\\\\\d|2[0-3]):[0-5]\\\\\\\\d$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"include_folder\",\n      \"label\": \"要备份的文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"启用压缩\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存配置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 0,
+      "ms": 10419,
+      "fence": true,
+      "chars": 969,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份配置\",\n  \"description\": \"设置备份时间、保留期限、备份文件夹和压缩选项。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:00\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^(?:[01]\\\\d|2[0-3]):[0-5]\\\\d$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"要备份的文件夹\",\n      \"placeholder\": \"选择文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"压缩备份\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存配置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 0,
+      "ms": 8593,
+      "fence": true,
+      "chars": 807,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"选择测试套件\",\n  \"description\": \"选择要运行的测试套件，并设置超时时间。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"运行所选测试套件。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 0,
+      "ms": 8477,
+      "fence": true,
+      "chars": 843,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请选择要运行的测试套件，并设置超时时间。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"测试套件\",\n  \"description\": \"选择一个或多个测试套件，并设置超时时间。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"要运行的测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 10,\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交所选测试套件和超时时间。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 0,
+      "ms": 10404,
+      "fence": true,
+      "chars": 1025,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请填写以下 Bug 报告信息。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug 报告\",\n  \"description\": \"请描述问题并提供复现步骤。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"标题\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"严重程度\",\n      \"options\": [\n        { \"label\": \"低\", \"value\": \"low\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"高\", \"value\": \"high\" },\n        { \"label\": \"紧急\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"复现步骤\",\n      \"placeholder\": \"请逐步描述如何复现问题\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"日志文件（可选）\",\n      \"placeholder\": \"选择 .log 或 .txt 文件\",\n      \"extensions\": [\"log\", \"txt\"],\n      \"required\": false\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交报告\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交这份 Bug 报告。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 0,
+      "ms": 10423,
+      "fence": true,
+      "chars": 966,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"请填写问题详情，可选附上日志文件。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"bug_title\",\n      \"label\": \"标题\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"bug_severity\",\n      \"label\": \"严重程度\",\n      \"options\": [\n        { \"label\": \"低\", \"value\": \"low\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"高\", \"value\": \"high\" },\n        { \"label\": \"紧急\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"reproduction_steps\",\n      \"label\": \"复现步骤\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"日志文件（可选）\",\n      \"pickerType\": \"file\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交问题报告\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 Bug 报告。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 0,
+      "ms": 8544,
+      "fence": true,
+      "chars": 848,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Warning\",\n      \"text\": \"This rollout touches billing.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 0,
+      "ms": 8476,
+      "fence": true,
+      "chars": 780,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"环境\", \"value\": \"Production\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"注意\",\n      \"text\": \"此次发布会影响计费功能。\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"批准\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"拒绝\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 0,
+      "ms": 8493,
+      "fence": true,
+      "chars": 654,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 配置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API 密钥\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"基础 URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"request_timeout\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 API 配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 0,
+      "ms": 8390,
+      "fence": true,
+      "chars": 657,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请填写 API 配置。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 配置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"request_timeout\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 API 配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 0,
+      "ms": 8560,
+      "fence": true,
+      "chars": 884,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选项\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"低\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"请选择数据库\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交我选择的数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 0,
+      "ms": 6534,
+      "fence": true,
+      "chars": 591,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈调查\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得不错？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"您愿意向他人推荐吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈调查。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 0,
+      "ms": 10636,
+      "fence": true,
+      "chars": 915,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选项\",\n  \"description\": \"比较并选择一个数据库。\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"低\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"极低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"你的选择\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交我选择的数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 0,
+      "ms": 8403,
+      "fence": true,
+      "chars": 562,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈问卷\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得好？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"您愿意向他人推荐吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈问卷。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 0,
+      "ms": 8642,
+      "fence": true,
+      "chars": 575,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "当前表单规范不包含图表组件，下面用表格列出周一至周五的两组销售数据。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"周销售额\",\n  \"description\": \"周一至周五的线上与门店销售数据\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"星期\" },\n        { \"key\": \"online\", \"label\": \"线上\" },\n        { \"key\": \"store\", \"label\": \"门店\" }\n      ],\n      \"rows\": [\n        { \"day\": \"周一\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"周二\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"周三\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"周四\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"周五\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 0,
+      "ms": 6680,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"每周销售额\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"周一至周五\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        { \"name\": \"线上\", \"values\": [120, 150, 90, 170, 200] },\n        { \"name\": \"门店\", \"values\": [80, 60, 110, 95, 130] }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 0,
+      "ms": 6655,
+      "fence": true,
+      "chars": 418,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"step\", \"label\": \"步骤\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"step\": \"运行测试\", \"status\": \"已完成\" },\n        { \"step\": \"构建\", \"status\": \"进行中\" },\n        { \"step\": \"部署到预发布环境\", \"status\": \"受阻，等待审批\" },\n        { \"step\": \"发布公告\", \"status\": \"尚未开始\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 0,
+      "ms": 6489,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        { \"title\": \"运行测试\", \"status\": \"done\" },\n        { \"title\": \"构建\", \"status\": \"current\" },\n        { \"title\": \"部署到预发布环境\", \"detail\": \"等待审批\", \"status\": \"blocked\" },\n        { \"title\": \"发布公告\", \"status\": \"pending\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 0,
+      "ms": 8765,
+      "fence": true,
+      "chars": 1284,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"General\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"Site name\",\n              \"inputType\": \"text\"\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"Language\",\n              \"options\": [\n                { \"label\": \"English\", \"value\": \"en\" },\n                { \"label\": \"简体中文\", \"value\": \"zh-CN\" }\n              ]\n            }\n          ]\n        },\n        {\n          \"label\": \"Notifications\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_notifications\",\n              \"label\": \"Email notifications\"\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"notification_frequency\",\n              \"label\": \"Frequency\",\n              \"options\": [\n                { \"label\": \"Daily\", \"value\": \"daily\" },\n                { \"label\": \"Weekly\", \"value\": \"weekly\" }\n              ]\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save settings\",\n      \"action\": \"submit\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 0,
+      "ms": 8634,
+      "fence": true,
+      "chars": 788,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验评价\",\n  \"description\": \"请为您收到的支持打分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"support_rating\",\n      \"label\": \"评分（1 到 5 星）\",\n      \"options\": [\n        { \"label\": \"★☆☆☆☆ — 1 星\", \"value\": \"1\" },\n        { \"label\": \"★★☆☆☆ — 2 星\", \"value\": \"2\" },\n        { \"label\": \"★★★☆☆ — 3 星\", \"value\": \"3\" },\n        { \"label\": \"★★★★☆ — 4 星\", \"value\": \"4\" },\n        { \"label\": \"★★★★★ — 5 星\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享您的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交评价\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验评价。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 0,
+      "ms": 6631,
+      "fence": true,
+      "chars": 490,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "请为本次支持评分，并可选填写评论。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验反馈\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_rating\",\n      \"label\": \"请为本次支持评分（1–5 星）\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享你的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交反馈\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验反馈\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 0,
+      "ms": 10758,
+      "fence": true,
+      "chars": 1109,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Heading",
+        "Input",
+        "Toggle"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"设置\",\n  \"description\": \"请选择要查看的设置部分。\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"settings_section\",\n      \"label\": \"设置部分\",\n      \"options\": [\n        { \"label\": \"常规\", \"value\": \"general\" },\n        { \"label\": \"通知\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"常规\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"站点名称\",\n      \"inputType\": \"text\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"语言\",\n      \"options\": [\n        { \"label\": \"简体中文\", \"value\": \"zh-CN\" },\n        { \"label\": \"English\", \"value\": \"en\" }\n      ]\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"通知\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"email_notifications\",\n      \"label\": \"启用邮件通知\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"notification_frequency\",\n      \"label\": \"通知频率\",\n      \"options\": [\n        { \"label\": \"每天\", \"value\": \"daily\" },\n        { \"label\": \"每周\", \"value\": \"weekly\" }\n      ],\n      \"defaultValue\": \"daily\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 0,
+      "ms": 6796,
+      "fence": true,
+      "chars": 174,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"shell\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 0,
+      "ms": 8781,
+      "fence": true,
+      "chars": 147,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Text\",\n      \"text\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 0,
+      "ms": 8987,
+      "fence": true,
+      "chars": 592,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘使用情况\",\n  \"description\": \"总容量：500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"category\", \"label\": \"类别\" },\n        { \"key\": \"usage\", \"label\": \"容量\" },\n        { \"key\": \"proportion\", \"label\": \"占比\" }\n      ],\n      \"rows\": [\n        { \"category\": \"系统\", \"usage\": \"40 GB\", \"proportion\": \"8%\" },\n        { \"category\": \"应用\", \"usage\": \"120 GB\", \"proportion\": \"24%\" },\n        { \"category\": \"媒体\", \"usage\": \"85 GB\", \"proportion\": \"17%\" },\n        { \"category\": \"可用\", \"usage\": \"255 GB\", \"proportion\": \"51%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 0,
+      "ms": 8418,
+      "fence": true,
+      "chars": 383,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间占比\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        { \"label\": \"系统\", \"value\": 40, \"tone\": \"info\" },\n        { \"label\": \"应用\", \"value\": 120, \"tone\": \"warning\" },\n        { \"label\": \"媒体\", \"value\": 85, \"tone\": \"neutral\" },\n        { \"label\": \"可用\", \"value\": 255, \"tone\": \"success\" }\n      ],\n      \"unit\": \"GB\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 0,
+      "ms": 6603,
+      "fence": true,
+      "chars": 318,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议摘要\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• 暂无会议记录，无法确定第一项决定。\\n• 暂无会议记录，无法确定第二项决定。\\n• 暂无会议记录，无法确定第三项决定。\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"会议笔记：https://example.com/notes\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 0,
+      "ms": 6415,
+      "fence": true,
+      "chars": 199,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"children\": [\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"**Decisions**\\n\\n- Decision 1\\n- Decision 2\\n- Decision 3\\n\\n[Meeting notes](https://example.com/notes)\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 0,
+      "ms": 6450,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 0,
+      "ms": 8472,
+      "fence": true,
+      "chars": 450,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"property\", \"label\": \"属性\" },\n        { \"key\": \"value\", \"label\": \"值\" }\n      ],\n      \"rows\": [\n        { \"property\": \"Hostname\", \"value\": \"web-01\" },\n        { \"property\": \"Region\", \"value\": \"eu-west\" },\n        { \"property\": \"Uptime\", \"value\": \"41 days\" },\n        { \"property\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 0,
+      "ms": 6451,
+      "fence": true,
+      "chars": 560,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Badge",
+        "Text",
+        "Heading"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"description\": \"部署已准备就绪。\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Badge\",\n          \"text\": \"待部署\",\n          \"tone\": \"info\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"包含 5 项变更。\"\n        },\n        {\n          \"type\": \"Heading\",\n          \"text\": \"完整变更日志\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"1. 更新依赖项\\n2. 修复登录流程中的问题\\n3. 改进页面加载性能\\n4. 添加部署状态监控\\n5. 更新文档\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 0,
+      "ms": 8402,
+      "fence": true,
+      "chars": 622,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Details",
+        "Text"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"description\": \"版本 v2.4.0 已部署至生产环境。\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"状态\", \"value\": \"成功\" },\n        { \"label\": \"环境\", \"value\": \"生产环境\" },\n        { \"label\": \"版本\", \"value\": \"v2.4.0\" }\n      ]\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"完整变更日志\",\n      \"children\": [\n        { \"type\": \"Text\", \"text\": \"新增用户活动仪表板\" },\n        { \"type\": \"Text\", \"text\": \"优化搜索响应速度\" },\n        { \"type\": \"Text\", \"text\": \"修复登录超时问题\" },\n        { \"type\": \"Text\", \"text\": \"更新依赖项\" },\n        { \"type\": \"Text\", \"text\": \"改进错误日志记录\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 0,
+      "ms": 6401,
+      "fence": true,
+      "chars": 300,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"当前错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"过去 10 小时（%）\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"info\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 20,
+      "rep": 0,
+      "ms": 6418,
+      "fence": true,
+      "chars": 424,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Metric"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"本周销售变化\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"每日销售额\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        {\n          \"name\": \"销售额\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"周一至周五变化\",\n      \"value\": \"+80（+66.7%）\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 0,
+      "ms": 10584,
+      "fence": true,
+      "chars": 835,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"hour\", \"label\": \"过去 10 小时\" },\n        { \"key\": \"error_rate\", \"label\": \"错误率\" }\n      ],\n      \"rows\": [\n        { \"hour\": \"10 小时前\", \"error_rate\": \"1.2%\" },\n        { \"hour\": \"9 小时前\", \"error_rate\": \"1.1%\" },\n        { \"hour\": \"8 小时前\", \"error_rate\": \"0.9%\" },\n        { \"hour\": \"7 小时前\", \"error_rate\": \"1.0%\" },\n        { \"hour\": \"6 小时前\", \"error_rate\": \"1.4%\" },\n        { \"hour\": \"5 小时前\", \"error_rate\": \"1.1%\" },\n        { \"hour\": \"4 小时前\", \"error_rate\": \"0.9%\" },\n        { \"hour\": \"3 小时前\", \"error_rate\": \"0.7%\" },\n        { \"hour\": \"2 小时前\", \"error_rate\": \"0.8%\" },\n        { \"hour\": \"1 小时前\", \"error_rate\": \"0.8%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 21,
+      "rep": 0,
+      "ms": 6407,
+      "fence": true,
+      "chars": 560,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署进度\",\n  \"description\": \"当前状态一览\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"测试\",\n          \"detail\": \"已通过\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"构建\",\n          \"detail\": \"正在运行\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"生产部署\",\n          \"detail\": \"等待批准\",\n          \"status\": \"pending\"\n        },\n        {\n          \"title\": \"公告\",\n          \"detail\": \"尚未发送\",\n          \"status\": \"pending\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 24,
+      "rep": 0,
+      "ms": 4474,
+      "fence": false,
+      "valid": false,
+      "error": "no fenced block",
+      "category": "no-fence",
+      "components": [],
+      "reply": "在项目目录中运行：\n\n```bash\ndocker build -t app:latest .\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 22,
+      "rep": 0,
+      "ms": 10602,
+      "fence": true,
+      "chars": 1138,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Select",
+        "Divider",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"博客设置\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"外观\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"theme\",\n      \"label\": \"主题\",\n      \"options\": [\n        { \"label\": \"浅色\", \"value\": \"light\" },\n        { \"label\": \"深色\", \"value\": \"dark\" },\n        { \"label\": \"跟随系统\", \"value\": \"system\" }\n      ],\n      \"defaultValue\": \"system\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"font_size\",\n      \"label\": \"字体大小\",\n      \"options\": [\n        { \"label\": \"小\", \"value\": \"small\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"大\", \"value\": \"large\" }\n      ],\n      \"defaultValue\": \"medium\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"隐私\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"analytics\",\n      \"label\": \"启用分析统计\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"cookie_banner\",\n      \"label\": \"显示 Cookie 横幅\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存博客设置\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 23,
+      "rep": 0,
+      "ms": 8587,
+      "fence": true,
+      "chars": 502,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持团队体验\",\n  \"description\": \"请为您的体验评分，并可选填写意见。\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_score\",\n      \"label\": \"您对支持团队的体验评分\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comments\",\n      \"label\": \"意见（可选）\",\n      \"placeholder\": \"分享您想补充的内容\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交反馈\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持团队体验反馈。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 26,
+      "rep": 0,
+      "ms": 6406,
+      "fence": true,
+      "chars": 531,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议纪要\",\n  \"description\": \"根据你提供的决定整理；未读取链接中的完整笔记。\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"topic\", \"label\": \"议题\" },\n        { \"key\": \"decision\", \"label\": \"决定\" }\n      ],\n      \"rows\": [\n        { \"topic\": \"发布日期\", \"decision\": \"周五发布\" },\n        { \"topic\": \"招聘\", \"decision\": \"招聘一名设计师\" },\n        { \"topic\": \"功能 X\", \"decision\": \"移除功能 X\" }\n      ]\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"完整笔记：https://example.com/notes\",\n      \"muted\": true\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 25,
+      "rep": 0,
+      "ms": 12416,
+      "fence": true,
+      "chars": 876,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Table"
+      ],
+      "fit": true,
+      "reply": "先看分类占用：应用最大，其次是媒体。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间概览\",\n  \"description\": \"已分类空间共 245 GB，另有 255 GB 可用；总容量约 500 GB。\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"空间占用\",\n      \"labels\": [\"系统\", \"应用\", \"媒体\", \"可用\"],\n      \"series\": [\n        {\n          \"name\": \"空间\",\n          \"values\": [40, 120, 85, 255],\n          \"tone\": \"info\"\n        }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"category\", \"label\": \"类别\" },\n        { \"key\": \"space\", \"label\": \"空间\" },\n        { \"key\": \"share\", \"label\": \"约占总容量\" }\n      ],\n      \"rows\": [\n        { \"category\": \"系统\", \"space\": \"40 GB\", \"share\": \"8%\" },\n        { \"category\": \"应用\", \"space\": \"120 GB\", \"share\": \"24%\" },\n        { \"category\": \"媒体\", \"space\": \"85 GB\", \"share\": \"17%\" },\n        { \"category\": \"可用\", \"space\": \"255 GB\", \"share\": \"51%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 27,
+      "rep": 0,
+      "ms": 7511,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器状态\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 28,
+      "rep": 0,
+      "ms": 7422,
+      "fence": true,
+      "chars": 280,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Badge",
+        "Markdown"
+      ],
+      "fit": false,
+      "reply": "部署已成功，以下是更新摘要。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署成功\",\n  \"description\": \"本次部署已顺利完成。\",\n  \"children\": [\n    {\n      \"type\": \"Badge\",\n      \"text\": \"成功\",\n      \"tone\": \"success\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- 修复登录超时问题\\n- 提升仪表盘速度\\n- 支持导出偏好设置\\n- 更新依赖项\\n- 解决速率限制问题\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 29,
+      "rep": 0,
+      "ms": 9329,
+      "fence": true,
+      "chars": 299,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率监控\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"过去十小时错误率\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"info\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 1,
+      "ms": 8853,
+      "fence": true,
+      "chars": 721,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新用户信息\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"姓名\",\n      \"inputType\": \"text\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"创建新用户\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 1,
+      "ms": 8906,
+      "fence": true,
+      "chars": 740,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新增用户\",\n  \"description\": \"请填写用户信息。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"user_name\",\n      \"label\": \"姓名\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"user_email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"user_role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交新用户信息。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 1,
+      "ms": 8692,
+      "fence": true,
+      "chars": 625,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请准确输入数据库名称后确认删除。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"此操作将删除该数据库。\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库名称\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库大小\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"database_name_confirmation\",\n      \"label\": \"输入 staging-db 以确认\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"pattern\": \"^staging-db$\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认删除\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除 staging-db 数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 1,
+      "ms": 8767,
+      "fence": true,
+      "chars": 615,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请核对数据库信息，并输入数据库名称以确认删除。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"此操作将删除数据库。\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"数据库名称\", \"value\": \"staging-db\" },\n        { \"label\": \"数据库大小\", \"value\": \"12 GB\" }\n      ]\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"database_name_confirmation\",\n      \"label\": \"输入 staging-db 以确认\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"pattern\": \"^staging-db$\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认删除\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除 staging-db 数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 1,
+      "ms": 8841,
+      "fence": true,
+      "chars": 716,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"状态仪表板\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"正常\" },\n        { \"service\": \"数据库\", \"status\": \"正常\" },\n        { \"service\": \"消息队列\", \"status\": \"降级\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 1,
+      "ms": 8833,
+      "fence": true,
+      "chars": 718,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"状态仪表板\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"正常运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"正常\" },\n        { \"service\": \"数据库\", \"status\": \"正常\" },\n        { \"service\": \"任务队列\", \"status\": \"警告\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 1,
+      "ms": 12642,
+      "fence": true,
+      "chars": 976,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份配置\",\n  \"description\": \"设置备份时间、保留期限、包含的文件夹和压缩选项。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:00\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^([01][0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"included_folder\",\n      \"label\": \"要包含的文件夹\",\n      \"placeholder\": \"选择文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"启用压缩\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存备份配置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 1,
+      "ms": 10640,
+      "fence": true,
+      "chars": 974,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份设置\",\n  \"description\": \"配置备份时间、保留期限、备份文件夹和压缩选项。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:00\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^([01][0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"include_folder\",\n      \"label\": \"要备份的文件夹\",\n      \"placeholder\": \"选择文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"启用压缩\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存备份设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 1,
+      "ms": 8611,
+      "fence": true,
+      "chars": 842,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"选择测试套件\",\n  \"description\": \"选择要运行的套件，并设置超时时间（分钟）。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 10,\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"使用所选测试套件和超时时间。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 1,
+      "ms": 10619,
+      "fence": true,
+      "chars": 816,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请选择要运行的测试套件并设置超时时间。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"测试套件配置\",\n  \"description\": \"选择一个或多个测试套件，并设置超时时间。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"运行所选测试套件并使用指定超时时间。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 1,
+      "ms": 8647,
+      "fence": true,
+      "chars": 923,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"请填写问题详情。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"bug_title\",\n      \"label\": \"标题\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"严重程度\",\n      \"options\": [\n        { \"label\": \"低\", \"value\": \"low\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"高\", \"value\": \"high\" },\n        { \"label\": \"严重\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"reproduction_steps\",\n      \"label\": \"复现步骤\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"日志文件（可选）\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交报告\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 Bug 报告。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 1,
+      "ms": 8644,
+      "fence": true,
+      "chars": 902,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请填写以下缺陷报告。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"缺陷报告\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"bug_title\",\n      \"label\": \"标题\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"bug_severity\",\n      \"label\": \"严重程度\",\n      \"options\": [\n        { \"label\": \"低\", \"value\": \"low\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"高\", \"value\": \"high\" },\n        { \"label\": \"紧急\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"reproduction_steps\",\n      \"label\": \"复现步骤\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"日志文件（可选）\",\n      \"placeholder\": \"选择 .log 或 .txt 文件\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交报告\",\n      \"action\": \"submit\",\n      \"message\": \"提交缺陷报告\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 1,
+      "ms": 8647,
+      "fence": true,
+      "chars": 863,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing impact\",\n      \"text\": \"This rollout touches billing.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve the deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject the deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 1,
+      "ms": 8650,
+      "fence": true,
+      "chars": 788,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"环境\", \"value\": \"Production\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"注意\",\n      \"text\": \"此次发布涉及账单功能。\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 1,
+      "ms": 8661,
+      "fence": true,
+      "chars": 653,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 配置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API 密钥\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"基础 URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_seconds\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 API 配置\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 1,
+      "ms": 8666,
+      "fence": true,
+      "chars": 630,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 请求设置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API 密钥\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"基础 URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"request_timeout\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"action\": \"submit\",\n      \"message\": \"提交 API 请求设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 1,
+      "ms": 10623,
+      "fence": true,
+      "chars": 914,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选型\",\n  \"description\": \"比较三种数据库并选择一项。\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"你的选择\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交所选数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 1,
+      "ms": 10688,
+      "fence": true,
+      "chars": 858,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选项\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"请选择一个数据库\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"action\": \"submit\",\n      \"message\": \"这是我的数据库选择。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 1,
+      "ms": 9271,
+      "fence": true,
+      "chars": 590,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈问卷\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得好？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"您愿意向他人推荐吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈问卷。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 1,
+      "ms": 7415,
+      "fence": true,
+      "chars": 588,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈调查\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得好？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"你会推荐给他人吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈调查\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 1,
+      "ms": 8878,
+      "fence": true,
+      "chars": 575,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"每周销售额\",\n  \"description\": \"周一至周五，线上与门店销售额\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"星期\" },\n        { \"key\": \"online\", \"label\": \"线上\" },\n        { \"key\": \"store\", \"label\": \"门店\" }\n      ],\n      \"rows\": [\n        { \"day\": \"周一\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"周二\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"周三\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"周四\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"周五\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 1,
+      "ms": 6991,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"每周销售额\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"周一至周五\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        { \"name\": \"线上\", \"values\": [120, 150, 90, 170, 200] },\n        { \"name\": \"门店\", \"values\": [80, 60, 110, 95, 130] }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 1,
+      "ms": 6500,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        { \"title\": \"运行测试\", \"status\": \"done\" },\n        { \"title\": \"构建\", \"status\": \"current\" },\n        { \"title\": \"部署到预发布环境\", \"detail\": \"等待审批\", \"status\": \"blocked\" },\n        { \"title\": \"发布公告\", \"status\": \"pending\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 1,
+      "ms": 8773,
+      "fence": true,
+      "chars": 418,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"step\", \"label\": \"步骤\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"step\": \"运行测试\", \"status\": \"已完成\" },\n        { \"step\": \"构建\", \"status\": \"进行中\" },\n        { \"step\": \"部署到预发布环境\", \"status\": \"受阻，等待审批\" },\n        { \"step\": \"发布公告\", \"status\": \"尚未开始\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 1,
+      "ms": 8435,
+      "fence": true,
+      "chars": 786,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验评价\",\n  \"description\": \"请为你收到的支持打分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"support_rating\",\n      \"label\": \"请给支持打几颗星？\",\n      \"options\": [\n        { \"label\": \"★☆☆☆☆ — 1 星\", \"value\": \"1\" },\n        { \"label\": \"★★☆☆☆ — 2 星\", \"value\": \"2\" },\n        { \"label\": \"★★★☆☆ — 3 星\", \"value\": \"3\" },\n        { \"label\": \"★★★★☆ — 4 星\", \"value\": \"4\" },\n        { \"label\": \"★★★★★ — 5 星\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享你的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交评价\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验评价。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 1,
+      "ms": 10456,
+      "fence": true,
+      "chars": 1179,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"section\",\n      \"label\": \"Section\",\n      \"options\": [\n        { \"label\": \"General\", \"value\": \"general\" },\n        { \"label\": \"Notifications\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"Site name\",\n      \"placeholder\": \"Enter site name\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"Language\",\n      \"options\": [\n        { \"label\": \"English\", \"value\": \"en\" },\n        { \"label\": \"中文\", \"value\": \"zh\" }\n      ]\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"email_notifications\",\n      \"label\": \"Email notifications\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"notification_frequency\",\n      \"label\": \"Frequency\",\n      \"options\": [\n        { \"label\": \"Daily\", \"value\": \"daily\" },\n        { \"label\": \"Weekly\", \"value\": \"weekly\" }\n      ],\n      \"defaultValue\": \"daily\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save settings.\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 1,
+      "ms": 10476,
+      "fence": true,
+      "chars": 1382,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"设置\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"常规\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"站点名称\",\n              \"inputType\": \"text\"\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"语言\",\n              \"options\": [\n                { \"label\": \"简体中文\", \"value\": \"zh-CN\" },\n                { \"label\": \"English\", \"value\": \"en\" }\n              ],\n              \"defaultValue\": \"zh-CN\"\n            }\n          ]\n        },\n        {\n          \"label\": \"通知\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_notifications\",\n              \"label\": \"邮件通知\",\n              \"defaultValue\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"notification_frequency\",\n              \"label\": \"通知频率\",\n              \"options\": [\n                { \"label\": \"每天\", \"value\": \"daily\" },\n                { \"label\": \"每周\", \"value\": \"weekly\" }\n              ],\n              \"defaultValue\": \"daily\"\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存设置\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 1,
+      "ms": 8478,
+      "fence": true,
+      "chars": 502,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验评价\",\n  \"description\": \"请为您收到的支持打分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_rating\",\n      \"label\": \"您对收到的支持有多满意？\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享您的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交评价\",\n      \"action\": \"submit\",\n      \"message\": \"提交我的支持体验评价。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 1,
+      "ms": 4769,
+      "fence": true,
+      "chars": 147,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Text\",\n      \"text\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 1,
+      "ms": 4586,
+      "fence": true,
+      "chars": 173,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "可复制的重建命令：\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 1,
+      "ms": 8459,
+      "fence": true,
+      "chars": 594,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间占比\",\n  \"description\": \"总容量：500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"category\", \"label\": \"类别\" },\n        { \"key\": \"usage\", \"label\": \"容量\" },\n        { \"key\": \"proportion\", \"label\": \"占比\" }\n      ],\n      \"rows\": [\n        { \"category\": \"系统\", \"usage\": \"40 GB\", \"proportion\": \"8%\" },\n        { \"category\": \"应用\", \"usage\": \"120 GB\", \"proportion\": \"24%\" },\n        { \"category\": \"媒体\", \"usage\": \"85 GB\", \"proportion\": \"17%\" },\n        { \"category\": \"可用空间\", \"usage\": \"255 GB\", \"proportion\": \"51%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 1,
+      "ms": 4712,
+      "fence": true,
+      "chars": 205,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"children\": [\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"**Decisions**\\n- Decision one\\n- Decision two\\n- Decision three\\n\\n[Meeting notes](https://example.com/notes)\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 1,
+      "ms": 8739,
+      "fence": true,
+      "chars": 466,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间占用\",\n  \"description\": \"总计 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"unit\": \"GB\",\n      \"parts\": [\n        { \"label\": \"系统 · 40 GB（8%）\", \"value\": 40, \"tone\": \"info\" },\n        { \"label\": \"应用 · 120 GB（24%）\", \"value\": 120, \"tone\": \"neutral\" },\n        { \"label\": \"媒体 · 85 GB（17%）\", \"value\": 85, \"tone\": \"warning\" },\n        { \"label\": \"可用 · 255 GB（51%）\", \"value\": 255, \"tone\": \"success\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 1,
+      "ms": 6494,
+      "fence": true,
+      "chars": 315,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议摘要\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• 暂无会议内容，无法确定第一项决策\\n• 暂无会议内容，无法确定第二项决策\\n• 暂无会议内容，无法确定第三项决策\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"会议记录：https://example.com/notes\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 1,
+      "ms": 6818,
+      "fence": true,
+      "chars": 450,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"property\", \"label\": \"属性\" },\n        { \"key\": \"value\", \"label\": \"值\" }\n      ],\n      \"rows\": [\n        { \"property\": \"Hostname\", \"value\": \"web-01\" },\n        { \"property\": \"Region\", \"value\": \"eu-west\" },\n        { \"property\": \"Uptime\", \"value\": \"41 days\" },\n        { \"property\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 1,
+      "ms": 6804,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 1,
+      "ms": 8592,
+      "fence": true,
+      "chars": 574,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Badge",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"description\": \"部署已完成。\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Badge\",\n          \"text\": \"部署成功\",\n          \"tone\": \"success\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"版本已发布，服务运行正常。\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"完整变更日志（5 条）\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"1. 更新应用依赖\\n2. 修复登录流程中的边界问题\\n3. 优化首页加载速度\\n4. 改进错误日志与监控\\n5. 更新部署配置\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 1,
+      "ms": 8429,
+      "fence": true,
+      "chars": 704,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Details",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Release v2.4.0 is ready to deploy.\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Environment\", \"value\": \"Production\" },\n        { \"label\": \"Status\", \"value\": \"Ready\" },\n        { \"label\": \"Changes\", \"value\": \"5 updates\" }\n      ]\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"Full changelog\",\n      \"children\": [\n        {\n          \"type\": \"Markdown\",\n          \"text\": \"1. Added SSO login support.\\n2. Improved dashboard load times.\\n3. Fixed export formatting for CSV files.\\n4. Updated dependency versions.\\n5. Resolved an issue with session expiry.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 1,
+      "ms": 6542,
+      "fence": true,
+      "chars": 297,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"最近 10 小时\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"info\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 20,
+      "rep": 1,
+      "ms": 6548,
+      "fence": true,
+      "chars": 468,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Metric"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"本周销售变化\",\n  \"description\": \"周五销售额最高，周三最低；周一至周五整体上升。\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"每日销售额\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        {\n          \"name\": \"销售额\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"周一至周五变化\",\n      \"value\": \"+80（+66.7%）\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 21,
+      "rep": 1,
+      "ms": 6431,
+      "fence": true,
+      "chars": 416,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署进度\",\n  \"description\": \"当前部署各环节状态如下。\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        { \"title\": \"测试\", \"detail\": \"已通过\", \"status\": \"done\" },\n        { \"title\": \"构建\", \"detail\": \"正在运行\", \"status\": \"current\" },\n        { \"title\": \"生产部署\", \"detail\": \"等待审批\", \"status\": \"pending\" },\n        { \"title\": \"发布公告\", \"detail\": \"尚未发送\", \"status\": \"pending\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 1,
+      "ms": 10598,
+      "fence": true,
+      "chars": 763,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"hour\", \"label\": \"小时\" },\n        { \"key\": \"rate\", \"label\": \"错误率\" }\n      ],\n      \"rows\": [\n        { \"hour\": \"10 小时前\", \"rate\": \"1.2%\" },\n        { \"hour\": \"9 小时前\", \"rate\": \"1.1%\" },\n        { \"hour\": \"8 小时前\", \"rate\": \"0.9%\" },\n        { \"hour\": \"7 小时前\", \"rate\": \"1.0%\" },\n        { \"hour\": \"6 小时前\", \"rate\": \"1.4%\" },\n        { \"hour\": \"5 小时前\", \"rate\": \"1.1%\" },\n        { \"hour\": \"4 小时前\", \"rate\": \"0.9%\" },\n        { \"hour\": \"3 小时前\", \"rate\": \"0.7%\" },\n        { \"hour\": \"2 小时前\", \"rate\": \"0.8%\" },\n        { \"hour\": \"1 小时前\", \"rate\": \"0.8%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 24,
+      "rep": 1,
+      "ms": 6402,
+      "fence": true,
+      "chars": 206,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"description\": \"在项目目录运行以下命令：\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 23,
+      "rep": 1,
+      "ms": 8712,
+      "fence": true,
+      "chars": 529,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "请为本次支持体验评分，并可选填写意见。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验反馈\",\n  \"description\": \"您的反馈将帮助我们改进服务。\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_score\",\n      \"label\": \"您对支持团队的体验评分\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comments\",\n      \"label\": \"意见（可选）\",\n      \"placeholder\": \"请分享您想补充的内容\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交反馈\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验评分和意见。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 25,
+      "rep": 1,
+      "ms": 8456,
+      "fence": true,
+      "chars": 602,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Metric"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间分布\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"已用与可用空间\",\n      \"labels\": [\"系统\", \"应用\", \"媒体\", \"可用\"],\n      \"series\": [\n        {\n          \"name\": \"空间\",\n          \"values\": [40, 120, 85, 255],\n          \"tone\": \"info\"\n        }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"总容量\",\n      \"value\": \"500 GB\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"已用空间\",\n      \"value\": \"245 GB（49%）\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"可用空间\",\n      \"value\": \"255 GB（51%）\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 22,
+      "rep": 1,
+      "ms": 12648,
+      "fence": true,
+      "chars": 1171,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Select",
+        "Divider",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"博客设置\",\n  \"description\": \"配置外观与隐私选项。\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"外观\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"theme\",\n      \"label\": \"主题\",\n      \"options\": [\n        { \"label\": \"浅色\", \"value\": \"light\" },\n        { \"label\": \"深色\", \"value\": \"dark\" },\n        { \"label\": \"跟随系统\", \"value\": \"system\" }\n      ],\n      \"defaultValue\": \"system\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"font_size\",\n      \"label\": \"字体大小\",\n      \"options\": [\n        { \"label\": \"小\", \"value\": \"small\" },\n        { \"label\": \"标准\", \"value\": \"medium\" },\n        { \"label\": \"大\", \"value\": \"large\" }\n      ],\n      \"defaultValue\": \"medium\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"隐私\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"analytics\",\n      \"label\": \"启用分析统计\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"cookie_banner\",\n      \"label\": \"显示 Cookie 横幅\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存博客设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 26,
+      "rep": 1,
+      "ms": 6941,
+      "fence": true,
+      "chars": 442,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议纪要\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"type\", \"label\": \"类别\" },\n        { \"key\": \"notes\", \"label\": \"内容\" }\n      ],\n      \"rows\": [\n        { \"type\": \"决定\", \"notes\": \"周五发布\" },\n        { \"type\": \"决定\", \"notes\": \"招聘一名设计师\" },\n        { \"type\": \"决定\", \"notes\": \"取消功能 X\" },\n        { \"type\": \"完整纪要\", \"notes\": \"[查看完整会议纪要](https://example.com/notes)\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 27,
+      "rep": 1,
+      "ms": 7192,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器状态\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 28,
+      "rep": 1,
+      "ms": 6489,
+      "fence": true,
+      "chars": 276,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Badge",
+        "Markdown"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署已成功\",\n  \"description\": \"本次部署的变更记录\",\n  \"children\": [\n    {\n      \"type\": \"Badge\",\n      \"text\": \"成功\",\n      \"tone\": \"success\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- 修复登录超时\\n- 加快仪表盘\\n- 支持导出偏好设置\\n- 更新依赖项\\n- 解决速率限制问题\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 29,
+      "rep": 1,
+      "ms": 6556,
+      "fence": true,
+      "chars": 305,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率概览\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"过去十小时错误率（%）\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"success\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 2,
+      "ms": 8516,
+      "fence": true,
+      "chars": 752,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新增用户\",\n  \"description\": \"请填写用户信息。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"姓名\",\n      \"inputType\": \"text\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交新用户信息。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 2,
+      "ms": 8506,
+      "fence": true,
+      "chars": 761,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"新用户信息\",\n  \"description\": \"请填写新用户的姓名、邮箱和角色。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"姓名\",\n      \"inputType\": \"text\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"邮箱\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"角色\",\n      \"options\": [\n        { \"label\": \"管理员\", \"value\": \"admin\" },\n        { \"label\": \"编辑者\", \"value\": \"editor\" },\n        { \"label\": \"查看者\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交新用户信息。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 2,
+      "ms": 8470,
+      "fence": true,
+      "chars": 626,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请仔细确认删除信息，并输入数据库名称以继续。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"此操作将删除数据库，请确认后继续。\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库名称\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"数据库大小\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_database_name\",\n      \"label\": \"输入 staging-db 以确认\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"pattern\": \"^staging-db$\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认删除\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除 staging-db 数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 2,
+      "ms": 8508,
+      "fence": true,
+      "chars": 634,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请核对数据库信息，并输入数据库名称以确认删除。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"确认删除数据库\",\n  \"description\": \"此操作将删除数据库，请谨慎确认。\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"数据库名称\", \"value\": \"staging-db\" },\n        { \"label\": \"数据库大小\", \"value\": \"12 GB\" }\n      ]\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"database_name_confirmation\",\n      \"label\": \"输入 staging-db 以确认\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true,\n      \"minLength\": 10,\n      \"maxLength\": 10\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认删除\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"确认删除 staging-db 数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 2,
+      "ms": 8469,
+      "fence": true,
+      "chars": 716,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"状态仪表盘\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"正常运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"正常\" },\n        { \"service\": \"数据库\", \"status\": \"正常\" },\n        { \"service\": \"队列\", \"status\": \"正常\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 2,
+      "ms": 8506,
+      "fence": true,
+      "chars": 718,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"系统状态仪表板\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        { \"type\": \"Metric\", \"label\": \"运行时间\", \"value\": \"99.9%\" },\n        { \"type\": \"Metric\", \"label\": \"请求数\", \"value\": \"12.4k\" },\n        { \"type\": \"Metric\", \"label\": \"错误数\", \"value\": 17 }\n      ]\n    },\n    { \"type\": \"Progress\", \"label\": \"迁移进度\", \"value\": 65 },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"服务\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API\", \"status\": \"运行中\" },\n        { \"service\": \"数据库\", \"status\": \"运行中\" },\n        { \"service\": \"支付\", \"status\": \"降级\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 2,
+      "ms": 10506,
+      "fence": true,
+      "chars": 970,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份设置\",\n  \"description\": \"配置每日备份时间、保留期限、备份文件夹和压缩选项。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:30\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"include_folder\",\n      \"label\": \"要备份的文件夹\",\n      \"placeholder\": \"选择文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"启用压缩\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 2,
+      "ms": 10445,
+      "fence": true,
+      "chars": 973,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"夜间备份配置\",\n  \"description\": \"设置备份时间、保留期限、备份文件夹和压缩选项。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"备份时间（HH:MM）\",\n      \"placeholder\": \"例如 23:30\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^([01][0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"保留天数\",\n      \"inputType\": \"integer\",\n      \"defaultValue\": 30,\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"要包含的文件夹\",\n      \"placeholder\": \"选择文件夹\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"启用压缩\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存备份配置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存夜间备份配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 2,
+      "ms": 8466,
+      "fence": true,
+      "chars": 809,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"选择测试套件\",\n  \"description\": \"选择要运行的测试套件，并设置超时时间。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"运行所选测试套件。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 2,
+      "ms": 4431,
+      "fence": false,
+      "valid": false,
+      "error": "no fenced block",
+      "category": "no-fence",
+      "components": [],
+      "reply": "请填写以下缺陷报告。"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 2,
+      "ms": 10494,
+      "fence": true,
+      "chars": 812,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"选择测试套件\",\n  \"description\": \"选择要运行的套件，并设置超时时间。\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"测试套件\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true,\n      \"min\": 1\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"超时时间（分钟）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"确认选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"使用所选测试套件和超时时间。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 2,
+      "ms": 10470,
+      "fence": true,
+      "chars": 998,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "请填写以下 bug 报告信息。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug 报告\",\n  \"description\": \"请提供问题详情，可选附上日志文件。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"bug_title\",\n      \"label\": \"标题\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"严重程度\",\n      \"options\": [\n        { \"label\": \"低\", \"value\": \"low\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"高\", \"value\": \"high\" },\n        { \"label\": \"严重\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"复现步骤\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"日志文件（可选）\",\n      \"placeholder\": \"选择 .log 或 .txt 文件\",\n      \"pickerType\": \"file\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交报告\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交 bug 报告。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 2,
+      "ms": 8449,
+      "fence": true,
+      "chars": 854,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Environment\", \"value\": \"Production\" },\n        { \"label\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing impact\",\n      \"text\": \"This rollout touches billing.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve the deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject the deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 2,
+      "ms": 10461,
+      "fence": true,
+      "chars": 885,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing impact\",\n      \"text\": \"This rollout touches billing.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve the production deployment.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject the production deployment.\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 2,
+      "ms": 8484,
+      "fence": true,
+      "chars": 657,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 设置\",\n  \"description\": \"请填写 API 连接参数。\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API 密钥\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"基础 URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_seconds\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 2,
+      "ms": 8439,
+      "fence": true,
+      "chars": 626,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API 配置\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API 密钥\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"基础 URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"request_timeout\",\n      \"label\": \"请求超时（秒）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"action\": \"submit\",\n      \"message\": \"提交 API 配置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 2,
+      "ms": 10434,
+      "fence": true,
+      "chars": 918,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选项\",\n  \"description\": \"比较三种数据库并选择一个。\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"低\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"请选择数据库\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交我的数据库选择。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 2,
+      "ms": 10427,
+      "fence": true,
+      "chars": 890,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"数据库选项\",\n  \"description\": \"比较三种数据库，并选择一个。\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"名称\" },\n        { \"key\": \"speed\", \"label\": \"速度\" },\n        { \"key\": \"cost\", \"label\": \"成本\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"高\", \"cost\": \"中\" },\n        { \"name\": \"MySQL\", \"speed\": \"高\", \"cost\": \"低\" },\n        { \"name\": \"SQLite\", \"speed\": \"中\", \"cost\": \"极低\" }\n      ]\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"你的选择\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交选择\",\n      \"action\": \"submit\",\n      \"message\": \"提交我选择的数据库。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 2,
+      "ms": 8709,
+      "fence": true,
+      "chars": 589,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈调查\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得好？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"您会向他人推荐吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈调查。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 2,
+      "ms": 8619,
+      "fence": true,
+      "chars": 590,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"反馈调查\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"总体评分（1–5）\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"哪些方面做得好？\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"您愿意向他人推荐吗？\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交反馈调查。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 2,
+      "ms": 6668,
+      "fence": true,
+      "chars": 339,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"每周销售额\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"周一至周五销售额\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        { \"name\": \"线上\", \"values\": [120, 150, 90, 170, 200] },\n        { \"name\": \"门店\", \"values\": [80, 60, 110, 95, 130] }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 2,
+      "ms": 6638,
+      "fence": true,
+      "chars": 418,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"step\", \"label\": \"步骤\" },\n        { \"key\": \"status\", \"label\": \"状态\" }\n      ],\n      \"rows\": [\n        { \"step\": \"运行测试\", \"status\": \"已完成\" },\n        { \"step\": \"构建\", \"status\": \"进行中\" },\n        { \"step\": \"部署到预发布环境\", \"status\": \"受阻，等待批准\" },\n        { \"step\": \"发布公告\", \"status\": \"尚未开始\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 2,
+      "ms": 8429,
+      "fence": true,
+      "chars": 581,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"Day\" },\n        { \"key\": \"online\", \"label\": \"Online\" },\n        { \"key\": \"store\", \"label\": \"Store\" }\n      ],\n      \"rows\": [\n        { \"day\": \"Monday\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"Tuesday\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"Wednesday\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"Thursday\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"Friday\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 2,
+      "ms": 6623,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"发布计划\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        { \"title\": \"运行测试\", \"status\": \"done\" },\n        { \"title\": \"构建\", \"status\": \"current\" },\n        { \"title\": \"部署到预发布环境\", \"detail\": \"等待审批\", \"status\": \"blocked\" },\n        { \"title\": \"发布公告\", \"status\": \"pending\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 2,
+      "ms": 8499,
+      "fence": true,
+      "chars": 749,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验评分\",\n  \"description\": \"请为你收到的支持打分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"support_rating\",\n      \"label\": \"请评分（1 到 5 星）\",\n      \"options\": [\n        { \"label\": \"1 星\", \"value\": \"1\" },\n        { \"label\": \"2 星\", \"value\": \"2\" },\n        { \"label\": \"3 星\", \"value\": \"3\" },\n        { \"label\": \"4 星\", \"value\": \"4\" },\n        { \"label\": \"5 星\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享你的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交评分\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验评分。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 2,
+      "ms": 10759,
+      "fence": true,
+      "chars": 1216,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Heading",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"设置\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"section\",\n      \"label\": \"显示部分\",\n      \"options\": [\n        { \"label\": \"常规\", \"value\": \"general\" },\n        { \"label\": \"通知\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"常规\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"站点名称\",\n      \"inputType\": \"text\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"语言\",\n      \"options\": [\n        { \"label\": \"中文\", \"value\": \"zh\" },\n        { \"label\": \"English\", \"value\": \"en\" }\n      ],\n      \"defaultValue\": \"zh\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"通知\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"email_notifications\",\n      \"label\": \"电子邮件通知\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"frequency\",\n      \"label\": \"频率\",\n      \"options\": [\n        { \"label\": \"每天\", \"value\": \"daily\" },\n        { \"label\": \"每周\", \"value\": \"weekly\" }\n      ],\n      \"defaultValue\": \"daily\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存所选设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 2,
+      "ms": 10792,
+      "fence": true,
+      "chars": 1399,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"设置\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"常规\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"网站名称\",\n              \"required\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"语言\",\n              \"options\": [\n                { \"label\": \"中文\", \"value\": \"zh\" },\n                { \"label\": \"English\", \"value\": \"en\" }\n              ],\n              \"defaultValue\": \"zh\",\n              \"required\": true\n            }\n          ]\n        },\n        {\n          \"label\": \"通知\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_notifications\",\n              \"label\": \"邮件通知\"\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"notification_frequency\",\n              \"label\": \"通知频率\",\n              \"options\": [\n                { \"label\": \"每天\", \"value\": \"daily\" },\n                { \"label\": \"每周\", \"value\": \"weekly\" }\n              ],\n              \"defaultValue\": \"daily\",\n              \"required\": true\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存设置\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 2,
+      "ms": 8880,
+      "fence": true,
+      "chars": 528,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "请为您收到的支持评分，并可选填写评论。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持体验反馈\",\n  \"description\": \"请为您收到的支持评分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_rating\",\n      \"label\": \"您对收到的支持评分如何？\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comment\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享您的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交反馈\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持体验反馈。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 2,
+      "ms": 4502,
+      "fence": true,
+      "chars": 147,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Text\",\n      \"text\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 2,
+      "ms": 4778,
+      "fence": true,
+      "chars": 174,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"shell\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 2,
+      "ms": 6504,
+      "fence": true,
+      "chars": 413,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间占用\",\n  \"description\": \"总计 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"unit\": \"GB\",\n      \"parts\": [\n        { \"label\": \"系统\", \"value\": 40, \"tone\": \"info\" },\n        { \"label\": \"应用\", \"value\": 120, \"tone\": \"success\" },\n        { \"label\": \"媒体\", \"value\": 85, \"tone\": \"warning\" },\n        { \"label\": \"可用\", \"value\": 255, \"tone\": \"neutral\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 2,
+      "ms": 8692,
+      "fence": true,
+      "chars": 589,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间占用比例\",\n  \"description\": \"总容量：500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"category\", \"label\": \"类别\" },\n        { \"key\": \"size\", \"label\": \"容量\" },\n        { \"key\": \"proportion\", \"label\": \"占比\" }\n      ],\n      \"rows\": [\n        { \"category\": \"系统\", \"size\": \"40 GB\", \"proportion\": \"8%\" },\n        { \"category\": \"应用\", \"size\": \"120 GB\", \"proportion\": \"24%\" },\n        { \"category\": \"媒体\", \"size\": \"85 GB\", \"proportion\": \"17%\" },\n        { \"category\": \"可用\", \"size\": \"255 GB\", \"proportion\": \"51%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 2,
+      "ms": 6407,
+      "fence": true,
+      "chars": 271,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议摘要\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• 决定一\\n• 决定二\\n• 决定三\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"https://example.com/notes\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 2,
+      "ms": 6531,
+      "fence": true,
+      "chars": 233,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"children\": [\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"**Decisions**\\n- Decision 1: [未提供会议内容，待补充]\\n- Decision 2: [未提供会议内容，待补充]\\n- Decision 3: [未提供会议内容，待补充]\\n\\n[会议笔记](https://example.com/notes)\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 2,
+      "ms": 6407,
+      "fence": true,
+      "chars": 450,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"property\", \"label\": \"属性\" },\n        { \"key\": \"value\", \"label\": \"值\" }\n      ],\n      \"rows\": [\n        { \"property\": \"Hostname\", \"value\": \"web-01\" },\n        { \"property\": \"Region\", \"value\": \"eu-west\" },\n        { \"property\": \"Uptime\", \"value\": \"41 days\" },\n        { \"property\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 2,
+      "ms": 8511,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 2,
+      "ms": 8447,
+      "fence": true,
+      "chars": 817,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Badge",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Deployment details and release notes.\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Badge\",\n          \"text\": \"Ready\",\n          \"tone\": \"success\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Deployment summary: Release is ready for production.\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Changelog (5 lines):\\n• Improved deployment reliability.\\n• Fixed intermittent login failures.\\n• Updated dashboard performance.\\n• Added clearer error messages.\\n• Refreshed dependency versions.\",\n      \"muted\": true\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 2,
+      "ms": 10402,
+      "fence": true,
+      "chars": 720,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Badge",
+        "Metric",
+        "Details",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署摘要\",\n  \"description\": \"版本 v2.4.0 已部署至生产环境。\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Badge\",\n          \"text\": \"部署成功\",\n          \"tone\": \"success\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"部署耗时\",\n          \"value\": \"3 分钟\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"变更项\",\n          \"value\": 5\n        }\n      ]\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"完整变更日志\",\n      \"children\": [\n        {\n          \"type\": \"Markdown\",\n          \"text\": \"- 优化登录页面加载速度\\n- 新增双重身份验证\\n- 修复报表导出问题\\n- 改进移动端导航\\n- 更新依赖项并修复安全漏洞\"\n        }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 2,
+      "ms": 6445,
+      "fence": true,
+      "chars": 300,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"当前错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"最近 10 小时（%）\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"info\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 2,
+      "ms": 10720,
+      "fence": true,
+      "chars": 829,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"错误率\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"当前错误率\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"hour\", \"label\": \"小时\" },\n        { \"key\": \"error_rate\", \"label\": \"错误率\" }\n      ],\n      \"rows\": [\n        { \"hour\": \"10 小时前\", \"error_rate\": \"1.2%\" },\n        { \"hour\": \"9 小时前\", \"error_rate\": \"1.1%\" },\n        { \"hour\": \"8 小时前\", \"error_rate\": \"0.9%\" },\n        { \"hour\": \"7 小时前\", \"error_rate\": \"1.0%\" },\n        { \"hour\": \"6 小时前\", \"error_rate\": \"1.4%\" },\n        { \"hour\": \"5 小时前\", \"error_rate\": \"1.1%\" },\n        { \"hour\": \"4 小时前\", \"error_rate\": \"0.9%\" },\n        { \"hour\": \"3 小时前\", \"error_rate\": \"0.7%\" },\n        { \"hour\": \"2 小时前\", \"error_rate\": \"0.8%\" },\n        { \"hour\": \"1 小时前\", \"error_rate\": \"0.8%\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 20,
+      "rep": 2,
+      "ms": 8849,
+      "fence": true,
+      "chars": 621,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "本周销量整体上升，周五达到最高点。\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"本周销售情况\",\n  \"description\": \"周一至周五销量变化\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"总销量\",\n      \"value\": 730\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"日均销量\",\n      \"value\": 146\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"周五较周一\",\n      \"value\": \"+66.7%\"\n    },\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"每日销量\",\n      \"labels\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\"],\n      \"series\": [\n        {\n          \"name\": \"销量\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        }\n      ],\n      \"unit\": \"单\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 21,
+      "rep": 2,
+      "ms": 8645,
+      "fence": true,
+      "chars": 412,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署进度\",\n  \"description\": \"当前各环节状态如下。\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        { \"title\": \"测试\", \"detail\": \"已通过\", \"status\": \"done\" },\n        { \"title\": \"构建\", \"detail\": \"正在运行\", \"status\": \"current\" },\n        { \"title\": \"生产部署\", \"detail\": \"等待审批\", \"status\": \"pending\" },\n        { \"title\": \"公告\", \"detail\": \"尚未发送\", \"status\": \"pending\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 23,
+      "rep": 2,
+      "ms": 8491,
+      "fence": true,
+      "chars": 528,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"支持团队体验\",\n  \"description\": \"请为您的体验评分，并可选填写评论。\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_score\",\n      \"label\": \"您对支持团队的体验如何？\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"support_comments\",\n      \"label\": \"评论（可选）\",\n      \"placeholder\": \"分享您的想法\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"提交反馈\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"提交支持团队体验反馈。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 24,
+      "rep": 2,
+      "ms": 6406,
+      "fence": true,
+      "chars": 173,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "重建 Docker 镜像的命令如下：\n\n```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"重建 Docker 镜像\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 22,
+      "rep": 2,
+      "ms": 10608,
+      "fence": true,
+      "chars": 1139,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Select",
+        "Divider",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"博客设置\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"外观\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"theme\",\n      \"label\": \"主题\",\n      \"options\": [\n        { \"label\": \"浅色\", \"value\": \"light\" },\n        { \"label\": \"深色\", \"value\": \"dark\" },\n        { \"label\": \"跟随系统\", \"value\": \"system\" }\n      ],\n      \"defaultValue\": \"system\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"font_size\",\n      \"label\": \"字体大小\",\n      \"options\": [\n        { \"label\": \"小\", \"value\": \"small\" },\n        { \"label\": \"中\", \"value\": \"medium\" },\n        { \"label\": \"大\", \"value\": \"large\" }\n      ],\n      \"defaultValue\": \"medium\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"隐私\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"analytics\",\n      \"label\": \"启用分析统计\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"cookie_banner\",\n      \"label\": \"显示 Cookie 横幅\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"保存设置\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"保存博客设置。\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 25,
+      "rep": 2,
+      "ms": 8475,
+      "fence": true,
+      "chars": 515,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Metric"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"磁盘空间分布\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"存储占用与剩余空间\",\n      \"labels\": [\"系统\", \"应用\", \"媒体\", \"可用\"],\n      \"series\": [\n        {\n          \"name\": \"空间\",\n          \"values\": [40, 120, 85, 255],\n          \"tone\": \"info\"\n        }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"总容量\",\n      \"value\": \"500 GB\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"已用空间\",\n      \"value\": \"245 GB（49%）\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 26,
+      "rep": 2,
+      "ms": 6414,
+      "fence": true,
+      "chars": 531,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Table",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"会议记录\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"决定\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"item\", \"label\": \"事项\" },\n        { \"key\": \"decision\", \"label\": \"决定\" }\n      ],\n      \"rows\": [\n        { \"item\": \"发布\", \"decision\": \"周五发布\" },\n        { \"item\": \"招聘\", \"decision\": \"招聘一名设计师\" },\n        { \"item\": \"功能 X\", \"decision\": \"取消功能 X\" }\n      ]\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"完整记录：[查看会议笔记](https://example.com/notes)\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 27,
+      "rep": 2,
+      "ms": 6764,
+      "fence": true,
+      "chars": 308,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"服务器信息\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"主机名\", \"value\": \"web-01\" },\n        { \"label\": \"区域\", \"value\": \"eu-west\" },\n        { \"label\": \"运行时间\", \"value\": \"41 天\" },\n        { \"label\": \"版本\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 28,
+      "rep": 2,
+      "ms": 6411,
+      "fence": true,
+      "chars": 273,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Markdown",
+        "Badge"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"部署已成功\",\n  \"description\": \"更新内容\",\n  \"children\": [\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- 修复登录超时\\n- 提升仪表盘速度\\n- 保存导出偏好设置\\n- 更新依赖项\\n- 解决速率限制问题\"\n    },\n    {\n      \"type\": \"Badge\",\n      \"text\": \"成功\",\n      \"tone\": \"success\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 29,
+      "rep": 2,
+      "ms": 6478,
+      "fence": true,
+      "chars": 399,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate\",\n  \"description\": \"Current error rate and the last ten hourly readings.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current error rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"label\": \"Last 10 hours (%)\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"tone\": \"info\"\n    }\n  ]\n}\n```"
+    }
+  ]
+}

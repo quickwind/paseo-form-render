@@ -1,4 +1,5 @@
 import type { PluginServerContext } from "@getpaseo/plugin/server";
+import { onTurnEnded } from "./hooks";
 import {
   buildFixMessage,
   collectTurnFormFailures,
@@ -162,7 +163,7 @@ export function registerAutoFix(server: PluginServerContext, settings: PfrSettin
     }
   }
 
-  return server.on("agent.turn_ended", async (event, { paseo, signal }) => {
+  return onTurnEnded(server, async (event, { paseo, signal }) => {
     try {
       const agent = paseo.agents.ref(event.agent.id);
       // Paseo 0.13 sends an always-empty `timeline` on this event (deprecated), so the finished turn is read from history.

@@ -2,7 +2,7 @@
 
 End-to-end tests for the pfr-form **auto-fix** feature (`server/auto-fix.ts`) and the plugin's
 **client UI**. They run the plugin under test inside a real Paseo daemon (`@getpaseo/server`/
-`@getpaseo/cli` 0.13.0, pinned in this directory's `package.json`) and drive agents through a
+`@getpaseo/cli` 0.15.3, pinned in this directory's `package.json`) and drive agents through a
 scripted fake provider, so no model, API key or network is involved. The UI checks open the
 daemon's bundled web UI in headless Chromium (Playwright, pinned too) and assert on what the user
 sees: rendered forms, the `[pfr-form Syntax Error]` box, the "Ask agent to fix" button and the
@@ -94,7 +94,7 @@ written to the repo except `--out`.
 | S7 | Valid forms and plain text (including other code fences) never trigger a fix. |
 | uisettings | Browser only. The plugin settings screen shows the current `autoFixMaxRetries` (2); `+` saves 3 and `−` three times saves 0 (checked with the settings RPC); a value written over RPC shows after a reload. |
 | uimanual | Browser only. With automatic fixes off (0), a bad form shows the error box and no fix is sent; clicking "Ask agent to fix" shows "Fix requested", the provider receives exactly one `[pfr-form-fix]` message, and the corrected form renders. |
-| S8 | Message shapes: a bad form streamed in chunks, a bad and a good form in separate messages, long turns (~280/~400 timeline entries, beyond the fetched history window), and a long history with several user messages. A valid fence split across two messages gets a fix request (documented limitation, informational) but never loops. |
+| S8 | Message shapes: a bad form streamed in chunks, a bad and a good form in separate messages, long turns (~284 entries, inside the 300-entry history window, gets a fix; ~400 entries, beyond it, gets none because auto-fix fails closed), and a long history with several user messages. A valid fence split across two messages gets a fix request (documented limitation, informational) but never loops. |
 | restart (optional) | An agent resumed after a daemon restart still gets exactly one fix. |
 | nocmid (optional) | Agents created without a `clientMessageId` (first user message missing from the timeline) behave like S1/S2. |
 

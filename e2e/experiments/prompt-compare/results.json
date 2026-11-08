@@ -1,0 +1,2652 @@
+{
+  "model": "devin/swe-1-6-slow",
+  "reps": 3,
+  "tasks": [
+    {
+      "g": "A",
+      "t": "I need a form to collect a new user's name, email and role (admin, editor, viewer)."
+    },
+    {
+      "g": "A",
+      "t": "Ask me to confirm deleting the 'staging-db' database; show the database name and size (12 GB) and require typing the name to confirm."
+    },
+    {
+      "g": "A",
+      "t": "Show a status dashboard with three metrics (uptime 99.9%, requests 12.4k, errors 17), a progress bar for the migration at 65%, and a table of three services with their status."
+    },
+    {
+      "g": "A",
+      "t": "Build a form to configure a nightly backup: time (HH:MM), retention days (1-365), which folders to include (pick a folder), and a toggle for compression."
+    },
+    {
+      "g": "A",
+      "t": "I want to choose which of these test suites to run: unit, integration, e2e, lint, types. Let me pick several and set a timeout in minutes."
+    },
+    {
+      "g": "A",
+      "t": "Collect a bug report: title, severity (low/medium/high/critical), steps to reproduce (multi-line), and an optional log file (.log or .txt)."
+    },
+    {
+      "g": "A",
+      "t": "Present a deployment summary: environment Production, version 2.4.1, an alert warning that the rollout touches billing, and Approve / Reject buttons."
+    },
+    {
+      "g": "A",
+      "t": "Ask for an API key (password field), a base URL (url), and a request timeout in seconds between 1 and 60."
+    },
+    {
+      "g": "A",
+      "t": "Show a table comparing three database options (Postgres, MySQL, SQLite) with columns name, speed, cost, and let me select one as my choice."
+    },
+    {
+      "g": "A",
+      "t": "A feedback survey: overall rating 1-5 (integer), what went well (multi-line), would you recommend (toggle), and a submit button."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Chart"
+      ],
+      "t": "Show weekly sales Monday to Friday as a bar chart with two series: online [120, 150, 90, 170, 200] and store [80, 60, 110, 95, 130]."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Steps"
+      ],
+      "t": "Show the release plan as steps with their status: run tests (done), build (in progress), deploy to staging (blocked, waiting for approval), announce (not started)."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Tabs"
+      ],
+      "t": "A settings page with two sections: General (site name, language) and Notifications (email toggle, frequency daily or weekly). Show one section at a time."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Rating"
+      ],
+      "t": "Ask me to rate the support I received from 1 to 5 stars and leave an optional comment."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Code"
+      ],
+      "t": "Show the shell command to rebuild the docker image, `docker build -t app:latest .`, so I can copy it."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "SegmentedBar",
+        "Chart"
+      ],
+      "t": "Show the disk usage breakdown as proportions of the whole: system 40 GB, apps 120 GB, media 85 GB, free 255 GB."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Markdown"
+      ],
+      "t": "Summarize the meeting: a bold heading 'Decisions', a bulleted list of three decisions, and a link to https://example.com/notes."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "KeyValue"
+      ],
+      "t": "Show server info as a compact list of properties: hostname web-01, region eu-west, uptime 41 days, version 2.4.1."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Details"
+      ],
+      "t": "Show a short deployment summary, with the full changelog (five lines) tucked into a collapsible section."
+    },
+    {
+      "g": "B",
+      "expect": [
+        "Sparkline",
+        "Chart"
+      ],
+      "t": "Show the current error rate 0.8% together with a tiny trend of the last 10 hours: 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8."
+    }
+  ],
+  "promptChars": {
+    "old": 4582,
+    "new": 6630
+  },
+  "results": [
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 0,
+      "ms": 6523,
+      "fence": true,
+      "chars": 820,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Alert",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Name\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Size\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"text\": \"Type the database name to confirm deletion.\",\n      \"tone\": \"danger\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Confirm Database Name\",\n      \"placeholder\": \"Type 'staging-db' to confirm\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete staging-db database\"\n    }\n  ]\n}\n```\n\nPlease confirm the deletion."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 0,
+      "ms": 6904,
+      "fence": true,
+      "chars": 718,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"You are about to permanently delete a database. This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Name\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Size\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Type the database name to confirm\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete the staging-db database\"\n    }\n  ]\n}\n```\n\nPlease confirm the deletion by typing the database name."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 0,
+      "ms": 7262,
+      "fence": true,
+      "chars": 902,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"New User\",\n  \"description\": \"Enter the new user's information\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"Name\",\n      \"placeholder\": \"Enter user's name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"Email\",\n      \"placeholder\": \"user@example.com\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided information.\"\n    }\n  ]\n}\n```\n\nHere's the form to collect the new user details."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 0,
+      "ms": 7635,
+      "fence": true,
+      "chars": 907,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"New User\",\n  \"description\": \"Enter the new user's details\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"user_name\",\n      \"label\": \"Name\",\n      \"placeholder\": \"Enter full name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"user_email\",\n      \"label\": \"Email\",\n      \"inputType\": \"email\",\n      \"placeholder\": \"user@example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"user_role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided details.\"\n    }\n  ]\n}\n```\n\nHere's the form for collecting new user information."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 0,
+      "ms": 4140,
+      "fence": true,
+      "chars": 1089,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your automated nightly backup settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM (e.g., 02:00)\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"Folder to Backup\",\n      \"pickerType\": \"folder\",\n      \"placeholder\": \"Select a folder...\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"Enable Compression\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save nightly backup configuration.\"\n    }\n  ]\n}\n```\n\nHere's your backup configuration form."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 0,
+      "ms": 6747,
+      "fence": true,
+      "chars": 1019,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": \"17\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Maintenance\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your status dashboard."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 0,
+      "ms": 6689,
+      "fence": true,
+      "chars": 1017,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": 17\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Maintenance\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your status dashboard."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 0,
+      "ms": 6671,
+      "fence": true,
+      "chars": 970,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your nightly backup settings\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"Backup Folder\",\n      \"pickerType\": \"folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"Enable Compression\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Backup configuration saved successfully.\"\n    }\n  ]\n}\n```\n\nHere's your nightly backup configuration form."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 0,
+      "ms": 4408,
+      "fence": true,
+      "chars": 1262,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the issue you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief summary of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the issue...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a .log or .txt file\",\n      \"pickerType\": \"file\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nPlease fill out the form to submit your bug report."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 0,
+      "ms": 6611,
+      "fence": true,
+      "chars": 931,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Selection\",\n  \"description\": \"Choose which test suites to run and set a timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"options\": [\n        { \"label\": \"Unit\", \"value\": \"unit\" },\n        { \"label\": \"Integration\", \"value\": \"integration\" },\n        { \"label\": \"E2E\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Types\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"defaultValue\": 10,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Run the selected test suites with the specified timeout.\"\n    }\n  ]\n}\n```\n\nSelect your test suites and timeout above."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 0,
+      "ms": 4926,
+      "fence": true,
+      "chars": 1264,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the issue you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief description of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the bug...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a .log or .txt file\",\n      \"extensions\": [\"log\", \"txt\"],\n      \"pickerType\": \"file\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nPlease fill out the form to submit your bug report."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 0,
+      "ms": 6371,
+      "fence": true,
+      "chars": 937,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Selection\",\n  \"description\": \"Choose which test suites to run and set a timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"options\": [\n        { \"label\": \"Unit Tests\", \"value\": \"unit\" },\n        { \"label\": \"Integration Tests\", \"value\": \"integration\" },\n        { \"label\": \"E2E Tests\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Type Check\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"defaultValue\": 10,\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Start running the selected test suites.\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 0,
+      "ms": 4512,
+      "fence": true,
+      "chars": 874,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"text\": \"This rollout touches billing systems. Please review carefully before proceeding.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment approved\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment rejected\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details above before approving."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 0,
+      "ms": 4146,
+      "fence": true,
+      "chars": 825,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"description\": \"Enter your API connection details.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"placeholder\": \"https://api.example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Configuration submitted.\"\n    }\n  ]\n}\n```\n\nPlease fill in the required fields."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 0,
+      "ms": 6468,
+      "fence": true,
+      "chars": 912,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Review deployment details before proceeding\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Environment\", \"value\": \"Production\" },\n        { \"label\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Warning\",\n      \"text\": \"This rollout touches billing systems.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment approved\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment rejected\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details and approve or reject the rollout."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 0,
+      "ms": 6325,
+      "fence": true,
+      "chars": 830,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"description\": \"Enter your API settings to continue.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"placeholder\": \"https://api.example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"max\": 60,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"API configuration submitted.\"\n    }\n  ]\n}\n```\n\nPlease provide your API configuration details."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 0,
+      "ms": 4441,
+      "fence": true,
+      "chars": 1174,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Compare popular database options and select one for your project.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Name\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"PostgreSQL\", \"speed\": \"High (complex queries)\", \"cost\": \"Free (open source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"High (read-heavy)\", \"cost\": \"Free (open source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"High (embedded)\", \"cost\": \"Free (public domain)\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select Database\",\n      \"options\": [\n        { \"label\": \"PostgreSQL\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Confirm Selection\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"You selected the database.\"\n    }\n  ]\n}\n```\n\nSelect the database that best fits your needs."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 0,
+      "ms": 4354,
+      "fence": true,
+      "chars": 762,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"description\": \"We'd love to hear your thoughts.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What went well?\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend this?\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the feedback survey.\"\n    }\n  ]\n}\n```\n\nHere's your feedback survey form."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 0,
+      "ms": 6183,
+      "fence": true,
+      "chars": 1136,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Compare popular database options and select your preferred choice.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Name\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"PostgreSQL\", \"speed\": \"High\", \"cost\": \"Free (open source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"High\", \"cost\": \"Free (open source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"Very fast (embedded)\", \"cost\": \"Free\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select Database\",\n      \"options\": [\n        { \"label\": \"PostgreSQL\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Choice\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"You selected the database choice.\"\n    }\n  ]\n}\n```\n\nChoose your preferred database from the options above."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 0,
+      "ms": 6369,
+      "fence": true,
+      "chars": 636,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What went well\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit feedback\"\n    }\n  ]\n}\n```\n\nHere's your feedback survey form."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 0,
+      "ms": 4678,
+      "fence": true,
+      "chars": 635,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"description\": \"Monday to Friday sales comparison\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"Day\" },\n        { \"key\": \"online\", \"label\": \"Online\" },\n        { \"key\": \"store\", \"label\": \"Store\" }\n      ],\n      \"rows\": [\n        { \"day\": \"Monday\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"Tuesday\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"Wednesday\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"Thursday\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"Friday\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```\n\nHere's your weekly sales data."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 0,
+      "ms": 4668,
+      "fence": true,
+      "chars": 527,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Monday to Friday Sales\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Online\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        },\n        {\n          \"name\": \"Store\",\n          \"values\": [80, 60, 110, 95, 130],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    }\n  ]\n}\n```\n\nHere's your weekly sales chart."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 0,
+      "ms": 4360,
+      "fence": true,
+      "chars": 503,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Run tests\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Deploy to staging\",\n          \"detail\": \"Waiting for approval\",\n          \"status\": \"blocked\"\n        },\n        {\n          \"title\": \"Announce\",\n          \"status\": \"pending\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 0,
+      "ms": 6495,
+      "fence": true,
+      "chars": 1518,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Text",
+        "Badge"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Run tests\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Done\",\n              \"tone\": \"success\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Build\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"In Progress\",\n              \"tone\": \"info\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Deploy to staging\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Blocked\",\n              \"tone\": \"warning\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Announce\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Not Started\",\n              \"tone\": \"neutral\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan status."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 0,
+      "ms": 6790,
+      "fence": true,
+      "chars": 1607,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Divider",
+        "Heading",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"description\": \"Configure your site preferences\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"section\",\n      \"label\": \"Section\",\n      \"options\": [\n        { \"label\": \"General\", \"value\": \"general\" },\n        { \"label\": \"Notifications\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"General\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"Site Name\",\n      \"placeholder\": \"Enter site name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"Language\",\n      \"options\": [\n        { \"label\": \"English\", \"value\": \"en\" },\n        { \"label\": \"Spanish\", \"value\": \"es\" },\n        { \"label\": \"French\", \"value\": \"fr\" },\n        { \"label\": \"German\", \"value\": \"de\" }\n      ],\n      \"defaultValue\": \"en\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Notifications\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"email_enabled\",\n      \"label\": \"Email Notifications\",\n      \"defaultValue\": false\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"frequency\",\n      \"label\": \"Frequency\",\n      \"options\": [\n        { \"label\": \"Daily\", \"value\": \"daily\" },\n        { \"label\": \"Weekly\", \"value\": \"weekly\" }\n      ],\n      \"defaultValue\": \"daily\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save settings configuration\"\n    }\n  ]\n}\n```\n\nHere's the settings form with both sections."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 0,
+      "ms": 6439,
+      "fence": true,
+      "chars": 1646,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"General\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"Site Name\",\n              \"placeholder\": \"Enter site name\",\n              \"required\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"Language\",\n              \"options\": [\n                { \"label\": \"English\", \"value\": \"en\" },\n                { \"label\": \"Spanish\", \"value\": \"es\" },\n                { \"label\": \"French\", \"value\": \"fr\" },\n                { \"label\": \"German\", \"value\": \"de\" }\n              ],\n              \"defaultValue\": \"en\",\n              \"required\": true\n            }\n          ]\n        },\n        {\n          \"label\": \"Notifications\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_enabled\",\n              \"label\": \"Enable Email Notifications\",\n              \"defaultValue\": false\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"frequency\",\n              \"label\": \"Frequency\",\n              \"options\": [\n                { \"label\": \"Daily\", \"value\": \"daily\" },\n                { \"label\": \"Weekly\", \"value\": \"weekly\" }\n              ],\n              \"defaultValue\": \"daily\"\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Settings saved successfully.\"\n    }\n  ]\n}\n```\n\nSettings page with tabbed sections."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 0,
+      "ms": 6459,
+      "fence": true,
+      "chars": 832,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Feedback\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"rating\",\n      \"label\": \"Rating\",\n      \"options\": [\n        { \"label\": \"1 star\", \"value\": \"1\" },\n        { \"label\": \"2 stars\", \"value\": \"2\" },\n        { \"label\": \"3 stars\", \"value\": \"3\" },\n        { \"label\": \"4 stars\", \"value\": \"4\" },\n        { \"label\": \"5 stars\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Comment (optional)\",\n      \"placeholder\": \"Share your feedback...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Thank you for your feedback!\"\n    }\n  ]\n}\n```\n\nThank you for your time!"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 0,
+      "ms": 4126,
+      "fence": true,
+      "chars": 155,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"children\": [\n    {\n      \"type\": \"Text\",\n      \"text\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nCopy and run this command to rebuild your Docker image."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 0,
+      "ms": 4501,
+      "fence": true,
+      "chars": 249,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"description\": \"Copy this command to rebuild your Docker image.\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```\n\nHere's the command ready to copy."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 0,
+      "ms": 10369,
+      "fence": true,
+      "chars": 616,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Feedback\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"rating\",\n      \"label\": \"Rate your support experience\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Comments (optional)\",\n      \"placeholder\": \"Share any additional feedback...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit support rating and feedback.\"\n    }\n  ]\n}\n```\n\nThank you for your feedback!"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 0,
+      "ms": 4332,
+      "fence": true,
+      "chars": 408,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        { \"label\": \"System\", \"value\": 40, \"tone\": \"neutral\" },\n        { \"label\": \"Apps\", \"value\": 120, \"tone\": \"info\" },\n        { \"label\": \"Media\", \"value\": 85, \"tone\": \"warning\" },\n        { \"label\": \"Free\", \"value\": 255, \"tone\": \"success\" }\n      ],\n      \"unit\": \"GB\"\n    }\n  ]\n}\n```\n\nHere's your disk usage visualization."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 0,
+      "ms": 6384,
+      "fence": true,
+      "chars": 648,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Progress"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"description\": \"Total capacity: 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Progress\",\n          \"label\": \"System (40 GB)\",\n          \"value\": 8\n        },\n        {\n          \"type\": \"Progress\",\n          \"label\": \"Apps (120 GB)\",\n          \"value\": 24\n        },\n        {\n          \"type\": \"Progress\",\n          \"label\": \"Media (85 GB)\",\n          \"value\": 17\n        },\n        {\n          \"type\": \"Progress\",\n          \"label\": \"Free (255 GB)\",\n          \"value\": 51\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your disk usage visualization."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 0,
+      "ms": 6326,
+      "fence": true,
+      "chars": 403,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Summary\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Decision 1\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Decision 2\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Decision 3\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"https://example.com/notes\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form as requested."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 0,
+      "ms": 4135,
+      "fence": true,
+      "chars": 229,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"KeyValue\",\n  \"pairs\": [\n    { \"label\": \"hostname\", \"value\": \"web-01\" },\n    { \"label\": \"region\", \"value\": \"eu-west\" },\n    { \"label\": \"uptime\", \"value\": \"41 days\" },\n    { \"label\": \"version\", \"value\": \"2.4.1\" }\n  ]\n}\n```\n\nHere's your server information."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 0,
+      "ms": 6321,
+      "fence": true,
+      "chars": 421,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Hostname\",\n      \"value\": \"web-01\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Region\",\n      \"value\": \"eu-west\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Uptime\",\n      \"value\": \"41 days\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    }\n  ]\n}\n```\n\nHere's the server information displayed as requested."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 0,
+      "ms": 4151,
+      "fence": true,
+      "chars": 336,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Status\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Last 10 hours trend: 1.2%, 1.1%, 0.9%, 1.0%, 1.4%, 1.1%, 0.9%, 0.7%, 0.8%, 0.8%\"\n    }\n  ]\n}\n```\n\nError rate has improved from a peak of 1.4% to the current 0.8%."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 0,
+      "ms": 12326,
+      "fence": true,
+      "chars": 365,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Summary\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"* Approved the Q4 budget allocation\\n* Scheduled the product launch for January 15th\\n* Assigned project leads to the new initiative\\n\\n[Full notes](https://example.com/notes)\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 0,
+      "ms": 6141,
+      "fence": true,
+      "chars": 749,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Details",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Release v2.4.1 deployed to production\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"v2.4.1\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Status\",\n      \"value\": \"Complete\"\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"Changelog\",\n      \"children\": [\n        {\n          \"type\": \"Markdown\",\n          \"text\": \"- Fixed authentication timeout bug\\n- Improved dashboard loading performance\\n- Added user preference export feature\\n- Updated dependency versions\\n- Resolved API rate limiting issue\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nDeployment v2.4.1 to production is complete."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 0,
+      "ms": 10359,
+      "fence": true,
+      "chars": 594,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Alert",
+        "Divider",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Alert\",\n      \"tone\": \"success\",\n      \"title\": \"Deployment Complete\",\n      \"text\": \"Version 2.4.1 successfully deployed to production. All health checks passed.\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Changelog\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Fixed authentication timeout bug\\n• Added dark mode support\\n• Improved API response times by 20%\\n• Updated dependencies to latest stable\\n• Added error tracking integration\"\n    }\n  ]\n}\n```\n\nHere's your deployment summary with changelog."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 0,
+      "ms": 6147,
+      "fence": true,
+      "chars": 334,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Overview\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"label\": \"Last 10 hours\",\n      \"tone\": \"warning\"\n    }\n  ]\n}\n```\n\nError rate is trending down from the peak at 1.4%."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 1,
+      "ms": 6234,
+      "fence": true,
+      "chars": 899,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Add New User\",\n  \"description\": \"Enter the user's details below.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"Name\",\n      \"placeholder\": \"Enter full name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"Email\",\n      \"placeholder\": \"user@example.com\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided details.\"\n    }\n  ]\n}\n```\n\nHere's the form ready to collect user information."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 1,
+      "ms": 6161,
+      "fence": true,
+      "chars": 902,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"New User\",\n  \"description\": \"Enter the new user's information\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"Name\",\n      \"placeholder\": \"Enter user's name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"Email\",\n      \"placeholder\": \"user@example.com\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided information.\"\n    }\n  ]\n}\n```\n\nHere's the form to collect new user details."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 1,
+      "ms": 6173,
+      "fence": true,
+      "chars": 816,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Alert",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Name\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Size\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"text\": \"Type the database name to confirm deletion.\",\n      \"tone\": \"danger\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Confirm Database Name\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete the staging-db database.\"\n    }\n  ]\n}\n```\n\nPlease review the database details before confirming."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 1,
+      "ms": 4156,
+      "fence": true,
+      "chars": 653,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Text",
+        "Divider",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Text\",\n      \"text\": \"Database: staging-db\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Size: 12 GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Type 'staging-db' to confirm deletion\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete staging-db database\"\n    }\n  ]\n}\n```\n\nPlease confirm before proceeding."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 1,
+      "ms": 4533,
+      "fence": true,
+      "chars": 1015,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": \"17\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Running\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your status dashboard."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 1,
+      "ms": 6351,
+      "fence": true,
+      "chars": 1013,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": 17\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Running\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your dashboard."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 1,
+      "ms": 6163,
+      "fence": true,
+      "chars": 1109,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your automated nightly backup settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM\",\n      \"inputType\": \"text\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"Backup Folder\",\n      \"pickerType\": \"folder\",\n      \"placeholder\": \"Select folder to back up\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"Enable Compression\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the nightly backup configuration.\"\n    }\n  ]\n}\n```\n\nHere's your backup configuration form."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 1,
+      "ms": 6153,
+      "fence": true,
+      "chars": 1068,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your nightly backup schedule and settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"Folder to Backup\",\n      \"pickerType\": \"folder\",\n      \"placeholder\": \"Select a folder\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"Enable Compression\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Backup configuration saved.\"\n    }\n  ]\n}\n```\n\nConfigure your nightly backup settings here."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 1,
+      "ms": 6352,
+      "fence": true,
+      "chars": 923,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Selection\",\n  \"description\": \"Choose which test suites to run and set a timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"options\": [\n        { \"label\": \"Unit Tests\", \"value\": \"unit\" },\n        { \"label\": \"Integration Tests\", \"value\": \"integration\" },\n        { \"label\": \"E2E Tests\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Type Checking\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Run the selected test suites with the specified timeout.\"\n    }\n  ]\n}\n```\n\nSelect your test suites and timeout to proceed."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 1,
+      "ms": 4362,
+      "fence": true,
+      "chars": 941,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Runner\",\n  \"description\": \"Select test suites and configure timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"options\": [\n        { \"label\": \"Unit Tests\", \"value\": \"unit\" },\n        { \"label\": \"Integration Tests\", \"value\": \"integration\" },\n        { \"label\": \"E2E Tests\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Type Checking\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"defaultValue\": 10,\n      \"min\": 1,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Run selected test suites with the specified timeout.\"\n    }\n  ]\n}\n```\n\nChoose your test suites and timeout, then click Run Tests."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 1,
+      "ms": 6427,
+      "fence": true,
+      "chars": 1264,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the issue you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief description of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the bug...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a .log or .txt file\",\n      \"extensions\": [\"log\", \"txt\"],\n      \"pickerType\": \"file\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nPlease fill out the form to submit your bug report."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 1,
+      "ms": 4407,
+      "fence": true,
+      "chars": 1113,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Alert",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Review the deployment details before approving.\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Version\",\n          \"value\": \"2.4.1\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing Changes\",\n      \"text\": \"This rollout touches billing systems. Please verify before proceeding.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Approve deployment to Production\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Reject deployment\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details and choose to approve or reject."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 1,
+      "ms": 6812,
+      "fence": true,
+      "chars": 1266,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the bug you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief description of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the bug...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a log file if available\",\n      \"pickerType\": \"file\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nFill out this form to report a bug."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 1,
+      "ms": 6392,
+      "fence": true,
+      "chars": 882,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing Impact\",\n      \"text\": \"This rollout touches billing systems. Please review carefully before proceeding.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"approve\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"reject\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details above."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 1,
+      "ms": 4672,
+      "fence": true,
+      "chars": 836,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"description\": \"Enter your API credentials and connection settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"placeholder\": \"https://api.example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save configuration\"\n    }\n  ]\n}\n```\n\nPlease fill in the required fields."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 1,
+      "ms": 4514,
+      "fence": true,
+      "chars": 695,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 60,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Configuration submitted\"\n    }\n  ]\n}\n```\n\nPlease fill in the required fields."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 1,
+      "ms": 4337,
+      "fence": true,
+      "chars": 1133,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Compare popular database options and select your preferred choice.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Name\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"PostgreSQL\", \"speed\": \"High\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"High\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"Medium\", \"cost\": \"Free (Open Source)\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select Database\",\n      \"options\": [\n        { \"label\": \"PostgreSQL\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Choice\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"I selected my database choice.\"\n    }\n  ]\n}\n```\n\nChoose your preferred database from the options above."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 1,
+      "ms": 8138,
+      "fence": true,
+      "chars": 1144,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Compare database options and select your preferred choice.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Name\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"Medium\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"Medium\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"High (Single-user)\", \"cost\": \"Free (Open Source)\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select Database\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Choice\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"You selected your preferred database.\"\n    }\n  ]\n}\n```\n\nHere's the comparison table for you to review and select from."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 1,
+      "ms": 6128,
+      "fence": true,
+      "chars": 763,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"description\": \"Please share your feedback with us.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What Went Well\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend us?\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Thank you for your feedback!\"\n    }\n  ]\n}\n```\n\nHere's your feedback survey form."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 1,
+      "ms": 6499,
+      "fence": true,
+      "chars": 816,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"description\": \"We'd love to hear your thoughts.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"max\": 5,\n      \"defaultValue\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What went well?\",\n      \"placeholder\": \"Share your positive experience...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend this?\",\n      \"defaultValue\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit feedback\"\n    }\n  ]\n}\n```\n\nYour feedback matters to us!"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 1,
+      "ms": 6450,
+      "fence": true,
+      "chars": 599,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales (Monday - Friday)\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"Day\" },\n        { \"key\": \"online\", \"label\": \"Online\" },\n        { \"key\": \"store\", \"label\": \"Store\" }\n      ],\n      \"rows\": [\n        { \"day\": \"Monday\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"Tuesday\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"Wednesday\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"Thursday\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"Friday\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```\n\nThe pfr-form protocol doesn't include a chart component, so I've displayed the data in a table format."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 1,
+      "ms": 4396,
+      "fence": true,
+      "chars": 527,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Monday to Friday Sales\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Online\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        },\n        {\n          \"name\": \"Store\",\n          \"values\": [80, 60, 110, 95, 130],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    }\n  ]\n}\n```\n\nHere's your weekly sales chart."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 1,
+      "ms": 6157,
+      "fence": true,
+      "chars": 1587,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Text",
+        "Badge"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"description\": \"Current deployment status\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Run tests\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Done\",\n              \"tone\": \"success\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Build\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"In progress\",\n              \"tone\": \"info\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Deploy to staging\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Blocked - waiting for approval\",\n              \"tone\": \"warning\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Announce\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Not started\",\n              \"tone\": \"neutral\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan with current status."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 1,
+      "ms": 6480,
+      "fence": true,
+      "chars": 503,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Run tests\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Deploy to staging\",\n          \"status\": \"blocked\",\n          \"detail\": \"Waiting for approval\"\n        },\n        {\n          \"title\": \"Announce\",\n          \"status\": \"pending\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan progress."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 1,
+      "ms": 8418,
+      "fence": true,
+      "chars": 1656,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Divider",
+        "Heading",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"description\": \"Configure your site settings. Select a section to view options.\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"section\",\n      \"label\": \"Section\",\n      \"options\": [\n        { \"label\": \"General\", \"value\": \"general\" },\n        { \"label\": \"Notifications\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"General\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"Site Name\",\n      \"placeholder\": \"Enter your site name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"Language\",\n      \"options\": [\n        { \"label\": \"English\", \"value\": \"en\" },\n        { \"label\": \"Spanish\", \"value\": \"es\" },\n        { \"label\": \"French\", \"value\": \"fr\" },\n        { \"label\": \"German\", \"value\": \"de\" }\n      ],\n      \"defaultValue\": \"en\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Notifications\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"email_enabled\",\n      \"label\": \"Enable Email Notifications\",\n      \"defaultValue\": false\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"frequency\",\n      \"label\": \"Frequency\",\n      \"options\": [\n        { \"label\": \"Daily\", \"value\": \"daily\" },\n        { \"label\": \"Weekly\", \"value\": \"weekly\" }\n      ],\n      \"defaultValue\": \"daily\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the settings configuration.\"\n    }\n  ]\n}\n```\n\nHere's your settings form with both sections displayed."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 1,
+      "ms": 8476,
+      "fence": true,
+      "chars": 1798,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"description\": \"Configure your application preferences.\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"General\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"Site Name\",\n              \"placeholder\": \"Enter your site name\",\n              \"required\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"Language\",\n              \"options\": [\n                { \"label\": \"English\", \"value\": \"en\" },\n                { \"label\": \"Spanish\", \"value\": \"es\" },\n                { \"label\": \"French\", \"value\": \"fr\" },\n                { \"label\": \"German\", \"value\": \"de\" },\n                { \"label\": \"Japanese\", \"value\": \"ja\" }\n              ],\n              \"defaultValue\": \"en\",\n              \"required\": true\n            }\n          ]\n        },\n        {\n          \"label\": \"Notifications\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_enabled\",\n              \"label\": \"Enable Email Notifications\",\n              \"defaultValue\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"frequency\",\n              \"label\": \"Frequency\",\n              \"options\": [\n                { \"label\": \"Daily\", \"value\": \"daily\" },\n                { \"label\": \"Weekly\", \"value\": \"weekly\" }\n              ],\n              \"defaultValue\": \"daily\",\n              \"required\": true\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Settings saved successfully.\"\n    }\n  ]\n}\n```\n\nHere's your settings form with tabbed sections."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 1,
+      "ms": 6135,
+      "fence": true,
+      "chars": 843,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Rating\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"rating\",\n      \"label\": \"Rating\",\n      \"options\": [\n        { \"label\": \"1 star\", \"value\": \"1\" },\n        { \"label\": \"2 stars\", \"value\": \"2\" },\n        { \"label\": \"3 stars\", \"value\": \"3\" },\n        { \"label\": \"4 stars\", \"value\": \"4\" },\n        { \"label\": \"5 stars\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Comment (optional)\",\n      \"placeholder\": \"Leave any additional feedback here...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Rating\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Thank you for your feedback!\"\n    }\n  ]\n}\n```\n\nPlease share your experience with the support you received."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 1,
+      "ms": 4363,
+      "fence": true,
+      "chars": 220,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"docker_command\",\n      \"label\": \"Command\",\n      \"defaultValue\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nHere's the command to rebuild your Docker image."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 1,
+      "ms": 4146,
+      "fence": true,
+      "chars": 763,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Progress"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"description\": \"Total capacity: 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"category\", \"label\": \"Category\" },\n        { \"key\": \"size\", \"label\": \"Size\" },\n        { \"key\": \"percentage\", \"label\": \"Percentage\" }\n      ],\n      \"rows\": [\n        { \"category\": \"System\", \"size\": \"40 GB\", \"percentage\": \"8%\" },\n        { \"category\": \"Apps\", \"size\": \"120 GB\", \"percentage\": \"24%\" },\n        { \"category\": \"Media\", \"size\": \"85 GB\", \"percentage\": \"17%\" },\n        { \"category\": \"Free\", \"size\": \"255 GB\", \"percentage\": \"51%\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Used Space\",\n      \"value\": 49\n    }\n  ]\n}\n```\n\nYour disk is 49% used with 255 GB still available."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 1,
+      "ms": 10398,
+      "fence": true,
+      "chars": 633,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Feedback\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"rating\",\n      \"label\": \"Rate your support experience\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Additional comments (optional)\",\n      \"multiline\": true,\n      \"placeholder\": \"Share any details about your experience...\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit feedback\"\n    }\n  ]\n}\n```\n\nThank you for your feedback!"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 1,
+      "ms": 4155,
+      "fence": true,
+      "chars": 644,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Stack",
+        "Text",
+        "Divider"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Summary\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Approve Q4 budget allocation\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Launch new feature in March\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Hire two senior engineers\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Full notes: https://example.com/notes\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 1,
+      "ms": 10324,
+      "fence": true,
+      "chars": 155,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nYou can copy this command to rebuild your Docker image."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 1,
+      "ms": 8350,
+      "fence": true,
+      "chars": 560,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        {\n          \"label\": \"System\",\n          \"value\": 40,\n          \"tone\": \"info\"\n        },\n        {\n          \"label\": \"Apps\",\n          \"value\": 120,\n          \"tone\": \"success\"\n        },\n        {\n          \"label\": \"Media\",\n          \"value\": 85,\n          \"tone\": \"warning\"\n        },\n        {\n          \"label\": \"Free\",\n          \"value\": 255,\n          \"tone\": \"neutral\"\n        }\n      ],\n      \"unit\": \"GB\"\n    }\n  ]\n}\n```\n\nTotal disk space is 500 GB."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 1,
+      "ms": 4150,
+      "fence": true,
+      "chars": 588,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Info\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Hostname\",\n          \"value\": \"web-01\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Region\",\n          \"value\": \"eu-west\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"41 days\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Version\",\n          \"value\": \"2.4.1\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's the server information displayed as a compact property list."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 1,
+      "ms": 8158,
+      "fence": true,
+      "chars": 311,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Summary\",\n  \"children\": [\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"**Decisions**\\n\\n- Approved Q4 budget allocation\\n- Scheduled product launch for December 15th\\n- Assigned team leads for new initiatives\\n\\n[View Full Notes](https://example.com/notes)\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 1,
+      "ms": 4390,
+      "fence": true,
+      "chars": 340,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Hostname\", \"value\": \"web-01\" },\n        { \"label\": \"Region\", \"value\": \"eu-west\" },\n        { \"label\": \"Uptime\", \"value\": \"41 days\" },\n        { \"label\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's the server info as a compact property list."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 1,
+      "ms": 6385,
+      "fence": true,
+      "chars": 978,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Overview of the upcoming release\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Version\",\n          \"value\": \"v2.4.1\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Status\",\n          \"value\": \"Ready\"\n        },\n        {\n          \"type\": \"Divider\"\n        },\n        {\n          \"type\": \"Heading\",\n          \"text\": \"Changelog\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Fixed authentication timeout issue in login flow\\n• Added dark mode support for dashboard\\n• Improved database query performance by 40%\\n• Updated dependencies to latest stable versions\\n• Added new API endpoint for user preferences\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your deployment summary."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 1,
+      "ms": 4353,
+      "fence": true,
+      "chars": 334,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Overview\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"label\": \"Last 10 Hours\",\n      \"tone\": \"success\"\n    }\n  ]\n}\n```\n\nHere's your error rate visualization."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 1,
+      "ms": 6588,
+      "fence": true,
+      "chars": 837,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Details",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Release v2.4.1 deployed to production\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"v2.4.1\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Status\",\n      \"value\": \"Complete\"\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"Changelog\",\n      \"open\": false,\n      \"children\": [\n        {\n          \"type\": \"Markdown\",\n          \"text\": \"• Fixed authentication token expiration bug (#842)\\n• Improved database query performance by 40%\\n• Added dark mode support for settings panel\\n• Updated dependencies: React 18.3, Node.js 20 LTS\\n• Resolved memory leak in WebSocket connection handler\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nYour deployment is complete."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 1,
+      "ms": 6315,
+      "fence": true,
+      "chars": 351,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Monitoring\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Last 10 hours trend: 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8\",\n      \"muted\": true\n    }\n  ]\n}\n```\n\nHere's your error rate dashboard with the 10-hour trend."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 0,
+      "rep": 2,
+      "ms": 6327,
+      "fence": true,
+      "chars": 895,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"New User\",\n  \"description\": \"Enter the user's details below.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"Name\",\n      \"placeholder\": \"Enter full name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"Email\",\n      \"placeholder\": \"user@example.com\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided details.\"\n    }\n  ]\n}\n```\n\nHere's the form to collect the new user information."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 1,
+      "rep": 2,
+      "ms": 4338,
+      "fence": true,
+      "chars": 741,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"You are about to permanently delete a database. This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Name\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Size\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Type 'staging-db' to confirm\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete the staging-db database\"\n    }\n  ]\n}\n```\n\nPlease confirm the deletion by typing the database name."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 1,
+      "rep": 2,
+      "ms": 4361,
+      "fence": true,
+      "chars": 814,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Alert",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Delete Database Confirmation\",\n  \"description\": \"This action cannot be undone.\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Database Name\",\n      \"value\": \"staging-db\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Size\",\n      \"value\": \"12 GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"text\": \"Warning: All data will be permanently lost.\",\n      \"tone\": \"danger\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"confirm_name\",\n      \"label\": \"Type 'staging-db' to confirm\",\n      \"placeholder\": \"staging-db\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Delete Database\",\n      \"variant\": \"danger\",\n      \"action\": \"submit\",\n      \"message\": \"Delete the staging-db database.\"\n    }\n  ]\n}\n```\n\nPlease review carefully before confirming."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 0,
+      "rep": 2,
+      "ms": 6368,
+      "fence": true,
+      "chars": 819,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"New User\",\n  \"description\": \"Enter the new user's information\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"name\",\n      \"label\": \"Name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"email\",\n      \"label\": \"Email\",\n      \"inputType\": \"email\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"role\",\n      \"label\": \"Role\",\n      \"options\": [\n        { \"label\": \"Admin\", \"value\": \"admin\" },\n        { \"label\": \"Editor\", \"value\": \"editor\" },\n        { \"label\": \"Viewer\", \"value\": \"viewer\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Create User\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Create the new user with the provided information.\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 2,
+      "rep": 2,
+      "ms": 6329,
+      "fence": true,
+      "chars": 1015,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": \"17\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Running\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your status dashboard."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 2,
+      "rep": 2,
+      "ms": 6369,
+      "fence": true,
+      "chars": 1015,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Progress",
+        "Table"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"System Status Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Uptime\",\n          \"value\": \"99.9%\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Requests\",\n          \"value\": \"12.4k\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Errors\",\n          \"value\": \"17\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Migration Progress\",\n      \"value\": 65\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"service\", \"label\": \"Service\" },\n        { \"key\": \"status\", \"label\": \"Status\" }\n      ],\n      \"rows\": [\n        { \"service\": \"API Gateway\", \"status\": \"Running\" },\n        { \"service\": \"Auth Service\", \"status\": \"Running\" },\n        { \"service\": \"Database\", \"status\": \"Running\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your status dashboard."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 3,
+      "rep": 2,
+      "ms": 6355,
+      "fence": true,
+      "chars": 1088,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your scheduled backup settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folders\",\n      \"label\": \"Folders to Include\",\n      \"pickerType\": \"folder\",\n      \"placeholder\": \"Select folders to backup\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression_enabled\",\n      \"label\": \"Enable Compression\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the nightly backup configuration.\"\n    }\n  ]\n}\n```\n\nHere's your backup configuration form."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 3,
+      "rep": 2,
+      "ms": 6314,
+      "fence": true,
+      "chars": 1111,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "FilePicker",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Nightly Backup Configuration\",\n  \"description\": \"Configure your automated nightly backup settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"backup_time\",\n      \"label\": \"Backup Time\",\n      \"placeholder\": \"HH:MM (e.g., 02:30)\",\n      \"pattern\": \"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"retention_days\",\n      \"label\": \"Retention Days\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 365,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"backup_folder\",\n      \"label\": \"Folder to Backup\",\n      \"pickerType\": \"folder\",\n      \"placeholder\": \"Select a folder to include in backup\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"compression\",\n      \"label\": \"Enable Compression\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Configuration\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the nightly backup configuration.\"\n    }\n  ]\n}\n```\n\nHere's your backup configuration form."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 4,
+      "rep": 2,
+      "ms": 4404,
+      "fence": true,
+      "chars": 949,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Selection\",\n  \"description\": \"Choose which test suites to run and set a timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"options\": [\n        { \"label\": \"Unit Tests\", \"value\": \"unit\" },\n        { \"label\": \"Integration Tests\", \"value\": \"integration\" },\n        { \"label\": \"E2E Tests\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Type Checking\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"defaultValue\": 10,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Run the selected test suites with the specified timeout.\"\n    }\n  ]\n}\n```\n\nPlease select your test suites and timeout."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 4,
+      "rep": 2,
+      "ms": 6343,
+      "fence": true,
+      "chars": 1016,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "MultiSelect",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Test Suite Runner\",\n  \"description\": \"Select the test suites to run and configure timeout.\",\n  \"children\": [\n    {\n      \"type\": \"MultiSelect\",\n      \"id\": \"test_suites\",\n      \"label\": \"Test Suites\",\n      \"placeholder\": \"Choose test suites to run\",\n      \"options\": [\n        { \"label\": \"Unit Tests\", \"value\": \"unit\" },\n        { \"label\": \"Integration Tests\", \"value\": \"integration\" },\n        { \"label\": \"E2E Tests\", \"value\": \"e2e\" },\n        { \"label\": \"Lint\", \"value\": \"lint\" },\n        { \"label\": \"Type Checking\", \"value\": \"types\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout_minutes\",\n      \"label\": \"Timeout (minutes)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"defaultValue\": 10,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Tests\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Start running the selected test suites with the specified timeout.\"\n    }\n  ]\n}\n```\n\nReady to run your selected test suites."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 5,
+      "rep": 2,
+      "ms": 4358,
+      "fence": true,
+      "chars": 1262,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the bug you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief description of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps_to_reproduce\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the bug...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a .log or .txt file\",\n      \"extensions\": [\"log\", \"txt\"],\n      \"pickerType\": \"file\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nPlease fill out the form to submit your bug report."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 5,
+      "rep": 2,
+      "ms": 6351,
+      "fence": true,
+      "chars": 1240,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Select",
+        "FilePicker",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Bug Report\",\n  \"description\": \"Please provide details about the bug you encountered.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"title\",\n      \"label\": \"Title\",\n      \"placeholder\": \"Brief description of the bug\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"severity\",\n      \"label\": \"Severity\",\n      \"options\": [\n        { \"label\": \"Low\", \"value\": \"low\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"High\", \"value\": \"high\" },\n        { \"label\": \"Critical\", \"value\": \"critical\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"steps\",\n      \"label\": \"Steps to Reproduce\",\n      \"placeholder\": \"Describe the steps to reproduce the bug...\",\n      \"multiline\": true,\n      \"required\": true\n    },\n    {\n      \"type\": \"FilePicker\",\n      \"id\": \"log_file\",\n      \"label\": \"Log File (Optional)\",\n      \"placeholder\": \"Select a log file\",\n      \"pickerType\": \"file\",\n      \"extensions\": [\"log\", \"txt\"]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Bug Report\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the bug report with the provided details.\"\n    }\n  ]\n}\n```\n\nPlease fill out the form to submit your bug report."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 6,
+      "rep": 2,
+      "ms": 4339,
+      "fence": true,
+      "chars": 882,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Alert",
+        "Stack",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Environment\",\n      \"value\": \"Production\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing Impact\",\n      \"text\": \"This rollout touches billing - please review carefully.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment approved\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment rejected\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details before proceeding."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 7,
+      "rep": 2,
+      "ms": 4137,
+      "fence": true,
+      "chars": 841,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"description\": \"Enter your API credentials and connection settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"placeholder\": \"https://api.example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"max\": 60,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Configuration submitted.\"\n    }\n  ]\n}\n```\n\nPlease fill in the form to configure your API settings."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 6,
+      "rep": 2,
+      "ms": 6404,
+      "fence": true,
+      "chars": 1137,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Alert",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Review deployment details before proceeding.\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Version\",\n          \"value\": \"2.4.1\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Billing Impact\",\n      \"text\": \"This rollout touches billing systems. Please review carefully.\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Button\",\n          \"label\": \"Approve\",\n          \"variant\": \"primary\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment approved. Proceeding with rollout.\"\n        },\n        {\n          \"type\": \"Button\",\n          \"label\": \"Reject\",\n          \"variant\": \"danger\",\n          \"action\": \"submit\",\n          \"message\": \"Deployment rejected. Cancelling rollout.\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nPlease review the deployment details and choose to approve or reject."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 7,
+      "rep": 2,
+      "ms": 6370,
+      "fence": true,
+      "chars": 841,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"API Configuration\",\n  \"description\": \"Enter your API credentials and connection settings.\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"api_key\",\n      \"label\": \"API Key\",\n      \"inputType\": \"password\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"base_url\",\n      \"label\": \"Base URL\",\n      \"inputType\": \"url\",\n      \"placeholder\": \"https://api.example.com\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"timeout\",\n      \"label\": \"Request Timeout (seconds)\",\n      \"inputType\": \"number\",\n      \"min\": 1,\n      \"max\": 60,\n      \"defaultValue\": 30,\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Configuration submitted.\"\n    }\n  ]\n}\n```\n\nPlease provide your API configuration details."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 8,
+      "rep": 2,
+      "ms": 6335,
+      "fence": true,
+      "chars": 1119,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Compare Postgres, MySQL, and SQLite across key factors.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Name\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"Postgres\", \"speed\": \"High\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"High\", \"cost\": \"Free (Open Source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"Medium\", \"cost\": \"Free (Public Domain)\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select a database\",\n      \"options\": [\n        { \"label\": \"Postgres\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Choice\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"You selected this database.\"\n    }\n  ]\n}\n```\n\nSelect your preferred database from the options above."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 8,
+      "rep": 2,
+      "ms": 6131,
+      "fence": true,
+      "chars": 1178,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table",
+        "Divider",
+        "Select",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Database Comparison\",\n  \"description\": \"Select the database that best fits your needs.\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"name\", \"label\": \"Database\" },\n        { \"key\": \"speed\", \"label\": \"Speed\" },\n        { \"key\": \"cost\", \"label\": \"Cost\" }\n      ],\n      \"rows\": [\n        { \"name\": \"PostgreSQL\", \"speed\": \"Fast (complex queries)\", \"cost\": \"Free (open-source)\" },\n        { \"name\": \"MySQL\", \"speed\": \"Very Fast (simple queries)\", \"cost\": \"Free (open-source)\" },\n        { \"name\": \"SQLite\", \"speed\": \"Fast (embedded)\", \"cost\": \"Free (open-source)\" }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"database_choice\",\n      \"label\": \"Select your preferred database\",\n      \"options\": [\n        { \"label\": \"PostgreSQL\", \"value\": \"postgres\" },\n        { \"label\": \"MySQL\", \"value\": \"mysql\" },\n        { \"label\": \"SQLite\", \"value\": \"sqlite\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Choice\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Confirm database selection.\"\n    }\n  ]\n}\n```\n\nChoose the database that fits your use case."
+    },
+    {
+      "arm": "new",
+      "group": "A",
+      "task": 9,
+      "rep": 2,
+      "ms": 4545,
+      "fence": true,
+      "chars": 588,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What went well\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit feedback\"\n    }\n  ]\n}\n```\n\nHere's your feedback survey form."
+    },
+    {
+      "arm": "old",
+      "group": "A",
+      "task": 9,
+      "rep": 2,
+      "ms": 6586,
+      "fence": true,
+      "chars": 634,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": null,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Feedback Survey\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"overall_rating\",\n      \"label\": \"Overall Rating\",\n      \"inputType\": \"integer\",\n      \"min\": 1,\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"what_went_well\",\n      \"label\": \"What Went Well\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"would_recommend\",\n      \"label\": \"Would you recommend?\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit feedback\"\n    }\n  ]\n}\n```\n\nHere's your feedback survey form."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 10,
+      "rep": 2,
+      "ms": 4724,
+      "fence": true,
+      "chars": 521,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Sales by Channel\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Online\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"info\"\n        },\n        {\n          \"name\": \"Store\",\n          \"values\": [80, 60, 110, 95, 130],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    }\n  ]\n}\n```\n\nHere's your weekly sales bar chart."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 11,
+      "rep": 2,
+      "ms": 5242,
+      "fence": true,
+      "chars": 1564,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Text",
+        "Badge"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"description\": \"Current deployment status\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Run tests\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Done\",\n              \"tone\": \"success\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Build\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"In Progress\",\n              \"tone\": \"info\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Deploy to staging\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Blocked\",\n              \"tone\": \"warning\"\n            }\n          ]\n        },\n        {\n          \"type\": \"Stack\",\n          \"direction\": \"horizontal\",\n          \"children\": [\n            {\n              \"type\": \"Text\",\n              \"text\": \"Announce\"\n            },\n            {\n              \"type\": \"Badge\",\n              \"text\": \"Not Started\",\n              \"tone\": \"neutral\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan status."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 11,
+      "rep": 2,
+      "ms": 5235,
+      "fence": true,
+      "chars": 503,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Release Plan\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Run tests\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Deploy to staging\",\n          \"status\": \"blocked\",\n          \"detail\": \"waiting for approval\"\n        },\n        {\n          \"title\": \"Announce\",\n          \"status\": \"pending\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your release plan progress."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 12,
+      "rep": 2,
+      "ms": 6440,
+      "fence": true,
+      "chars": 1180,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Divider",
+        "Heading",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"description\": \"Configure your site preferences and notification settings.\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"section\",\n      \"label\": \"Section\",\n      \"options\": [\n        { \"label\": \"General\", \"value\": \"general\" },\n        { \"label\": \"Notifications\", \"value\": \"notifications\" }\n      ],\n      \"defaultValue\": \"general\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"General\"\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"site_name\",\n      \"label\": \"Site Name\",\n      \"placeholder\": \"Enter your site name\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"language\",\n      \"label\": \"Language\",\n      \"options\": [\n        { \"label\": \"English\", \"value\": \"en\" },\n        { \"label\": \"Spanish\", \"value\": \"es\" },\n        { \"label\": \"French\", \"value\": \"fr\" },\n        { \"label\": \"German\", \"value\": \"de\" }\n      ],\n      \"defaultValue\": \"en\",\n      \"required\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the current settings.\"\n    }\n  ]\n}\n```"
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 10,
+      "rep": 2,
+      "ms": 12871,
+      "fence": true,
+      "chars": 603,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales (Mon-Fri)\",\n  \"children\": [\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"day\", \"label\": \"Day\" },\n        { \"key\": \"online\", \"label\": \"Online Sales\" },\n        { \"key\": \"store\", \"label\": \"Store Sales\" }\n      ],\n      \"rows\": [\n        { \"day\": \"Monday\", \"online\": 120, \"store\": 80 },\n        { \"day\": \"Tuesday\", \"online\": 150, \"store\": 60 },\n        { \"day\": \"Wednesday\", \"online\": 90, \"store\": 110 },\n        { \"day\": \"Thursday\", \"online\": 170, \"store\": 95 },\n        { \"day\": \"Friday\", \"online\": 200, \"store\": 130 }\n      ]\n    }\n  ]\n}\n```\n\nThe pfr-form spec doesn't include a Chart component, so I've displayed the data in a table format."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 12,
+      "rep": 2,
+      "ms": 6376,
+      "fence": true,
+      "chars": 1711,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Input",
+        "Select",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Settings\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"General\",\n          \"children\": [\n            {\n              \"type\": \"Input\",\n              \"id\": \"site_name\",\n              \"label\": \"Site Name\",\n              \"placeholder\": \"Enter your site name\",\n              \"required\": true\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"language\",\n              \"label\": \"Language\",\n              \"options\": [\n                { \"label\": \"English\", \"value\": \"en\" },\n                { \"label\": \"Spanish\", \"value\": \"es\" },\n                { \"label\": \"French\", \"value\": \"fr\" },\n                { \"label\": \"German\", \"value\": \"de\" },\n                { \"label\": \"Japanese\", \"value\": \"ja\" }\n              ],\n              \"defaultValue\": \"en\",\n              \"required\": true\n            }\n          ]\n        },\n        {\n          \"label\": \"Notifications\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"email_enabled\",\n              \"label\": \"Enable Email Notifications\",\n              \"defaultValue\": false\n            },\n            {\n              \"type\": \"Select\",\n              \"id\": \"frequency\",\n              \"label\": \"Frequency\",\n              \"options\": [\n                { \"label\": \"Daily\", \"value\": \"daily\" },\n                { \"label\": \"Weekly\", \"value\": \"weekly\" }\n              ],\n              \"defaultValue\": \"daily\"\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the settings configuration.\"\n    }\n  ]\n}\n```\n\nHere's your settings form with tabbed sections."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 13,
+      "rep": 2,
+      "ms": 6327,
+      "fence": true,
+      "chars": 834,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Select",
+        "Input",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Feedback\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Select\",\n      \"id\": \"rating\",\n      \"label\": \"Rating\",\n      \"options\": [\n        { \"label\": \"1 star\", \"value\": \"1\" },\n        { \"label\": \"2 stars\", \"value\": \"2\" },\n        { \"label\": \"3 stars\", \"value\": \"3\" },\n        { \"label\": \"4 stars\", \"value\": \"4\" },\n        { \"label\": \"5 stars\", \"value\": \"5\" }\n      ],\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Comment (optional)\",\n      \"placeholder\": \"Share any additional feedback...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the feedback.\"\n    }\n  ]\n}\n```\n\nPlease share your experience."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 13,
+      "rep": 2,
+      "ms": 4344,
+      "fence": true,
+      "chars": 657,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Feedback\",\n  \"description\": \"Please rate the support you received.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"rating\",\n      \"label\": \"Rate your support experience\",\n      \"max\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comment\",\n      \"label\": \"Additional comments (optional)\",\n      \"multiline\": true,\n      \"placeholder\": \"Share any feedback you'd like to provide...\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit the support rating and comment.\"\n    }\n  ]\n}\n```\n\nThank you for taking the time to share your feedback!"
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 14,
+      "rep": 2,
+      "ms": 4351,
+      "fence": true,
+      "chars": 155,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nHere's the command ready to copy."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 15,
+      "rep": 2,
+      "ms": 6350,
+      "fence": true,
+      "chars": 803,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Divider",
+        "Progress",
+        "Metric"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"description\": \"Total: 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Usage by Category\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"System (40 GB)\",\n      \"value\": 8\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Apps (120 GB)\",\n      \"value\": 24\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Media (85 GB)\",\n      \"value\": 17\n    },\n    {\n      \"type\": \"Progress\",\n      \"label\": \"Free (255 GB)\",\n      \"value\": 51\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Used Space\",\n      \"value\": \"245 GB (49%)\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Free Space\",\n      \"value\": \"255 GB (51%)\"\n    }\n  ]\n}\n```\n\nHere's your disk usage breakdown as proportions."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 15,
+      "rep": 2,
+      "ms": 8383,
+      "fence": true,
+      "chars": 560,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Usage Breakdown\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        {\n          \"label\": \"System\",\n          \"value\": 40,\n          \"tone\": \"warning\"\n        },\n        {\n          \"label\": \"Apps\",\n          \"value\": 120,\n          \"tone\": \"info\"\n        },\n        {\n          \"label\": \"Media\",\n          \"value\": 85,\n          \"tone\": \"neutral\"\n        },\n        {\n          \"label\": \"Free\",\n          \"value\": 255,\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"GB\"\n    }\n  ]\n}\n```\n\nYour disk usage shown as proportions of the 500 GB total."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 14,
+      "rep": 2,
+      "ms": 12461,
+      "fence": true,
+      "chars": 220,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Input"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Build Command\",\n  \"children\": [\n    {\n      \"type\": \"Input\",\n      \"id\": \"docker_command\",\n      \"label\": \"Command\",\n      \"defaultValue\": \"docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nHere's the command to rebuild your Docker image."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 16,
+      "rep": 2,
+      "ms": 6726,
+      "fence": true,
+      "chars": 376,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Summary\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Approved Q4 budget allocation\\n• Selected new project timeline\\n• Confirmed team restructuring\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"View full notes: https://example.com/notes\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 16,
+      "rep": 2,
+      "ms": 4850,
+      "fence": true,
+      "chars": 325,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- Approved Q4 budget allocation\\n- Scheduled product launch for December 15th\\n- Assigned lead developer to new project\\n\\n[Meeting Notes](https://example.com/notes)\"\n    }\n  ]\n}\n```\n\nHere's the meeting summary form as requested."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 17,
+      "rep": 2,
+      "ms": 4841,
+      "fence": true,
+      "chars": 499,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Text\",\n          \"text\": \"Hostname: web-01\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"Region: eu-west\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"Uptime: 41 days\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"Version: 2.4.1\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's the server information displayed compactly."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 17,
+      "rep": 2,
+      "ms": 4821,
+      "fence": true,
+      "chars": 340,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Hostname\", \"value\": \"web-01\" },\n        { \"label\": \"Region\", \"value\": \"eu-west\" },\n        { \"label\": \"Uptime\", \"value\": \"41 days\" },\n        { \"label\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's the server information displayed as a compact property list."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 18,
+      "rep": 2,
+      "ms": 4809,
+      "fence": true,
+      "chars": 951,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Heading",
+        "Text"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Release v2.4.1 to production\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Status\",\n          \"value\": \"Deployed\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Duration\",\n          \"value\": \"4m 32s\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Changelog\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Fixed authentication token refresh issue (#2847)\\n• Added rate limiting to API endpoints\\n• Updated dashboard layout for mobile responsiveness\\n• Improved error logging and debugging output\\n• Refactored user profile service for better performance\"\n    }\n  ]\n}\n```\n\nHere's your deployment summary."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 18,
+      "rep": 2,
+      "ms": 4791,
+      "fence": true,
+      "chars": 985,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Divider",
+        "Details",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Summary\",\n  \"description\": \"Release v2.4.1 to production\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Environment\",\n          \"value\": \"Production\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Status\",\n          \"value\": \"Success\"\n        },\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Duration\",\n          \"value\": \"2m 34s\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Details\",\n      \"title\": \"Changelog\",\n      \"open\": false,\n      \"children\": [\n        {\n          \"type\": \"Markdown\",\n          \"text\": \"- Fixed authentication timeout bug in OAuth flow\\n- Added rate limiting to API endpoints\\n- Updated dependency lodash to v4.17.21\\n- Improved error logging in payment service\\n- Added dark mode support to dashboard\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nDeployment completed successfully."
+    },
+    {
+      "arm": "old",
+      "group": "B",
+      "task": 19,
+      "rep": 2,
+      "ms": 4447,
+      "fence": true,
+      "chars": 867,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Heading",
+        "Table"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Last 10 Hours Trend\"\n    },\n    {\n      \"type\": \"Table\",\n      \"columns\": [\n        { \"key\": \"hour\", \"label\": \"Hour\" },\n        { \"key\": \"rate\", \"label\": \"Error Rate (%)\" }\n      ],\n      \"rows\": [\n        { \"hour\": \"-10h\", \"rate\": 1.2 },\n        { \"hour\": \"-9h\", \"rate\": 1.1 },\n        { \"hour\": \"-8h\", \"rate\": 0.9 },\n        { \"hour\": \"-7h\", \"rate\": 1.0 },\n        { \"hour\": \"-6h\", \"rate\": 1.4 },\n        { \"hour\": \"-5h\", \"rate\": 1.1 },\n        { \"hour\": \"-4h\", \"rate\": 0.9 },\n        { \"hour\": \"-3h\", \"rate\": 0.7 },\n        { \"hour\": \"-2h\", \"rate\": 0.8 },\n        { \"hour\": \"-1h\", \"rate\": 0.8 }\n      ]\n    }\n  ]\n}\n```\n\nCurrent error rate trending downward from 1.4% peak."
+    },
+    {
+      "arm": "new",
+      "group": "B",
+      "task": 19,
+      "rep": 2,
+      "ms": 4737,
+      "fence": true,
+      "chars": 333,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Sparkline"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Monitor\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"label\": \"Last 10 Hours\",\n      \"tone\": \"success\"\n    }\n  ]\n}\n```\n\nYour error rate has improved from a peak of 1.4% to the current 0.8%."
+    }
+  ]
+}

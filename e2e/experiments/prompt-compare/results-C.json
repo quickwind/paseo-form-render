@@ -1,0 +1,721 @@
+{
+  "model": "devin/swe-1-6-slow",
+  "reps": 3,
+  "tasks": [
+    {
+      "g": "C",
+      "expect": [
+        "Chart",
+        "Sparkline"
+      ],
+      "t": "How did our sales change this week? Monday 120, Tuesday 150, Wednesday 90, Thursday 170, Friday 200."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Steps"
+      ],
+      "t": "Walk me through where the deployment stands: tests passed, the build is running, the production deploy is waiting for approval, and the announcement is not sent yet."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Tabs",
+        "Details"
+      ],
+      "t": "Make a settings page for a blog with an Appearance part (theme, font size) and a Privacy part (analytics toggle, cookie banner toggle)."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Rating"
+      ],
+      "t": "How was your experience with our support team? We would like a score and optional comments."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Code",
+        "Markdown"
+      ],
+      "t": "Tell me how to rebuild the docker image: the command is docker build -t app:latest ."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "SegmentedBar",
+        "Chart"
+      ],
+      "t": "Where does my disk space go? System 40 GB, apps 120 GB, media 85 GB, free 255 GB."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Markdown"
+      ],
+      "t": "Give me the meeting notes. Decisions: ship on Friday, hire a designer, drop feature X. Full notes are at https://example.com/notes."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "KeyValue",
+        "Table"
+      ],
+      "t": "Which server am I on? Hostname web-01, region eu-west, uptime 41 days, version 2.4.1."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Details"
+      ],
+      "t": "The deployment finished successfully. Changelog: fixed login timeout; faster dashboard; export preferences; updated dependencies; resolved rate limiting."
+    },
+    {
+      "g": "C",
+      "expect": [
+        "Sparkline",
+        "Chart"
+      ],
+      "t": "The error rate is 0.8% right now. Over the last ten hours it was 1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8."
+    }
+  ],
+  "promptChars": {
+    "old": 4582,
+    "new": 6630
+  },
+  "results": [
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 2,
+      "rep": 0,
+      "ms": 10372,
+      "fence": true,
+      "chars": 1359,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Select",
+        "Divider",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Blog Settings\",\n  \"description\": \"Configure your blog's appearance and privacy settings.\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Appearance\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"theme\",\n      \"label\": \"Theme\",\n      \"options\": [\n        { \"label\": \"Light\", \"value\": \"light\" },\n        { \"label\": \"Dark\", \"value\": \"dark\" },\n        { \"label\": \"System\", \"value\": \"system\" }\n      ],\n      \"defaultValue\": \"system\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"font_size\",\n      \"label\": \"Font Size\",\n      \"options\": [\n        { \"label\": \"Small\", \"value\": \"small\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"Large\", \"value\": \"large\" }\n      ],\n      \"defaultValue\": \"medium\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Privacy\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"analytics_enabled\",\n      \"label\": \"Enable Analytics\",\n      \"defaultValue\": false\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"cookie_banner_enabled\",\n      \"label\": \"Show Cookie Banner\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the blog settings.\"\n    }\n  ]\n}\n```\n\nHere's your blog settings form."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 0,
+      "rep": 0,
+      "ms": 10743,
+      "fence": true,
+      "chars": 398,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Daily Sales\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Sales\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    }\n  ]\n}\n```\n\nSales peaked on Friday at 200 units."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 3,
+      "rep": 0,
+      "ms": 12313,
+      "fence": true,
+      "chars": 651,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Experience Feedback\",\n  \"description\": \"How was your experience with our support team?\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"score\",\n      \"label\": \"Overall Rating\",\n      \"max\": 5,\n      \"defaultValue\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comments\",\n      \"label\": \"Comments (optional)\",\n      \"placeholder\": \"Share any additional feedback...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Submit support feedback\"\n    }\n  ]\n}\n```\n\nThank you for your feedback!"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 1,
+      "rep": 0,
+      "ms": 12621,
+      "fence": true,
+      "chars": 803,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps",
+        "Divider",
+        "Alert"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Status\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Tests\",\n          \"detail\": \"All tests passed\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"detail\": \"Currently running\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Production Deploy\",\n          \"detail\": \"Waiting for approval\",\n          \"status\": \"pending\"\n        },\n        {\n          \"title\": \"Announcement\",\n          \"detail\": \"Not sent yet\",\n          \"status\": \"pending\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"text\": \"Production deployment requires your approval before proceeding.\",\n      \"tone\": \"warning\"\n    }\n  ]\n}\n```\n\nHere's your current deployment pipeline status."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 4,
+      "rep": 0,
+      "ms": 4377,
+      "fence": true,
+      "chars": 237,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Rebuild Docker Image\",\n  \"description\": \"Command to rebuild the Docker image\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```\n\nRun this command in your terminal to rebuild the image."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 6,
+      "rep": 0,
+      "ms": 6381,
+      "fence": true,
+      "chars": 460,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text",
+        "Divider",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Notes\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"• Ship on Friday\\n• Hire a designer\\n• Drop feature X\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Full notes available at:\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"[https://example.com/notes](https://example.com/notes)\"\n    }\n  ]\n}\n```\n\nHere are the meeting notes."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 7,
+      "rep": 0,
+      "ms": 6444,
+      "fence": true,
+      "chars": 421,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Hostname\",\n      \"value\": \"web-01\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Region\",\n      \"value\": \"eu-west\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Uptime\",\n      \"value\": \"41 days\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    }\n  ]\n}\n```\n\nHere's your server status."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 5,
+      "rep": 0,
+      "ms": 8972,
+      "fence": true,
+      "chars": 868,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar",
+        "Divider",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Space Breakdown\",\n  \"description\": \"Overview of disk usage by category\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        { \"label\": \"System\", \"value\": 40, \"tone\": \"info\" },\n        { \"label\": \"Apps\", \"value\": 120, \"tone\": \"warning\" },\n        { \"label\": \"Media\", \"value\": 85, \"tone\": \"success\" },\n        { \"label\": \"Free\", \"value\": 255, \"tone\": \"neutral\" }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"System\", \"value\": \"40 GB\" },\n        { \"label\": \"Apps\", \"value\": \"120 GB\" },\n        { \"label\": \"Media\", \"value\": \"85 GB\" },\n        { \"label\": \"Free\", \"value\": \"255 GB\" },\n        { \"label\": \"Total Used\", \"value\": \"245 GB\" },\n        { \"label\": \"Total Capacity\", \"value\": \"500 GB\" }\n      ]\n    }\n  ]\n}\n```\n\nYour disk is 51% full with apps taking up the largest share."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 8,
+      "rep": 0,
+      "ms": 7205,
+      "fence": true,
+      "chars": 1065,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Alert",
+        "Divider",
+        "Heading",
+        "Stack",
+        "Text",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Complete\",\n  \"children\": [\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Success\",\n      \"text\": \"The deployment finished successfully.\",\n      \"tone\": \"success\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Changelog\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Fixed login timeout\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Faster dashboard\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Export preferences\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Updated dependencies\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Resolved rate limiting\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Dismiss\",\n      \"variant\": \"secondary\",\n      \"action\": \"submit\",\n      \"message\": \"Deployment notification dismissed.\"\n    }\n  ]\n}\n```\n\nDeployment completed successfully."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 9,
+      "rep": 0,
+      "ms": 5281,
+      "fence": true,
+      "chars": 926,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Stack",
+        "Metric",
+        "Sparkline",
+        "Divider",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Dashboard\",\n  \"children\": [\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"horizontal\",\n      \"children\": [\n        {\n          \"type\": \"Metric\",\n          \"label\": \"Current Error Rate\",\n          \"value\": \"0.8%\"\n        },\n        {\n          \"type\": \"Sparkline\",\n          \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n          \"label\": \"Last 10 Hours\",\n          \"tone\": \"success\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Error Rate History\",\n      \"labels\": [\"10h ago\", \"9h ago\", \"8h ago\", \"7h ago\", \"6h ago\", \"5h ago\", \"4h ago\", \"3h ago\", \"2h ago\", \"1h ago\"],\n      \"series\": [\n        {\n          \"name\": \"Error Rate (%)\",\n          \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n          \"tone\": \"warning\"\n        }\n      ],\n      \"unit\": \"%\"\n    }\n  ]\n}\n```\n\nError rate has been trending downward from a peak of 1.4% six hours ago."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 0,
+      "rep": 1,
+      "ms": 4976,
+      "fence": true,
+      "chars": 727,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Divider",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales Overview\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Sales by Day\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Sales\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Total Sales\", \"value\": 730 },\n        { \"label\": \"Average/Day\", \"value\": 146 },\n        { \"label\": \"Best Day\", \"value\": \"Friday (200)\" },\n        { \"label\": \"Worst Day\", \"value\": \"Wednesday (90)\" }\n      ]\n    }\n  ]\n}\n```\n\nSales peaked on Friday with 200 units."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 1,
+      "rep": 1,
+      "ms": 4862,
+      "fence": true,
+      "chars": 704,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Status\",\n  \"description\": \"Current state of the deployment pipeline\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Tests\",\n          \"detail\": \"All tests passed successfully\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"detail\": \"Build process in progress\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Production Deploy\",\n          \"detail\": \"Awaiting approval\",\n          \"status\": \"blocked\"\n        },\n        {\n          \"title\": \"Announcement\",\n          \"detail\": \"Not sent yet\",\n          \"status\": \"pending\"\n        }\n      ]\n    }\n  ]\n}\n```\n\nHere's your deployment pipeline status."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 3,
+      "rep": 1,
+      "ms": 4441,
+      "fence": true,
+      "chars": 690,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Team Feedback\",\n  \"description\": \"We value your feedback on your recent support experience.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_score\",\n      \"label\": \"How would you rate your experience?\",\n      \"max\": 5,\n      \"defaultValue\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comments\",\n      \"label\": \"Comments (optional)\",\n      \"placeholder\": \"Share any additional feedback...\",\n      \"multiline\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Thank you for your feedback!\"\n    }\n  ]\n}\n```\n\nPlease share your experience with us."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 4,
+      "rep": 1,
+      "ms": 4522,
+      "fence": true,
+      "chars": 246,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Docker Image Rebuild\",\n  \"description\": \"Run this command to rebuild the Docker image\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    }\n  ]\n}\n```\n\nRun this command in your project directory."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 5,
+      "rep": 1,
+      "ms": 4488,
+      "fence": true,
+      "chars": 780,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar",
+        "Divider",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Space Breakdown\",\n  \"description\": \"Your 500 GB drive usage by category\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        { \"label\": \"System\", \"value\": 40, \"tone\": \"neutral\" },\n        { \"label\": \"Apps\", \"value\": 120, \"tone\": \"info\" },\n        { \"label\": \"Media\", \"value\": 85, \"tone\": \"warning\" },\n        { \"label\": \"Free\", \"value\": 255, \"tone\": \"success\" }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"System\", \"value\": \"40 GB (8%)\" },\n        { \"label\": \"Apps\", \"value\": \"120 GB (24%)\" },\n        { \"label\": \"Media\", \"value\": \"85 GB (17%)\" },\n        { \"label\": \"Free\", \"value\": \"255 GB (51%)\" }\n      ]\n    }\n  ]\n}\n```\n\nYour Apps category is taking up the most space at 120 GB."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 2,
+      "rep": 1,
+      "ms": 8515,
+      "fence": true,
+      "chars": 1318,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Select",
+        "Divider",
+        "Toggle",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Blog Settings\",\n  \"description\": \"Configure your blog's appearance and privacy settings.\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Appearance\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"theme\",\n      \"label\": \"Theme\",\n      \"options\": [\n        { \"label\": \"Light\", \"value\": \"light\" },\n        { \"label\": \"Dark\", \"value\": \"dark\" },\n        { \"label\": \"System\", \"value\": \"system\" }\n      ],\n      \"defaultValue\": \"system\"\n    },\n    {\n      \"type\": \"Select\",\n      \"id\": \"font_size\",\n      \"label\": \"Font Size\",\n      \"options\": [\n        { \"label\": \"Small\", \"value\": \"small\" },\n        { \"label\": \"Medium\", \"value\": \"medium\" },\n        { \"label\": \"Large\", \"value\": \"large\" }\n      ],\n      \"defaultValue\": \"medium\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Privacy\"\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"analytics_enabled\",\n      \"label\": \"Enable Analytics\",\n      \"defaultValue\": false\n    },\n    {\n      \"type\": \"Toggle\",\n      \"id\": \"cookie_banner_enabled\",\n      \"label\": \"Show Cookie Banner\",\n      \"defaultValue\": true\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save blog settings.\"\n    }\n  ]\n}\n```\n\nHere's your blog settings form."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 6,
+      "rep": 1,
+      "ms": 4138,
+      "fence": true,
+      "chars": 374,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Text",
+        "Divider",
+        "Markdown"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Notes\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Ship on Friday, hire a designer, drop feature X\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"Full notes available at: https://example.com/notes\"\n    }\n  ]\n}\n```\n\nHere are the key decisions from the meeting."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 7,
+      "rep": 1,
+      "ms": 4434,
+      "fence": true,
+      "chars": 340,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"Hostname\", \"value\": \"web-01\" },\n        { \"label\": \"Region\", \"value\": \"eu-west\" },\n        { \"label\": \"Uptime\", \"value\": \"41 days\" },\n        { \"label\": \"Version\", \"value\": \"2.4.1\" }\n      ]\n    }\n  ]\n}\n```\n\nHere's your server information displayed in a structured format."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 8,
+      "rep": 1,
+      "ms": 4362,
+      "fence": true,
+      "chars": 1037,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Alert",
+        "Divider",
+        "Heading",
+        "Stack",
+        "Text",
+        "Button"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Successful\",\n  \"children\": [\n    {\n      \"type\": \"Alert\",\n      \"text\": \"Your deployment has been completed successfully.\",\n      \"tone\": \"success\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Changelog\"\n    },\n    {\n      \"type\": \"Stack\",\n      \"direction\": \"vertical\",\n      \"children\": [\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Fixed login timeout\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Faster dashboard\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Export preferences\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Updated dependencies\"\n        },\n        {\n          \"type\": \"Text\",\n          \"text\": \"• Resolved rate limiting\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Done\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Deployment acknowledged.\"\n    }\n  ]\n}\n```\n\nDeployment completed successfully."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 9,
+      "rep": 1,
+      "ms": 4422,
+      "fence": true,
+      "chars": 625,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Overview\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Error Rate - Last 10 Hours\",\n      \"labels\": [\"10h ago\", \"9h ago\", \"8h ago\", \"7h ago\", \"6h ago\", \"5h ago\", \"4h ago\", \"3h ago\", \"2h ago\", \"1h ago\"],\n      \"series\": [\n        {\n          \"name\": \"Error Rate\",\n          \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n          \"tone\": \"warning\"\n        }\n      ],\n      \"unit\": \"%\"\n    }\n  ]\n}\n```\n\nError rates peaked at 1.4% six hours ago but have stabilized around 0.8% recently."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 0,
+      "rep": 2,
+      "ms": 4360,
+      "fence": true,
+      "chars": 595,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Chart",
+        "Metric"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Weekly Sales Overview\",\n  \"children\": [\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Sales by Day\",\n      \"labels\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"],\n      \"series\": [\n        {\n          \"name\": \"Sales\",\n          \"values\": [120, 150, 90, 170, 200],\n          \"tone\": \"success\"\n        }\n      ],\n      \"unit\": \"units\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Total Weekly Sales\",\n      \"value\": 730\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Average Daily Sales\",\n      \"value\": 146\n    }\n  ]\n}\n```\n\nSales peaked on Friday at 200 units."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 1,
+      "rep": 2,
+      "ms": 4415,
+      "fence": true,
+      "chars": 865,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Steps",
+        "Divider",
+        "Alert"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Status\",\n  \"description\": \"Current state of the deployment pipeline\",\n  \"children\": [\n    {\n      \"type\": \"Steps\",\n      \"items\": [\n        {\n          \"title\": \"Tests\",\n          \"detail\": \"All tests passed\",\n          \"status\": \"done\"\n        },\n        {\n          \"title\": \"Build\",\n          \"detail\": \"Build is running\",\n          \"status\": \"current\"\n        },\n        {\n          \"title\": \"Production Deploy\",\n          \"detail\": \"Waiting for approval\",\n          \"status\": \"blocked\"\n        },\n        {\n          \"title\": \"Announcement\",\n          \"detail\": \"Not sent yet\",\n          \"status\": \"pending\"\n        }\n      ]\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Alert\",\n      \"tone\": \"warning\",\n      \"text\": \"Production deployment requires manual approval before proceeding.\"\n    }\n  ]\n}\n```\n\nHere's the current deployment status."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 2,
+      "rep": 2,
+      "ms": 4405,
+      "fence": true,
+      "chars": 1460,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Tabs",
+        "Select",
+        "Input",
+        "Toggle",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Blog Settings\",\n  \"children\": [\n    {\n      \"type\": \"Tabs\",\n      \"tabs\": [\n        {\n          \"label\": \"Appearance\",\n          \"children\": [\n            {\n              \"type\": \"Select\",\n              \"id\": \"theme\",\n              \"label\": \"Theme\",\n              \"options\": [\n                { \"label\": \"Light\", \"value\": \"light\" },\n                { \"label\": \"Dark\", \"value\": \"dark\" },\n                { \"label\": \"System\", \"value\": \"system\" }\n              ],\n              \"defaultValue\": \"system\"\n            },\n            {\n              \"type\": \"Input\",\n              \"id\": \"font_size\",\n              \"label\": \"Font Size (px)\",\n              \"inputType\": \"number\",\n              \"defaultValue\": 16,\n              \"min\": 12,\n              \"max\": 24\n            }\n          ]\n        },\n        {\n          \"label\": \"Privacy\",\n          \"children\": [\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"analytics_enabled\",\n              \"label\": \"Enable Analytics\",\n              \"defaultValue\": false\n            },\n            {\n              \"type\": \"Toggle\",\n              \"id\": \"cookie_banner_enabled\",\n              \"label\": \"Show Cookie Banner\",\n              \"defaultValue\": true\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Save Settings\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Save the blog settings.\"\n    }\n  ]\n}\n```\n\nHere's your blog settings form."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 3,
+      "rep": 2,
+      "ms": 4345,
+      "fence": true,
+      "chars": 669,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Rating",
+        "Input",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Support Team Feedback\",\n  \"description\": \"Please rate your experience with our support team.\",\n  \"children\": [\n    {\n      \"type\": \"Rating\",\n      \"id\": \"support_score\",\n      \"label\": \"Support Team Rating\",\n      \"max\": 5,\n      \"defaultValue\": 5,\n      \"required\": true\n    },\n    {\n      \"type\": \"Input\",\n      \"id\": \"comments\",\n      \"label\": \"Comments\",\n      \"placeholder\": \"Optional feedback...\",\n      \"multiline\": true,\n      \"required\": false\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Submit Feedback\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Thank you for your feedback!\"\n    }\n  ]\n}\n```\n\nThank you for sharing your experience!"
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 4,
+      "rep": 2,
+      "ms": 4403,
+      "fence": true,
+      "chars": 414,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Code",
+        "Button"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Rebuild Docker Image\",\n  \"description\": \"Command to rebuild the Docker image\",\n  \"children\": [\n    {\n      \"type\": \"Code\",\n      \"code\": \"docker build -t app:latest .\",\n      \"language\": \"bash\"\n    },\n    {\n      \"type\": \"Button\",\n      \"label\": \"Run Command\",\n      \"variant\": \"primary\",\n      \"action\": \"submit\",\n      \"message\": \"Execute docker build -t app:latest .\"\n    }\n  ]\n}\n```\n\nRun this command to rebuild your Docker image."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 5,
+      "rep": 2,
+      "ms": 4498,
+      "fence": true,
+      "chars": 731,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "SegmentedBar",
+        "Divider",
+        "KeyValue"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Disk Space Usage\",\n  \"description\": \"Total: 500 GB\",\n  \"children\": [\n    {\n      \"type\": \"SegmentedBar\",\n      \"parts\": [\n        { \"label\": \"System\", \"value\": 40, \"tone\": \"neutral\" },\n        { \"label\": \"Apps\", \"value\": 120, \"tone\": \"info\" },\n        { \"label\": \"Media\", \"value\": 85, \"tone\": \"success\" },\n        { \"label\": \"Free\", \"value\": 255, \"tone\": \"warning\" }\n      ],\n      \"unit\": \"GB\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"KeyValue\",\n      \"pairs\": [\n        { \"label\": \"System\", \"value\": \"40 GB\" },\n        { \"label\": \"Apps\", \"value\": \"120 GB\" },\n        { \"label\": \"Media\", \"value\": \"85 GB\" },\n        { \"label\": \"Free\", \"value\": \"255 GB\" }\n      ]\n    }\n  ]\n}\n```\n\nYour disk is 51% free with apps taking the largest portion."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 7,
+      "rep": 2,
+      "ms": 4351,
+      "fence": true,
+      "chars": 421,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Server Information\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Hostname\",\n      \"value\": \"web-01\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Region\",\n      \"value\": \"eu-west\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Uptime\",\n      \"value\": \"41 days\"\n    },\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Version\",\n      \"value\": \"2.4.1\"\n    }\n  ]\n}\n```\n\nHere's your server information."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 6,
+      "rep": 2,
+      "ms": 6339,
+      "fence": true,
+      "chars": 367,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Heading",
+        "Markdown",
+        "Divider",
+        "Text"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Meeting Notes\",\n  \"children\": [\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Decisions\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- Ship on Friday\\n- Hire a designer\\n- Drop feature X\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Text\",\n      \"text\": \"Full notes: https://example.com/notes\"\n    }\n  ]\n}\n```\n\nHere are the key decisions from the meeting."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 9,
+      "rep": 2,
+      "ms": 4325,
+      "fence": true,
+      "chars": 827,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Metric",
+        "Divider",
+        "Sparkline",
+        "Chart"
+      ],
+      "fit": true,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Error Rate Monitoring\",\n  \"children\": [\n    {\n      \"type\": \"Metric\",\n      \"label\": \"Current Error Rate\",\n      \"value\": \"0.8%\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Sparkline\",\n      \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n      \"label\": \"Last 10 Hours\",\n      \"tone\": \"warning\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Chart\",\n      \"kind\": \"bar\",\n      \"title\": \"Hourly Error Rate History\",\n      \"labels\": [\"Hour 1\", \"Hour 2\", \"Hour 3\", \"Hour 4\", \"Hour 5\", \"Hour 6\", \"Hour 7\", \"Hour 8\", \"Hour 9\", \"Hour 10\"],\n      \"series\": [\n        {\n          \"name\": \"Error Rate\",\n          \"values\": [1.2, 1.1, 0.9, 1.0, 1.4, 1.1, 0.9, 0.7, 0.8, 0.8],\n          \"tone\": \"warning\"\n        }\n      ],\n      \"unit\": \"%\"\n    }\n  ]\n}\n```\n\nThe error rate has been trending downward from its peak of 1.4% five hours ago."
+    },
+    {
+      "arm": "new",
+      "group": "C",
+      "task": 8,
+      "rep": 2,
+      "ms": 6358,
+      "fence": true,
+      "chars": 488,
+      "strictJson": true,
+      "valid": true,
+      "error": null,
+      "category": null,
+      "components": [
+        "Card",
+        "Alert",
+        "Divider",
+        "Heading",
+        "Markdown"
+      ],
+      "fit": false,
+      "reply": "```pfr-form\n{\n  \"type\": \"Card\",\n  \"title\": \"Deployment Successful\",\n  \"children\": [\n    {\n      \"type\": \"Alert\",\n      \"title\": \"Success\",\n      \"text\": \"The deployment completed successfully.\",\n      \"tone\": \"success\"\n    },\n    {\n      \"type\": \"Divider\"\n    },\n    {\n      \"type\": \"Heading\",\n      \"text\": \"Changelog\"\n    },\n    {\n      \"type\": \"Markdown\",\n      \"text\": \"- Fixed login timeout\\n- Faster dashboard\\n- Export preferences\\n- Updated dependencies\\n- Resolved rate limiting\"\n    }\n  ]\n}\n```\n\nDeployment completed successfully."
+    }
+  ]
+}

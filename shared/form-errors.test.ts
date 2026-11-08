@@ -9,6 +9,16 @@ import {
 import { parseMessageContent } from "./parser";
 import { PFR_NODE_TYPES, PfrFormSchema } from "./schema";
 
+/** Formats the engine's own error for `json`, bypassing the lenient repair done by the parser. */
+function syntaxOne(json: string): string[] {
+  try {
+    JSON.parse(json);
+  } catch (e) {
+    return formatJsonParseError(json, e).map(formatIssue);
+  }
+  throw new Error("expected invalid JSON");
+}
+
 function parseOne(json: unknown): string[] {
   const text = "```pfr-form\n" + (typeof json === "string" ? json : JSON.stringify(json, null, 2)) + "\n```";
   const [block] = parseMessageContent(text);
@@ -173,25 +183,25 @@ describe("schema issue formatting", () => {
 
 describe("JSON syntax error formatting", () => {
   it("includes line, column, a snippet, and a trailing comma hint", () => {
-    const [line] = parseOne('{\n  "type": "Card",\n  "children": [],\n}');
+    const [line] = syntaxOne('{\n  "type": "Card",\n  "children": [],\n}');
     expect(line).toMatch(/^JSON: syntax error at line 4, column 1/);
     expect(line).toContain("near `}`");
     expect(line).toContain("trailing comma");
   });
 
   it("hints at comments", () => {
-    const [line] = parseOne('{\n  // pick one\n  "type": "Card"\n}');
+    const [line] = syntaxOne('{\n  // pick one\n  "type": "Card"\n}');
     expect(line).toContain("line 2");
     expect(line).toContain("comments are not allowed");
   });
 
   it("hints at single quotes", () => {
-    const [line] = parseOne("{'type': 'Card', 'children': []}");
+    const [line] = syntaxOne("{'type': 'Card', 'children': []}");
     expect(line).toContain("single quotes");
   });
 
   it("hints at unquoted keys", () => {
-    const [line] = parseOne('{\n  type: "Card",\n  "children": []\n}');
+    const [line] = syntaxOne('{\n  type: "Card",\n  "children": []\n}');
     expect(line).toContain('use "type"');
   });
 

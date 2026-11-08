@@ -4,10 +4,18 @@ import { z } from "zod";
 export const OptionSchema = z.object({
   label: z.string(),
   value: z.string(),
+  /** A short explanation shown under the label in the options menu. */
+  description: z.string().optional(),
 });
 export type Option = z.infer<typeof OptionSchema>;
 
 // Table column schema
+export const StepItemSchema = z.object({
+  title: z.string(),
+  detail: z.string().optional(),
+  status: z.enum(["pending", "current", "done", "blocked"]).optional(),
+});
+
 export const TableColumnSchema = z.object({
   key: z.string(),
   label: z.string(),
@@ -17,6 +25,17 @@ export type TableColumn = z.infer<typeof TableColumnSchema>;
 // Tone variants for Alert and Badge
 export const ToneSchema = z.enum(["neutral", "info", "success", "warning", "danger"]);
 export type Tone = z.infer<typeof ToneSchema>;
+
+export const SegmentedBarPartSchema = z.object({
+  label: z.string(),
+  value: z.number().nonnegative(),
+  tone: ToneSchema.optional(),
+});
+
+export const KeyValuePairSchema = z.object({
+  label: z.string(),
+  value: z.union([z.string(), z.number()]),
+});
 
 // Node base definition
 export type PfrNode =
@@ -35,7 +54,17 @@ export type PfrNode =
   | MultiSelectNode
   | ToggleNode
   | FilePickerNode
-  | ButtonNode;
+  | ButtonNode
+  | CodeNode
+  | StepsNode
+  | DetailsNode
+  | SegmentedBarNode
+  | KeyValueNode
+  | TabsNode
+  | MarkdownNode
+  | RatingNode
+  | SparklineNode
+  | ChartNode;
 
 /** Every valid node `type`. The compile-time check below fails if a node type is missing from this list. */
 export const PFR_NODE_TYPES = [
@@ -55,19 +84,134 @@ export const PFR_NODE_TYPES = [
   "Toggle",
   "FilePicker",
   "Button",
+  "Code",
+  "Steps",
+  "Details",
+  "SegmentedBar",
+  "KeyValue",
+  "Rating",
+  "Sparkline",
+  "Markdown",
+  "Tabs",
+  "Chart",
 ] as const satisfies readonly PfrNode["type"][];
 type MissingNodeTypes = Exclude<PfrNode["type"], (typeof PFR_NODE_TYPES)[number]>;
 const _allNodeTypesListed: [MissingNodeTypes] extends [never] ? true : never = true;
 void _allNodeTypesListed;
 
 /** Node types that collect a value and therefore need a unique `id`. */
-export const PFR_FIELD_TYPES = ["Input", "Select", "MultiSelect", "Toggle", "FilePicker"] as const;
+export const PFR_FIELD_TYPES = ["Input", "Select", "MultiSelect", "Toggle", "FilePicker", "Rating"] as const;
 
 export interface CardNode {
   type: "Card";
   title?: string;
   description?: string;
   children: PfrNode[];
+}
+
+export interface CodeNode {
+  type: "Code";
+  code: string;
+  /** Shown as a label only; there is no syntax highlighting. */
+  language?: string;
+}
+
+export type StepStatus = "pending" | "current" | "done" | "blocked";
+
+export interface StepItem {
+  title: string;
+  detail?: string;
+  status?: StepStatus;
+}
+
+export interface StepsNode {
+  type: "Steps";
+  items: StepItem[];
+}
+
+/** A collapsible section; its children keep working (values, validation, submit) while collapsed. */
+export interface DetailsNode {
+  type: "Details";
+  title: string;
+  open?: boolean;
+  children: PfrNode[];
+}
+
+export interface SegmentedBarPart {
+  label: string;
+  value: number;
+  tone?: Tone;
+}
+
+/** Shares of one whole as a single bar with a legend; segments without a tone get distinct colors. */
+export interface SegmentedBarNode {
+  type: "SegmentedBar";
+  parts: SegmentedBarPart[];
+  unit?: string;
+}
+
+export interface KeyValuePair {
+  label: string;
+  value: string | number;
+}
+
+export interface KeyValueNode {
+  type: "KeyValue";
+  pairs: KeyValuePair[];
+}
+
+export interface TabItem {
+  label: string;
+  children: PfrNode[];
+}
+
+/** Tabs show one group at a time; every tab's fields stay in the form and are submitted. */
+export interface TabsNode {
+  type: "Tabs";
+  tabs: TabItem[];
+}
+
+/** Rich text (bold, lists, inline code, links, ...) rendered with the host's Markdown renderer. */
+export interface MarkdownNode {
+  type: "Markdown";
+  text: string;
+}
+
+/** A star rating from 1 to `max` (default 5). Unset until the user taps; tapping the same star again clears it. */
+export interface RatingNode {
+  type: "Rating";
+  id: string;
+  label: string;
+  max?: number;
+  defaultValue?: number;
+  required?: boolean;
+}
+
+/** A tiny bar trend of a series of numbers, with the last value shown beside it. */
+export interface SparklineNode {
+  type: "Sparkline";
+  values: number[];
+  label?: string;
+  tone?: Tone;
+}
+
+export interface ChartSeries {
+  name: string;
+  values: number[];
+  tone?: Tone;
+}
+
+/**
+ * A vertical bar chart with a value axis. Every series needs exactly one value per label (checked
+ * by `findChartIssues`), with at most 24 labels and 4 series.
+ */
+export interface ChartNode {
+  type: "Chart";
+  kind?: "bar";
+  title?: string;
+  labels: string[];
+  series: ChartSeries[];
+  unit?: string;
 }
 
 export interface StackNode {
@@ -322,6 +466,60 @@ export const PfrNodeSchema: z.ZodType<PfrNode> = z.lazy(() =>
       variant: z.enum(["primary", "secondary", "danger"]).optional(),
       action: z.enum(["submit", "reset"]),
       message: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("Code"),
+      code: z.string(),
+      language: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("Steps"),
+      items: z.array(StepItemSchema).min(1),
+    }),
+    z.object({
+      type: z.literal("Details"),
+      title: z.string(),
+      open: z.boolean().optional(),
+      children: z.array(PfrNodeSchema),
+    }),
+    z.object({
+      type: z.literal("SegmentedBar"),
+      parts: z.array(SegmentedBarPartSchema).min(1),
+      unit: z.string().optional(),
+    }),
+    z.object({
+      type: z.literal("KeyValue"),
+      pairs: z.array(KeyValuePairSchema).min(1),
+    }),
+    z.object({
+      type: z.literal("Rating"),
+      id: z.string().min(1),
+      label: z.string(),
+      max: z.number().int().min(1).max(10).optional(),
+      defaultValue: z.number().int().min(1).optional(),
+      required: z.boolean().optional(),
+    }),
+    z.object({
+      type: z.literal("Sparkline"),
+      values: z.array(z.number()).min(1),
+      label: z.string().optional(),
+      tone: ToneSchema.optional(),
+    }),
+    z.object({
+      type: z.literal("Markdown"),
+      text: z.string(),
+    }),
+    z.object({
+      type: z.literal("Tabs"),
+      tabs: z.array(z.object({ label: z.string(), children: z.array(PfrNodeSchema) })).min(1),
+    }),
+    z.object({
+      type: z.literal("Chart"),
+      kind: z.enum(["bar"]).optional(),
+      title: z.string().optional(),
+      labels: z.array(z.string()).min(1),
+      series: z.array(z.object({ name: z.string(), values: z.array(z.number()), tone: ToneSchema.optional() })).min(1),
+      unit: z.string().optional(),
     }),
   ]),
 );

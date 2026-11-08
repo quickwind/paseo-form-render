@@ -1,5 +1,19 @@
 import { PfrForm, PfrNode, normalizeExtensions } from "./schema";
 
+/** The nodes directly inside a container (Card, Stack, Details, or every tab of Tabs). */
+export function childNodes(node: PfrNode): PfrNode[] {
+  switch (node.type) {
+    case "Card":
+    case "Stack":
+    case "Details":
+      return node.children;
+    case "Tabs":
+      return node.tabs.flatMap((tab) => tab.children);
+    default:
+      return [];
+  }
+}
+
 export function extractInitialValues(node: PfrNode, result: Record<string, any> = {}): Record<string, any> {
   switch (node.type) {
     case "Input":
@@ -14,12 +28,18 @@ export function extractInitialValues(node: PfrNode, result: Record<string, any> 
     case "Toggle":
       result[node.id] = node.defaultValue ?? false;
       break;
+    case "Rating":
+      // null = not rated yet (shown as an empty answer in the submission).
+      result[node.id] = node.defaultValue === undefined ? null : Math.min(node.defaultValue, node.max ?? 5);
+      break;
     case "FilePicker":
       result[node.id] = node.defaultValue ?? "";
       break;
     case "Card":
     case "Stack":
-      for (const child of node.children) {
+    case "Details":
+    case "Tabs":
+      for (const child of childNodes(node)) {
         extractInitialValues(child, result);
       }
       break;
@@ -140,6 +160,11 @@ export function validateForm(
       }
       break;
     }
+    case "Rating":
+      if (node.required && !values[node.id]) {
+        errors[node.id] = `Please give a rating for ${node.label}.`;
+      }
+      break;
     case "Toggle":
       if (node.required) {
         const val = values[node.id];
@@ -167,7 +192,9 @@ export function validateForm(
     }
     case "Card":
     case "Stack":
-      for (const child of node.children) {
+    case "Details":
+    case "Tabs":
+      for (const child of childNodes(node)) {
         validateForm(child, values, errors);
       }
       break;
@@ -191,9 +218,7 @@ export function formatSubmissionMessage(
     if ("id" in n && "label" in n) {
       fieldLabels[n.id] = n.label;
     }
-    if ("children" in n && Array.isArray(n.children)) {
-      n.children.forEach(collectLabels);
-    }
+    childNodes(n).forEach(collectLabels);
   }
   collectLabels(node);
 
@@ -211,4 +236,11 @@ export function formatSubmissionMessage(
   }
 
   return lines.join("\n");
+}
+
+/** Ids of every field inside `node` (used to open a collapsed section that holds an invalid field). */
+export function collectFieldIds(node: PfrNode, ids: string[] = []): string[] {
+  if ("id" in node && typeof node.id === "string") ids.push(node.id);
+  for (const child of childNodes(node)) collectFieldIds(child, ids);
+  return ids;
 }

@@ -270,24 +270,42 @@ export function formatZodIssues(zodIssues: readonly ZodIssue[], json: unknown): 
 // Semantic checks beyond the schema
 // ---------------------------------------------------------------------------
 
+/**
+ * Calls `fn` for every node of an arbitrary (even invalid) JSON tree: through `children` and the
+ * `children` of every tab, with the path of segments that leads to it.
+ */
+function visitNodes(root: unknown, fn: (node: Record<string, unknown>, path: PathSegment[]) => void): void {
+  const visit = (node: unknown, path: PathSegment[], depth: number) => {
+    if (!isRecord(node) || depth > 50) return;
+    fn(node, path);
+    if (Array.isArray(node.children)) {
+      node.children.forEach((child, index) => visit(child, [...path, "children", index], depth + 1));
+    }
+    if (Array.isArray(node.tabs)) {
+      node.tabs.forEach((tab, tabIndex) => {
+        if (!isRecord(tab) || !Array.isArray(tab.children)) return;
+        tab.children.forEach((child, index) =>
+          visit(child, [...path, "tabs", tabIndex, "children", index], depth + 1),
+        );
+      });
+    }
+  };
+  visit(root, [], 0);
+}
+
 /** Reports field ids used by more than one input node. Tolerates arbitrary (even invalid) JSON. */
 export function findDuplicateIdIssues(json: unknown): FormIssue[] {
   const fieldTypes: readonly string[] = PFR_FIELD_TYPES;
   const seen = new Map<string, { descriptions: string[]; lastPath: PathSegment[] }>();
 
-  const visit = (node: unknown, path: PathSegment[], depth: number) => {
-    if (!isRecord(node) || depth > 50) return;
+  visitNodes(json, (node, path) => {
     if (typeof node.type === "string" && fieldTypes.includes(node.type) && typeof node.id === "string" && node.id) {
       const entry = seen.get(node.id) ?? { descriptions: [], lastPath: path };
       entry.descriptions.push(describeNode(node) ?? node.type);
       entry.lastPath = path;
       seen.set(node.id, entry);
     }
-    if (Array.isArray(node.children)) {
-      node.children.forEach((child, index) => visit(child, [...path, "children", index], depth + 1));
-    }
-  };
-  visit(json, [], 0);
+  });
 
   const issues: FormIssue[] = [];
   for (const [id, entry] of seen) {
@@ -297,6 +315,36 @@ export function findDuplicateIdIssues(json: unknown): FormIssue[] {
       message: `duplicate field id ${JSON.stringify(id)} is used by ${entry.descriptions.length} inputs (${entry.descriptions.join(", ")}); every input needs a unique "id"`,
     });
   }
+  return issues;
+}
+
+/** Most categories and series a Chart accepts; more would not fit a phone screen. */
+export const CHART_MAX_LABELS = 24;
+export const CHART_MAX_SERIES = 4;
+
+/** Chart rules the schema cannot express: one value per label in every series, and size limits. */
+export function findChartIssues(json: unknown): FormIssue[] {
+  const issues: FormIssue[] = [];
+  visitNodes(json, (node, path) => {
+    if (node.type !== "Chart" || !Array.isArray(node.labels) || !Array.isArray(node.series)) return;
+    const where = renderPath(json, path);
+    if (node.labels.length > CHART_MAX_LABELS) {
+      issues.push({ path: where, message: `a Chart has ${node.labels.length} labels; use at most ${CHART_MAX_LABELS} (aggregate or drop the rest)` });
+    }
+    if (node.series.length > CHART_MAX_SERIES) {
+      issues.push({ path: where, message: `a Chart has ${node.series.length} series; use at most ${CHART_MAX_SERIES}` });
+    }
+    node.series.forEach((series, index) => {
+      if (!isRecord(series) || !Array.isArray(series.values)) return;
+      if (series.values.length !== (node.labels as unknown[]).length) {
+        const name = typeof series.name === "string" ? JSON.stringify(series.name) : `#${index + 1}`;
+        issues.push({
+          path: where,
+          message: `series ${name} has ${series.values.length} values but the Chart has ${(node.labels as unknown[]).length} labels; give exactly one value per label`,
+        });
+      }
+    });
+  });
   return issues;
 }
 
